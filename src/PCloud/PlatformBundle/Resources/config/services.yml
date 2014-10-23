@@ -1,0 +1,4 @@
+services:
+#    p_cloud_platform.example:
+#        class: PCloud\PlatformBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

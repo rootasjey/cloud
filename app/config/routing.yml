@@ -1,0 +1,3 @@
+p_cloud_platform:
+    resource: "@PCloudPlatformBundle/Resources/config/routing.yml"
+    prefix:   /
