@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Dim 26 Octobre 2014 à 08:18
+-- Généré le: Dim 26 Octobre 2014 à 12:23
 -- Version du serveur: 5.6.12-log
 -- Version de PHP: 5.4.12
 
@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS `acces` (
   `Id_users_groups` int(20) NOT NULL,
   `Id_files_groupes` int(20) NOT NULL,
   `ecriture` varchar(20) NOT NULL,
-  PRIMARY KEY (`Id_users_groups`,`Id_files_groupes`)
+  PRIMARY KEY (`Id_users_groups`,`Id_files_groupes`),
+  KEY `Id_files_groupes` (`Id_files_groupes`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -51,7 +52,8 @@ CREATE TABLE IF NOT EXISTS `files` (
   `Tags_description` varchar(20) NOT NULL,
   `Tags_controle_acces` varchar(20) NOT NULL,
   `Id_files_groups` int(20) NOT NULL,
-  PRIMARY KEY (`Id_files`)
+  PRIMARY KEY (`Id_files`),
+  KEY `Id_files_groups` (`Id_files_groups`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -79,7 +81,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `Prenom_user` varchar(11) NOT NULL,
   `Mail_user` varchar(11) NOT NULL,
   `Date_inscription_user` date NOT NULL,
-  PRIMARY KEY (`Id_user`)
+  PRIMARY KEY (`Id_user`),
+  KEY `Id_groupe` (`Id_groupe`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -93,6 +96,29 @@ CREATE TABLE IF NOT EXISTS `usersgroups` (
   `Alias` varchar(11) NOT NULL,
   PRIMARY KEY (`Id_groupe`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Contraintes pour les tables exportées
+--
+
+--
+-- Contraintes pour la table `acces`
+--
+ALTER TABLE `acces`
+  ADD CONSTRAINT `acces_ibfk_2` FOREIGN KEY (`Id_files_groupes`) REFERENCES `files` (`Id_files_groups`),
+  ADD CONSTRAINT `acces_ibfk_1` FOREIGN KEY (`Id_users_groups`) REFERENCES `usersgroups` (`Id_groupe`);
+
+--
+-- Contraintes pour la table `files`
+--
+ALTER TABLE `files`
+  ADD CONSTRAINT `files_ibfk_1` FOREIGN KEY (`Id_files_groups`) REFERENCES `filesgroups` (`Id_files_groupes`);
+
+--
+-- Contraintes pour la table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`Id_groupe`) REFERENCES `usersgroups` (`Id_groupe`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
