@@ -122,17 +122,23 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
         }
 
-        if (0 === strpos($pathinfo, '/hello')) {
-            // p_cloud_platform_homepage
-            if (preg_match('#^/hello/(?P<name>[^/]++)$#s', $pathinfo, $matches)) {
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'p_cloud_platform_homepage')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\DefaultController::indexAction',));
+        // p_cloud_platform_homepage
+        if (rtrim($pathinfo, '/') === '') {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'p_cloud_platform_homepage');
             }
 
-            // hello_the_world
-            if ($pathinfo === '/hello-world') {
-                return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::indexAction',  '_route' => 'hello_the_world',);
-            }
+            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::indexAction',  '_route' => 'p_cloud_platform_homepage',);
+        }
 
+        // hello_the_world
+        if ($pathinfo === '/hello-world') {
+            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::indexAction',  '_route' => 'hello_the_world',);
+        }
+
+        // p_cloud_platform_view
+        if (0 === strpos($pathinfo, '/advert') && preg_match('#^/advert/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'p_cloud_platform_view')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewAction',));
         }
 
         // _welcome

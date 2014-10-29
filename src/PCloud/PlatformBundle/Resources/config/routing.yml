@@ -1,7 +1,13 @@
 p_cloud_platform_homepage:
-    path:     /hello/{name}
-    defaults: { _controller: PCloudPlatformBundle:Default:index }
+    path:     /
+    defaults: { _controller: PCloudPlatformBundle:Advert:index }
 
 hello_the_world:
     path: /hello-world
     defaults: { _controller: PCloudPlatformBundle:Advert:index }
+
+p_cloud_platform_view:
+    path: /advert/{id}
+    defaults: { _controller: PCloudPlatformBundle:Advert:view }
+    requirements:
+        id: \d+

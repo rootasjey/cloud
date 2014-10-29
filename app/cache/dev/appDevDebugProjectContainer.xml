@@ -425,6 +425,7 @@
     <parameter key="assetic.directory_resource.class">Symfony\Bundle\AsseticBundle\Factory\Resource\DirectoryResource</parameter>
     <parameter key="assetic.filter_manager.class">Symfony\Bundle\AsseticBundle\FilterManager</parameter>
     <parameter key="assetic.worker.ensure_filter.class">Assetic\Factory\Worker\EnsureFilterWorker</parameter>
+    <parameter key="assetic.worker.cache_busting.class">Assetic\Factory\Worker\CacheBustingWorker</parameter>
     <parameter key="assetic.value_supplier.class">Symfony\Bundle\AsseticBundle\DefaultValueSupplier</parameter>
     <parameter key="assetic.node.paths" type="collection"/>
     <parameter key="assetic.cache_dir">C:/wamp/www/cloud/app/cache/dev/assetic</parameter>
@@ -1628,6 +1629,7 @@
               <service class="Symfony\Bundle\AsseticBundle\Routing\AsseticLoader" public="false">
                 <tag name="routing.loader"/>
                 <argument type="service" id="assetic.asset_manager"/>
+                <argument type="collection"/>
               </service>
             </argument>
           </call>
@@ -2146,7 +2148,11 @@
             <argument>true</argument>
             <argument type="collection"/>
             <argument type="collection"/>
-            <argument type="service" id="assetic.value_supplier.default" on-invalid="null"/>
+            <argument type="service">
+              <service class="Symfony\Bundle\AsseticBundle\DefaultValueSupplier" public="false">
+                <argument type="service" id="service_container"/>
+              </service>
+            </argument>
           </service>
         </argument>
       </call>
@@ -2225,7 +2231,9 @@
             <argument type="service">
               <service class="Assetic\Extension\Twig\TwigFormulaLoader" public="false">
                 <tag name="assetic.templating.twig"/>
+                <tag name="monolog.logger" channel="assetic"/>
                 <argument type="service" id="twig"/>
+                <argument type="service" id="monolog.logger.assetic" on-invalid="ignore"/>
               </service>
             </argument>
             <argument type="service">
@@ -2267,9 +2275,6 @@
         </argument>
       </call>
     </service>
-    <service id="assetic.value_supplier.default" class="Symfony\Bundle\AsseticBundle\DefaultValueSupplier" public="false">
-      <argument type="service" id="service_container"/>
-    </service>
     <service id="assetic.filter.cssrewrite" class="Assetic\Filter\CssRewriteFilter">
       <tag name="assetic.filter" alias="cssrewrite"/>
     </service>
@@ -2279,9 +2284,6 @@
       <argument type="service" id="assetic.cache"/>
       <argument>false</argument>
       <argument type="service" id="profiler" on-invalid="null"/>
-      <call method="setValueSupplier">
-        <argument type="service" id="assetic.value_supplier.default" on-invalid="ignore"/>
-      </call>
     </service>
     <service id="assetic.cache" class="Assetic\Cache\FilesystemCache" public="false">
       <argument>C:/wamp/www/cloud/app/cache/dev/assetic/assets</argument>
@@ -2688,6 +2690,18 @@
         <argument type="service" id="monolog.handler.debug"/>
       </call>
     </service>
+    <service id="monolog.logger.assetic" class="Symfony\Bridge\Monolog\Logger">
+      <argument>assetic</argument>
+      <call method="pushHandler">
+        <argument type="service" id="monolog.handler.console"/>
+      </call>
+      <call method="pushHandler">
+        <argument type="service" id="monolog.handler.main"/>
+      </call>
+      <call method="pushHandler">
+        <argument type="service" id="monolog.handler.debug"/>
+      </call>
+    </service>
     <service id="monolog.logger.doctrine" class="Symfony\Bridge\Monolog\Logger">
       <argument>doctrine</argument>
       <call method="pushHandler">
@@ -2767,6 +2781,7 @@
         <argument key="matcher_dumper_class">Symfony\Component\Routing\Matcher\Dumper\PhpMatcherDumper</argument>
         <argument key="matcher_cache_class">appDevUrlMatcher</argument>
         <argument key="strict_requirements">true</argument>
+        <argument key="resource_type">yaml</argument>
       </argument>
       <argument type="service" id="router.request_context" on-invalid="ignore"/>
       <argument type="service" id="monolog.logger.router" on-invalid="ignore"/>
