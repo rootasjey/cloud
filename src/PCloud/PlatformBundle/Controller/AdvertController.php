@@ -5,14 +5,10 @@ namespace PCloud\PlatformBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
-//$directory = "../../Resources/stylesheets";
-//require "scsshp/scss.inc.php";
-//scss_server::serveFrom($directory);
-// SassCompiler::run("scss/", "css/");
 
 class AdvertController extends Controller
 {
-  	public function indexAction() {
+	public function indexAction() {
 		$content = $this->get('templating')->render('PCloudPlatformBundle:Advert:index.html.twig');
 		return new Response($content);
   }
@@ -24,6 +20,7 @@ class AdvertController extends Controller
 
 		  $response = $bdd->query('SELECT * FROM users');
 		  $data = $response->fetch();
+
 		  $content = $this->get('templating')->render('PCloudPlatformBundle:Advert:index.html.twig', array('users' => $data));
 		  return new Response($content);
 	  }
@@ -32,5 +29,27 @@ class AdvertController extends Controller
 	  }
 
 	  return new Response("Affichage de l'annonce d'id : ".$id);
+  }
+
+  public function adduserAction()
+  {
+    $login = $_POST["login"];
+    $password = $_POST["password"];
+
+    try {
+      // $bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+      $bdd  = mysql_connect("localhost", "root", "");
+      $db   = mysql_select_db("cloud");
+      $sql  = "INSERT INTO users(name, password)
+              VALUES( '$login', '$password')";
+
+      $request = mysql_query($sql, $bdd) or die(mysql_error());
+
+      if($request) echo("Insertion succès!");
+
+    }
+    catch (Exception $e) {
+      die('Erreur : ' . $e->getMessage());
+    }
   }
 }

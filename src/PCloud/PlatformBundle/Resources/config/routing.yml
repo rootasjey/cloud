@@ -11,3 +11,11 @@ p_cloud_platform_view:
     defaults: { _controller: PCloudPlatformBundle:Advert:view }
     requirements:
         id: \d+
+
+add_user:
+    path: /newuser/
+    defaults: { _controller: PCloudPlatformBundle:Advert:adduser }
+
+delete_user:
+   path: /deleteuser/
+   defaults: { _controller: PCloudPlatformBundle:Advert:deleteuser }

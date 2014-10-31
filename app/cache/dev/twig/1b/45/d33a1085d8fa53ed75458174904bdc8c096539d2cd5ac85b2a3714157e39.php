@@ -19,30 +19,61 @@ class __TwigTemplate_1b45d33a1085d8fa53ed75458174904bdc8c096539d2cd5ac85b2a37141
         echo "<!DOCTYPE html>
 <html>
 \t<head>
-\t\t<title>Bienvenue sur le Cloud Personnel!</title>
+\t\t<title>Cloud</title>
+\t\t<script src=\"";
+        // line 5
+        echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("bundles/cloud/js/main.js"), "html", null, true);
+        echo "\"></script>
+\t\t<link href=\"";
+        // line 6
+        echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("bundles/cloud/css/style.css"), "html", null, true);
+        echo "\" rel=\"stylesheet\" />
+\t\t<link href=\"";
+        // line 7
+        echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("bundles/cloud/css/index.css"), "html", null, true);
+        echo "\" rel=\"stylesheet\" />
 \t</head>
 
 \t<body>
-\t\t<h1>Personal CLoud</h1>
+\t\t<div class=\"search-panel\">
+\t\t\t<span>search</span>
+\t\t\t<input type=\"text\" name=\"searchinput\"/>
+\t\t</div>
 
-\t\t<p> <span>FORMULAIRE</span></p>
-\t  \t<p>
-\t\t\tLe Hello World est un grand classique en programmation.
-\t\t\tIl signifie énormément, car cela veut dire que vous avez
-\t\t\tréussi à exécuter le programme pour accomplir une tâche simple :
-\t\t\tafficher ce hello world !
-\t\t</p>
+\t\t<div class=\"main-panel\">
+\t\t\t<div class=\"main-title\">CLOUD</div>
+
+\t\t\t<div class=\"large-square\">
+\t\t\t\t<div id=\"login-panel\">
+\t\t\t\t\t<form id=\"userform\" action=\"/cloud/web/app_dev.php/newuser/\" method=\"post\">
+\t\t\t\t\t\t<span class=\"title\">login</span>
+\t\t\t\t\t\t<input type=\"text\" name=\"login\">
+
+\t\t\t\t\t\t<span class=\"title\">password</span>
+\t\t\t\t\t\t<input type=\"text\" name=\"password\">
+\t\t\t\t\t\t<input type=\"submit\" name=\"valid\" value=\"login now\">
+\t\t\t\t\t</form>
+\t\t\t\t</div>
+\t\t\t</div>
+
+\t\t\t<div class=\"medium-square\">
+
+\t\t\t</div>
+\t\t\t<div class=\"medium-square\">
+
+\t\t\t</div>
+\t\t</div>
 
 \t\t";
-        // line 18
+        // line 40
         if (array_key_exists("users", $context)) {
-            // line 19
+            // line 41
             echo "\t\t\t";
-            echo twig_escape_filter($this->env, $this->getAttribute((isset($context["users"]) ? $context["users"] : $this->getContext($context, "users")), "Nom_user", array()), "html", null, true);
+            echo twig_escape_filter($this->env, $this->getAttribute((isset($context["users"]) ? $context["users"] : $this->getContext($context, "users")), "name", array()), "html", null, true);
             echo "
 \t\t";
         }
-        // line 21
+        // line 43
         echo "\t</body>
 </html>
 ";
@@ -60,6 +91,6 @@ class __TwigTemplate_1b45d33a1085d8fa53ed75458174904bdc8c096539d2cd5ac85b2a37141
 
     public function getDebugInfo()
     {
-        return array (  46 => 21,  40 => 19,  38 => 18,  19 => 1,);
+        return array (  77 => 43,  71 => 41,  69 => 40,  33 => 7,  29 => 6,  25 => 5,  19 => 1,);
     }
 }

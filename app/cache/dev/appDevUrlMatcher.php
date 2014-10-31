@@ -141,6 +141,15 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             return $this->mergeDefaults(array_replace($matches, array('_route' => 'p_cloud_platform_view')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewAction',));
         }
 
+        // add_user
+        if (rtrim($pathinfo, '/') === '/newuser') {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'add_user');
+            }
+
+            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::adduserAction',  '_route' => 'add_user',);
+        }
+
         // _welcome
         if (rtrim($pathinfo, '/') === '') {
             if (substr($pathinfo, -1) !== '/') {

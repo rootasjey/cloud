@@ -1,22 +1,44 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Bienvenue sur le Cloud Personnel!</title>
+		<title>Cloud</title>
+		<script src="{{ asset('bundles/cloud/js/main.js')}}"></script>
+		<link href="{{ asset('bundles/cloud/css/style.css') }}" rel="stylesheet" />
+		<link href="{{ asset('bundles/cloud/css/index.css') }}" rel="stylesheet" />
 	</head>
 
 	<body>
-		<h1>Personal CLoud</h1>
+		<div class="search-panel">
+			<span>search</span>
+			<input type="text" name="searchinput"/>
+		</div>
 
-		<p> <span>FORMULAIRE</span></p>
-	  	<p>
-			Le Hello World est un grand classique en programmation.
-			Il signifie énormément, car cela veut dire que vous avez
-			réussi à exécuter le programme pour accomplir une tâche simple :
-			afficher ce hello world !
-		</p>
+		<div class="main-panel">
+			<div class="main-title">CLOUD</div>
+
+			<div class="large-square">
+				<div id="login-panel">
+					<form id="userform" action="/cloud/web/app_dev.php/newuser/" method="post">
+						<span class="title">login</span>
+						<input type="text" name="login">
+
+						<span class="title">password</span>
+						<input type="text" name="password">
+						<input type="submit" name="valid" value="login now">
+					</form>
+				</div>
+			</div>
+
+			<div class="medium-square">
+
+			</div>
+			<div class="medium-square">
+
+			</div>
+		</div>
 
 		{% if users is defined %}
-			{{ users.Nom_user }}
+			{{ users.name }}
 		{% endif %}
 	</body>
 </html>
