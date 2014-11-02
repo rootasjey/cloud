@@ -1,21 +1,24 @@
+# HOME
 p_cloud_platform_homepage:
     path:     /
     defaults: { _controller: PCloudPlatformBundle:Advert:index }
 
-hello_the_world:
-    path: /hello-world
-    defaults: { _controller: PCloudPlatformBundle:Advert:index }
-
-p_cloud_platform_view:
-    path: /advert/{id}
-    defaults: { _controller: PCloudPlatformBundle:Advert:view }
-    requirements:
-        id: \d+
-
+# ADD A USER TO THE DATABASE
 add_user:
-    path: /newuser/
-    defaults: { _controller: PCloudPlatformBundle:Advert:adduser }
+    path: /signup/
+    defaults: { _controller: PCloudPlatformBundle:Advert:signup }
 
+# DELETE A USER FROM THE DATABASE
 delete_user:
    path: /deleteuser/
    defaults: { _controller: PCloudPlatformBundle:Advert:deleteuser }
+
+# LOGIN A USER TO THE DATABASE
+connect_user:
+    path: /login/
+    defaults: { _controller: PCloudPlatformBundle:Advert:login }
+
+# EDIT A USER'S INFORMATION
+edit_user:
+    path: /edit/
+    defaults: { _controlle: PCloudPlatformBundle:Advert:edituser }

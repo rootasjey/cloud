@@ -131,23 +131,13 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::indexAction',  '_route' => 'p_cloud_platform_homepage',);
         }
 
-        // hello_the_world
-        if ($pathinfo === '/hello-world') {
-            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::indexAction',  '_route' => 'hello_the_world',);
-        }
-
-        // p_cloud_platform_view
-        if (0 === strpos($pathinfo, '/advert') && preg_match('#^/advert/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
-            return $this->mergeDefaults(array_replace($matches, array('_route' => 'p_cloud_platform_view')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewAction',));
-        }
-
         // add_user
-        if (rtrim($pathinfo, '/') === '/newuser') {
+        if (rtrim($pathinfo, '/') === '/signup') {
             if (substr($pathinfo, -1) !== '/') {
                 return $this->redirect($pathinfo.'/', 'add_user');
             }
 
-            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::adduserAction',  '_route' => 'add_user',);
+            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::signupAction',  '_route' => 'add_user',);
         }
 
         // delete_user
@@ -157,6 +147,24 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             }
 
             return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deleteuserAction',  '_route' => 'delete_user',);
+        }
+
+        // connect_user
+        if (rtrim($pathinfo, '/') === '/login') {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'connect_user');
+            }
+
+            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::loginAction',  '_route' => 'connect_user',);
+        }
+
+        // edit_user
+        if (rtrim($pathinfo, '/') === '/edit') {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'edit_user');
+            }
+
+            return array (  '_controlle' => 'PCloudPlatformBundle:Advert:edituser',  '_route' => 'edit_user',);
         }
 
         // _welcome
