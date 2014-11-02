@@ -169,3 +169,13 @@ f909b1,::1,POST,http://localhost:81/cloud/web/app_dev.php/newuser/,1414761049,
 1559e0,::1,GET,http://localhost:81/cloud/web/app_dev.php/,1414761256,
 4a837c,::1,GET,http://localhost:81/cloud/web/app_dev.php/newuser/,1414761263,30c3e1
 30c3e1,::1,POST,http://localhost:81/cloud/web/app_dev.php/newuser/,1414761263,
+e3b372,::1,GET,http://localhost/cloud/web/app_dev.php/,1414881499,
+8472c5,::1,GET,http://localhost/cloud/web/app_dev.php/,1414882467,
+2c561d,::1,GET,http://localhost/cloud/web/app_dev.php/newuser/,1414883247,711855
+711855,::1,POST,http://localhost/cloud/web/app_dev.php/newuser/,1414883247,
+4e35f4,::1,GET,http://localhost/cloud/web/app_dev.php/,1414884210,
+8ddcca,::1,GET,http://localhost/cloud/web/app_dev.php/,1414884211,
+203080,::1,GET,http://localhost/cloud/web/app_dev.php/,1414884211,
+4229fa,::1,GET,http://localhost/cloud/web/app_dev.php/,1414885684,
+8369bc,::1,GET,http://localhost/cloud/web/app_dev.php/newuser/,1414885700,9d1ec7
+9d1ec7,::1,POST,http://localhost/cloud/web/app_dev.php/newuser/,1414885700,

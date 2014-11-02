@@ -150,6 +150,15 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::adduserAction',  '_route' => 'add_user',);
         }
 
+        // delete_user
+        if (rtrim($pathinfo, '/') === '/deleteuser') {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'delete_user');
+            }
+
+            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deleteuserAction',  '_route' => 'delete_user',);
+        }
+
         // _welcome
         if (rtrim($pathinfo, '/') === '') {
             if (substr($pathinfo, -1) !== '/') {

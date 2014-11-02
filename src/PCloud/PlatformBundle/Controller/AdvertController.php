@@ -40,7 +40,7 @@ class AdvertController extends Controller
       // $bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
       $bdd  = mysql_connect("localhost", "root", "");
       $db   = mysql_select_db("cloud");
-      $sql  = "INSERT INTO users(Nom_user, Prenom_user)
+      $sql  = "INSERT INTO users(name, password)
               VALUES( '$login', '$password')";
 
       $request = mysql_query($sql, $bdd) or die(mysql_error());
