@@ -51,6 +51,11 @@ function clickIndex() {
   $("#userform .button-function[func='signup']").click(function () {
     toggleSignupClicked();
   });
+
+  $(".menu-item[func='help']").click(function () {
+    console.log("toto");
+    viewUsers();
+  });
 }
 
 // Open or Close the search panel
@@ -202,7 +207,17 @@ function chooseResponse(url, response) {
 }
 
 function viewUsers() {
+  console.log("view users");
   var url = "/cloud/web/app_dev.php/viewusers";
 
-  sendAjaxRequest(url, null);
+  var http = new XMLHttpRequest();
+  http.onreadystatechange = function() {//surveiller  l'etat de la requete
+    if (http.readyState === 4 && http.status === 200) {
+      console.log("done!");
+      console.log(http.response);
+    }
+  }
+
+  http.open("POST", url);
+  http.send();
 }

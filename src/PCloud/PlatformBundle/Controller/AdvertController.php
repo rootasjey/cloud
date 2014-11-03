@@ -19,7 +19,6 @@ class AdvertController extends Controller
 		$email 		= $_POST["email"];
 
     try {
-      // $bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
       $bdd  = mysql_connect("localhost", "root", "");
       $db   = mysql_select_db("cloud");
       $sql  = "INSERT INTO users(name, password, email)
@@ -65,19 +64,20 @@ class AdvertController extends Controller
 	//viewusers
 	public function viewusersAction(){
 		try {
-			$bdd  = mysql_connect("localhost", "root", "");
-			$db   = mysql_select_db("cloud");
-			$sql  = "SELECT * FROM users";
+			// $bdd  = mysql_connect("localhost", "root", "");
+			// $db   = mysql_select_db("cloud");
+			// $sql  = "SELECT * FROM users";
+			//
+			// $request = mysql_query($sql, $bdd) or die(mysql_error());
 
-			$request = mysql_query($sql, $bdd) or die(mysql_error());
+			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request = $bdd->query('SELECT * FROM users');
 
-			if($request) {
-				$request->fetchAll();
-				$response = new JsonResponse();
-				$response->setData(array($response));
-				return new Response('DONE', Response::HTTP_OK);
-			}
-			return new Response(true);
+				$res = $request->fetchArray();
+				// $response = new JsonResponse();
+				// $response->setData($res);
+				return new Response($res['name'], Response::HTTP_OK);
+
 		}
 		catch (Exception $e) {
 			die('Erreur : ' . $e->getMessage());
