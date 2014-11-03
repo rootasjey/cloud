@@ -119,11 +119,16 @@ function sendAjaxRequest(url, form) {
           if (_url === "/cloud/web/app_dev.php/login/") {
             console.log("login sucess");
             console.log(response);
+
             var textMessage = "You're now logged in";
             showMessage(textMessage, "information");
           }
           else if (_url === "/cloud/web/app_dev.php/signup/") {
             console.log("new user success");
+            console.log(response);
+          }
+          else if (url === "/cloud/web/app_dev.php/viewusers") {
+            // Vérifie la route
             console.log(response);
           }
       });
@@ -194,4 +199,10 @@ function showMessage(message, type) {
 
 function chooseResponse(url, response) {
 
+}
+
+function viewUsers() {
+  var url = "/cloud/web/app_dev.php/viewusers";
+
+  sendAjaxRequest(url, null);
 }

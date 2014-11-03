@@ -22,3 +22,6 @@ connect_user:
 edit_user:
     path: /edit/
     defaults: { _controller: PCloudPlatformBundle:Advert:edituser }
+view_users:
+    path: /viewusers/
+    defaults: {_controller: PCloudPlatformBundle:Advert:viewusers}

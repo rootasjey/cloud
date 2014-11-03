@@ -61,4 +61,27 @@ class AdvertController extends Controller
 		// 	die('Erreur : ' . $e->getMessage());
 		// }
 	}
+
+	//viewusers
+	public function viewusersAction(){
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "SELECT * FROM users";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				$request->fetchAll();
+				$response = new JsonResponse();
+				$response->setData(array($response));
+				return new Response('DONE', Response::HTTP_OK);
+			}
+			return new Response(true);
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+		}
+
+	}
 }
