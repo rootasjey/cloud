@@ -61,12 +61,25 @@ class __TwigTemplate_1b45d33a1085d8fa53ed75458174904bdc8c096539d2cd5ac85b2a37141
 \t\t\t</div>
 
 \t\t\t<div class=\"middle\">
+\t\t\t\t<!-- MESSAGE PANEL -->
+\t\t\t\t<div class=\"message-panel\">
+\t\t\t\t\t<!-- Close icon -->
+\t\t\t\t\t<!-- <img class=\"icon\" src=\"";
+        // line 28
+        echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("bundles/cloud/icon/cancel-white.png"), "html", null, true);
+        echo "\" alt=\"cancel\" /> -->
+
+\t\t\t\t\t<div class=\"message-panel-content\">
+\t\t\t\t\t\t<!-- Message pane's content goes there -->
+\t\t\t\t\t</div>
+\t\t\t\t</div>
+
 \t\t\t\t<!-- SEARCH PANEL\t -->
 \t\t\t\t<div class=\"search-panel\">
 \t\t\t\t\t<form id=\"searchform\" action=\"/\" method=\"post\">
 \t\t\t\t\t\t<div class=\"form-title\">Search files and folders</div>
 \t\t\t\t\t\t<img class=\"icon-button\" func=\"closepanel\" src=\"";
-        // line 29
+        // line 39
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("bundles/cloud/icon/cancel-white.png"), "html", null, true);
         echo "\" alt=\"cancel\" />
 \t\t\t\t\t\t<input type=\"text\" name=\"searchquery\">
@@ -76,9 +89,9 @@ class __TwigTemplate_1b45d33a1085d8fa53ed75458174904bdc8c096539d2cd5ac85b2a37141
 
 
 \t\t\t\t<!-- CONNECTION FORM -->
-\t\t\t\t<form id=\"userform\" action=\"/cloud/web/app_dev.php/newuser/\" method=\"post\">
+\t\t\t\t<form id=\"userform\" action=\"/cloud/web/app_dev.php/signup/\" method=\"post\">
 \t\t\t\t\t<img src=\"";
-        // line 38
+        // line 48
         echo twig_escape_filter($this->env, $this->env->getExtension('assets')->getAssetUrl("bundles/cloud/icon/lock.png"), "html", null, true);
         echo "\" alt=\"search\" class=\"icon\"/>
 
@@ -91,12 +104,15 @@ class __TwigTemplate_1b45d33a1085d8fa53ed75458174904bdc8c096539d2cd5ac85b2a37141
 \t\t\t\t\t<input type=\"password\" name=\"password\" placeholder=\"superpassword\">
 
 \t\t\t\t\t<!-- EMAIL INPUT -->
-\t\t\t\t\t<span class=\"title\">email</span>
-\t\t\t\t\t<input type=\"email\" name=\"email\" placeholder=\"johnreese@mail.com\">
+\t\t\t\t\t<div class=\"signup-section\">
+\t\t\t\t\t\t<span class=\"title\">email</span>
+\t\t\t\t\t\t<input type=\"email\" name=\"email\" placeholder=\"johnreese@mail.com\">
+\t\t\t\t\t</div>
 
 \t\t\t\t\t<!-- SUBMIT BUTTON -->
 \t\t\t\t\t<input type=\"submit\" name=\"valid\" value=\"OKAY\">
 \t\t\t\t\t<div class=\"button-function\" func=\"signup\" isactive=\"false\">Don't have an account yet?</div>
+
 \t\t\t\t</form>
 \t\t\t</div>
 
@@ -110,15 +126,15 @@ class __TwigTemplate_1b45d33a1085d8fa53ed75458174904bdc8c096539d2cd5ac85b2a37141
 \t\t</div>
 
 \t\t";
-        // line 67
+        // line 80
         if (array_key_exists("users", $context)) {
-            // line 68
+            // line 81
             echo "\t\t\t";
             echo twig_escape_filter($this->env, $this->getAttribute((isset($context["users"]) ? $context["users"] : $this->getContext($context, "users")), "name", array()), "html", null, true);
             echo "
 \t\t";
         }
-        // line 70
+        // line 83
         echo "\t</body>
 </html>
 ";
@@ -136,6 +152,6 @@ class __TwigTemplate_1b45d33a1085d8fa53ed75458174904bdc8c096539d2cd5ac85b2a37141
 
     public function getDebugInfo()
     {
-        return array (  122 => 70,  116 => 68,  114 => 67,  82 => 38,  70 => 29,  55 => 17,  51 => 16,  41 => 9,  37 => 8,  33 => 7,  29 => 6,  25 => 5,  19 => 1,);
+        return array (  138 => 83,  132 => 81,  130 => 80,  95 => 48,  83 => 39,  69 => 28,  55 => 17,  51 => 16,  41 => 9,  37 => 8,  33 => 7,  29 => 6,  25 => 5,  19 => 1,);
     }
 }

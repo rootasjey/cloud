@@ -11,6 +11,7 @@ window.onload = function () {
 function initialize() {
   hoverIndex();
   clickIndex();
+  connectUser();
 }
 
 // Load the main hover effects
@@ -44,12 +45,11 @@ function clickIndex() {
   });
   $("#searchform .icon-button[func='closepanel']").click(function () {
     searchClicked();
-    console.log("panel?");
   });
 
   // SHOW/HIDE signup form
   $("#userform .button-function[func='signup']").click(function () {
-
+    toggleSignupClicked();
   });
 }
 
@@ -64,7 +64,6 @@ function searchClicked() {
         height: '0px',
       }, {
         complete: function () {
-          console.log("finished hide");
           $(".search-panel").css({
             display: "none"
           });
@@ -83,56 +82,116 @@ function searchClicked() {
 }
 
 function connectUser() {
-    var _url = null;
-    var request; // variable to hold request
+  var form = "#userform";
+  var url = "/cloud/web/app_dev.php/login/";
 
-    // Bind to the submit event of our form
-    $("#userform").submit(function(event) {
-        if (request) request.abort(); // abort any pending request
+  if ($(".button-function[func='signup']").isactive === "true") {
+    url = "/cloud/web/app_dev.php/signup/";
+  }
 
-        _url = "/login/";
-        if ($(".button-function[func='signup']").isactive === true) {
-          _url = "/signup/";
-        }
+  sendAjaxRequest(url, form);
+}
 
+function sendAjaxRequest(url, form) {
+  var _url  = url;
+  var _form = form;
+  var request; // variable to hold request
 
-        // Setup some local variables
-        var $form = $(this);
-        var $inputs = $form.find("input, select, button, textarea"); // cache fields
-        var serializedData = $form.serialize();  // serialize the data in the form
+  // Bind to the submit event of our form
+  $(form).submit(function(event) {
+      if (request) request.abort(); // abort any pending request
 
-        $inputs.prop("disabled", true); // disable inputs for the duration of the ajax request
+      // Setup some local variables
+      var $form = $(this);
+      var $inputs = $form.find("input, select, button, textarea"); // cache fields
+      var serializedData = $form.serialize();  // serialize the data in the form
 
-        request = $.ajax({
-            url: _url,
-            type: "POST",
-            data: serializedData
-        });
+      $inputs.prop("disabled", true); // disable inputs for the duration of the ajax request
 
-        // callback handler that will be called on success
-        request.done(function(response, textStatus, jqXHR) {
+      request = $.ajax({
+          url: _url,
+          type: "POST",
+          data: serializedData
+      });
 
-            if (_url === "/login/") {
-                console.log("login sucess");
-            }
-            else if (_url === "/signup/") {
-                console.log("new user success");
-            }
-        });
+      // callback handler that will be called on success
+      request.done(function(response, textStatus, jqXHR) {
+          if (_url === "/cloud/web/app_dev.php/login/") {
+            console.log("login sucess");
+            console.log(response);
+            var textMessage = "You're now logged in";
+            showMessage(textMessage, "information");
+          }
+          else if (_url === "/cloud/web/app_dev.php/signup/") {
+            console.log("new user success");
+            console.log(response);
+          }
+      });
 
-        // callback handler that will be called on failure
-        request.fail(function(jqXHR, textStatus, errorThrown) {
-            console.error("The following error occured : " + textStatus, errorThrown);
-        });
+      // callback handler that will be called on failure
+      request.fail(function(jqXHR, textStatus, errorThrown) {
+          console.error("The following error occured : " + textStatus, errorThrown);
+      });
 
-    // callback handler that will be called regardless
-    // if the request failed or succeeded
-    request.always(function () {
-        // reenable the inputs
-        $inputs.prop("disabled", false);
+  // callback handler that will be called regardless
+  // if the request failed or succeeded
+  request.always(function () {
+      // reenable the inputs
+      $inputs.prop("disabled", false);
+  });
+
+  // prevent default posting of form
+  event.preventDefault();
+  });
+}
+
+function toggleSignupClicked() {
+  if ($("#userform .button-function[func='signup']").attr("isactive") === "false") {
+
+    var signupsection = $("#userform .signup-section").css("display", "block");
+    var children = signupsection.children();
+    children.each(function () {
+      $(this).css({
+        display: "block"
+      });
     });
 
-    // prevent default posting of form
-    event.preventDefault();
+    $("#userform .button-function[func='signup']")
+      .attr("isactive", "true")
+      .html("Already have an account?");
+  }
+  else {
+    $("#userform .button-function[func='signup']")
+      .attr("isactive", "false")
+      .html("Don't have an account yet?");
+
+    var children = $("#userform .signup-section").children();
+    children.each(function () {
+      $(this).css({
+        display: "none"
+      });
     });
+  }
+}
+
+function showMessage(message, type) {
+  var messagepanel = $(".middle .message-panel");
+  if (messagepanel.css("height") === "0px") {
+    messagepanel.css({
+      height: "0px",
+      display: "block"
+    }).animate({
+      height: "100px",
+      display: "inline-block"
+    });
+
+    messagepanel.html(message);
+  }
+  else {
+    messagepanel.html(message);
+  }
+}
+
+function chooseResponse(url, response) {
+
 }

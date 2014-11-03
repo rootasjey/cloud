@@ -22,6 +22,16 @@
 			</div>
 
 			<div class="middle">
+				<!-- MESSAGE PANEL -->
+				<div class="message-panel">
+					<!-- Close icon -->
+					<!-- <img class="icon" src="{{ asset('bundles/cloud/icon/cancel-white.png') }}" alt="cancel" /> -->
+
+					<div class="message-panel-content">
+						<!-- Message pane's content goes there -->
+					</div>
+				</div>
+
 				<!-- SEARCH PANEL	 -->
 				<div class="search-panel">
 					<form id="searchform" action="/" method="post">
@@ -34,7 +44,7 @@
 
 
 				<!-- CONNECTION FORM -->
-				<form id="userform" action="/cloud/web/app_dev.php/newuser/" method="post">
+				<form id="userform" action="/cloud/web/app_dev.php/signup/" method="post">
 					<img src="{{ asset('bundles/cloud/icon/lock.png') }}" alt="search" class="icon"/>
 
 					<!-- LOGIN INPUT -->
@@ -46,12 +56,15 @@
 					<input type="password" name="password" placeholder="superpassword">
 
 					<!-- EMAIL INPUT -->
-					<span class="title">email</span>
-					<input type="email" name="email" placeholder="johnreese@mail.com">
+					<div class="signup-section">
+						<span class="title">email</span>
+						<input type="email" name="email" placeholder="johnreese@mail.com">
+					</div>
 
 					<!-- SUBMIT BUTTON -->
 					<input type="submit" name="valid" value="OKAY">
 					<div class="button-function" func="signup" isactive="false">Don't have an account yet?</div>
+
 				</form>
 			</div>
 

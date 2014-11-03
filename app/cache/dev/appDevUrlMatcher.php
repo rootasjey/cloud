@@ -164,7 +164,7 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
                 return $this->redirect($pathinfo.'/', 'edit_user');
             }
 
-            return array (  '_controlle' => 'PCloudPlatformBundle:Advert:edituser',  '_route' => 'edit_user',);
+            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::edituserAction',  '_route' => 'edit_user',);
         }
 
         // _welcome

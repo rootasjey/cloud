@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Ven 31 Octobre 2014 à 17:36
+-- Généré le :  Dim 02 Novembre 2014 à 19:11
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -23,15 +23,15 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Structure de la table `acces`
+-- Structure de la table `access`
 --
 
-CREATE TABLE IF NOT EXISTS `acces` (
+CREATE TABLE IF NOT EXISTS `access` (
   `usersgroupsid` int(20) NOT NULL,
   `filesgroupsid` int(20) NOT NULL,
   `write` tinyint(1) NOT NULL,
-  PRIMARY KEY (`usersgroupsid`,`filesgroupsid`),
-  KEY `Id_files_groupes` (`filesgroupsid`)
+  UNIQUE KEY `usersgroupsid` (`usersgroupsid`),
+  UNIQUE KEY `filesgroupsid` (`filesgroupsid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -45,12 +45,12 @@ CREATE TABLE IF NOT EXISTS `files` (
   `path` varchar(50) NOT NULL,
   `name` varchar(50) NOT NULL,
   `type` varchar(20) NOT NULL,
-  `owner` varchar(11) NOT NULL,
+  `owner` varchar(20) NOT NULL,
   `pubDate` date NOT NULL,
-  `tags` varchar(20) NOT NULL,
-  `groupid` int(20) NOT NULL,
+  `tags` int(50) NOT NULL,
+  `groupid` int(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `Id_files_groups` (`groupid`)
+  UNIQUE KEY `groupid` (`groupid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -60,8 +60,8 @@ CREATE TABLE IF NOT EXISTS `files` (
 --
 
 CREATE TABLE IF NOT EXISTS `filesgroups` (
-  `id` int(20) NOT NULL AUTO_INCREMENT,
-  `title` varchar(11) NOT NULL,
+  `id` int(30) NOT NULL AUTO_INCREMENT,
+  `title` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -72,22 +72,15 @@ CREATE TABLE IF NOT EXISTS `filesgroups` (
 --
 
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(20) NOT NULL AUTO_INCREMENT,
-  `groupid` int(20) NOT NULL,
-  `name` varchar(11) NOT NULL,
-  `password` varchar(11) NOT NULL,
-  `email` varchar(11) NOT NULL,
+  `id` int(30) NOT NULL AUTO_INCREMENT,
+  `groupid` int(30) DEFAULT NULL,
+  `name` varchar(30) NOT NULL,
+  `password` varchar(30) NOT NULL,
+  `email` varchar(30) NOT NULL,
   `subscriptiondate` date NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `Id_groupe` (`groupid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
-
---
--- Contenu de la table `users`
---
-
-INSERT INTO `users` (`id`, `groupid`, `name`, `password`, `email`, `subscriptiondate`) VALUES
-(1, 0, 'root', 'access', 'rootaccess@', '2014-10-27');
+  UNIQUE KEY `groupid` (`groupid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -96,41 +89,33 @@ INSERT INTO `users` (`id`, `groupid`, `name`, `password`, `email`, `subscription
 --
 
 CREATE TABLE IF NOT EXISTS `usersgroups` (
-  `id` int(20) NOT NULL,
-  `title` varchar(11) NOT NULL,
+  `id` int(30) NOT NULL AUTO_INCREMENT,
+  `title` int(30) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Contenu de la table `usersgroups`
---
-
-INSERT INTO `usersgroups` (`id`, `title`) VALUES
-(0, 'home'),
-(1, 'work');
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Contraintes pour les tables exportées
 --
 
 --
--- Contraintes pour la table `acces`
+-- Contraintes pour la table `access`
 --
-ALTER TABLE `acces`
-  ADD CONSTRAINT `acces_ibfk_2` FOREIGN KEY (`filesgroupsid`) REFERENCES `filesgroups` (`id`),
-  ADD CONSTRAINT `acces_ibfk_1` FOREIGN KEY (`usersgroupsid`) REFERENCES `usersgroups` (`id`);
+ALTER TABLE `access`
+  ADD CONSTRAINT `access_ibfk_2` FOREIGN KEY (`filesgroupsid`) REFERENCES `filesgroups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `access_ibfk_1` FOREIGN KEY (`usersgroupsid`) REFERENCES `usersgroups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `files`
 --
 ALTER TABLE `files`
-  ADD CONSTRAINT `files_ibfk_1` FOREIGN KEY (`groupid`) REFERENCES `filesgroups` (`id`);
+  ADD CONSTRAINT `files_ibfk_1` FOREIGN KEY (`groupid`) REFERENCES `filesgroups` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `users`
 --
 ALTER TABLE `users`
-  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`groupid`) REFERENCES `usersgroups` (`id`);
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`groupid`) REFERENCES `usersgroups` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
