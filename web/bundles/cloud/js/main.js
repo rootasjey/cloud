@@ -53,7 +53,6 @@ function clickIndex() {
   });
 
   $(".menu-item[func='help']").click(function () {
-    console.log("toto");
     viewUsers();
   });
 }
@@ -94,10 +93,10 @@ function connectUser() {
     url = "/cloud/web/app_dev.php/signup/";
   }
 
-  sendAjaxRequest(url, form);
+  sendAjaxForm(url, form);
 }
 
-function sendAjaxRequest(url, form) {
+function sendAjaxForm(url, form) {
   var _url  = url;
   var _form = form;
   var request; // variable to hold request
@@ -155,6 +154,25 @@ function sendAjaxRequest(url, form) {
   });
 }
 
+function sendAjaxRequest(url) {
+  var http = new XMLHttpRequest();
+
+  http.onreadystatechange = function () {
+    if (http.readyState === 4 && http.status === 200) {
+      var data = JSON.parse(http.response);
+
+      for (var i = 0; i < data.length; i++) {
+        console.log(data[i].name + " " + data[i].email + " " + data[i].subscriptiondate);
+
+      }
+
+      // var content = $(".middle-content");
+    }
+  }
+  http.open("POST", url);
+  http.send();
+}
+
 function toggleSignupClicked() {
   if ($("#userform .button-function[func='signup']").attr("isactive") === "false") {
 
@@ -207,17 +225,7 @@ function chooseResponse(url, response) {
 }
 
 function viewUsers() {
-  console.log("view users");
+  console.log("toto");
   var url = "/cloud/web/app_dev.php/viewusers";
-
-  var http = new XMLHttpRequest();
-  http.onreadystatechange = function() {//surveiller  l'etat de la requete
-    if (http.readyState === 4 && http.status === 200) {
-      console.log("done!");
-      console.log(http.response);
-    }
-  }
-
-  http.open("POST", url);
-  http.send();
+  sendAjaxRequest(url);
 }

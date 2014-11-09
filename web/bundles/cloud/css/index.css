@@ -204,6 +204,22 @@ body {
   opacity: 1;
   transition: 0.5s;
 }
+#searchform .icon-button {
+  height: 30px;
+  width: 30px;
+  cursor: pointer;
+
+  top: 10px;
+  right: 10px;
+  position: absolute;
+
+  opacity: .5;
+  transition: 0.5s;
+}
+#searchform .icon-button:hover {
+  opacity: 1;
+  transition: 0.5s;
+}
 #searchform .form-title {
   color: white;
   font-size: 1.5em;

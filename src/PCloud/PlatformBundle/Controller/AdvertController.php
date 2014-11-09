@@ -4,6 +4,7 @@ namespace PCloud\PlatformBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 class AdvertController extends Controller
@@ -30,7 +31,6 @@ class AdvertController extends Controller
 				return new Response($request);
 			}
 			return new Response($request);
-
     }
     catch (Exception $e) {
       die('Erreur : ' . $e->getMessage());
@@ -64,24 +64,30 @@ class AdvertController extends Controller
 	//viewusers
 	public function viewusersAction(){
 		try {
-			// $bdd  = mysql_connect("localhost", "root", "");
-			// $db   = mysql_select_db("cloud");
-			// $sql  = "SELECT * FROM users";
-			//
-			// $request = mysql_query($sql, $bdd) or die(mysql_error());
-
 			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
 			$request = $bdd->query('SELECT * FROM users');
 
-				$res = $request->fetchArray();
-				// $response = new JsonResponse();
-				// $response->setData($res);
-				return new Response($res['name'], Response::HTTP_OK);
+			$users = Array();
 
+			while ($v = $request->fetch()) {
+				array_push($users, $v);
+			}
+
+			// $json = new JsonResponse();
+			// $json->setData($users);
+			$json = new Response();
+			// $json->setContent(json_encode(array(
+			// 	'data' => 123,
+			// )));
+			$json->setContent(json_encode($users));
+			$json->headers->set('Content-Type', 'application/json');
+
+			$request->closeCursor(); // Termine le traitement de la requête
+			// return new Response($json, Response::HTTP_OK);
+			return $json;
 		}
 		catch (Exception $e) {
 			die('Erreur : ' . $e->getMessage());
 		}
-
 	}
 }
