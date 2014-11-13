@@ -1,0 +1,32 @@
+
+/*---------------*/
+/*----FOOTER----*/
+/*-------------*/
+.bottom {
+  color: white;
+  /*height: 200px;*/
+  padding: 20px;
+
+  margin-top: 10px;
+  background-color: #28323b;
+}
+
+/*----------------------*/
+/*----TEXT (FOOTER)----*/
+/*--------------------*/
+.bottom .text {
+  opacity: .6;
+}
+.bottom .text a {
+  opacity: .6;
+  color: white;
+  text-decoration: none;
+
+  transition: 0.5s;
+}
+.bottom .text a:hover {
+  opacity: 1;
+  color: #e74c3c;
+
+  transition: 0.5s;
+}

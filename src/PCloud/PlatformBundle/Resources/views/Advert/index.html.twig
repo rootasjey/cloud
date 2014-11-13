@@ -5,7 +5,6 @@
 		<script src="{{ asset('bundles/cloud/js/jquery-2.1.1.min.js')}}"></script>
 		<script src="{{ asset('bundles/cloud/js/main.js')}}"></script>
 		<link href="{{ asset('bundles/cloud/css/style.css') }}" rel="stylesheet" />
-		<link href="{{ asset('bundles/cloud/css/index.css') }}" rel="stylesheet" />
 		<link rel="icon" type="icon/ico" href="{{ asset('favicon.ico') }}">
 	</head>
 
@@ -14,7 +13,8 @@
 			<!-- HEADER -->
 			<div class="header">
 				<div class="menu">
-					<img class="menu-item" func="search" src="{{ asset('bundles/cloud/icon/search.png') }}" alt="search" />
+					<img class="menu-item" func="login" src="{{ asset('bundles/cloud/icon/internal-icon.png') }}" alt="search" />
+					<img class="menu-item" func="search" src="{{ asset('bundles/cloud/icon/search-icon.png') }}" alt="search" />
 					<img class="menu-item" func="help" src="{{ asset('bundles/cloud/icon/help-filled.png') }}" alt="help" />
 				</div>
 
@@ -26,7 +26,7 @@
 				<!-- MESSAGE PANEL -->
 				<div class="message-panel">
 					<!-- Close icon -->
-					<!-- <img class="icon" src="{{ asset('bundles/cloud/icon/cancel-white.png') }}" alt="cancel" /> -->
+					<img class="action-icon" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
 
 					<div class="message-panel-content">
 						<!-- Message pane's content goes there -->
@@ -35,41 +35,88 @@
 
 				<!-- SEARCH PANEL	 -->
 				<div class="search-panel">
+					<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
 					<form id="searchform" action="/" method="post">
 						<div class="form-title">Search files and folders</div>
-						<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white.png') }}" alt="cancel" />
 						<input type="text" name="searchquery">
 						<input type="submit" name="valid" value="SEARCH">
 					</form>
 				</div>
 
-
 				<!-- CONNECTION FORM -->
-				<form id="userform" action="/cloud/web/app_dev.php/signup/" method="post">
-					<img src="{{ asset('bundles/cloud/icon/lock.png') }}" alt="search" class="icon"/>
+				<div class="connection-panel">
+					<!-- CLOSE ICON -->
+					<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-black-icon.png') }}" alt="cancel" />
 
-					<!-- LOGIN INPUT -->
-					<span class="title">login</span>
-					<input type="text" name="login" placeholder="John">
+					<form id="userform" action="/cloud/web/app_dev.php/login/" method="post">
+						<!-- ICON -->
+						<img src="{{ asset('bundles/cloud/icon/lock-icon.png') }}" alt="login" class="icon"/>
 
-					<!-- PASSWORD INPUT -->
-					<span class="title">password</span>
-					<input type="password" name="password" placeholder="superpassword">
+						<!-- LOGIN INPUT -->
+						<span class="title">login</span>
+						<input type="text" name="login" placeholder="John">
 
-					<!-- EMAIL INPUT -->
-					<div class="signup-section">
-						<span class="title">email</span>
-						<input type="email" name="email" placeholder="johnreese@mail.com">
-					</div>
+						<!-- PASSWORD INPUT -->
+						<span class="title">password</span>
+						<input type="password" name="password" placeholder="superpassword">
 
-					<!-- SUBMIT BUTTON -->
-					<input type="submit" name="valid" value="OKAY">
-					<div class="button-function" func="signup" isactive="false">Don't have an account yet?</div>
-				</form>
+						<!-- EMAIL INPUT -->
+						<div class="signup-section">
+							<span class="title">email</span>
+							<input type="email" name="email" placeholder="johnreese@mail.com">
+						</div>
+
+						<!-- SUBMIT BUTTON -->
+						<input type="submit" name="valid" value="OKAY">
+						<div class="button-function" func="signup" isactive="false">Don't have an account yet?</div>
+					</form>
+				</div>
 
 				<!-- CONTENU -->
 				<div class="middle-content">
-	
+					<!-- FICHIERS, UTILISATEURS & GROUPES -->
+					<div class="categories">
+						<div class="square" func="files">
+							<img class="square-icon" src="{{ asset('bundles/cloud/icon/file-icon.png')}}" alt="files" />
+							<span class="square-bottom-text">Files</span>
+						</div>
+						<div class="square" func="filesgroups">
+							<img class="square-icon" src="{{ asset('bundles/cloud/icon/filesgroups-icon.png')}}" alt="files" />
+							<span class="square-bottom-text">Files Groups</span>
+						</div>
+						<div class="square" func="users">
+							<img class="square-icon" src="{{ asset('bundles/cloud/icon/usersgroups-icon.png')}}" alt="files" />
+							<span class="square-bottom-text">Users</span>
+						</div>
+						<div class="square" func="usersgroups">
+							<img class="square-icon" src="{{ asset('bundles/cloud/icon/user-icon.png')}}" alt="files" />
+							<span class="square-bottom-text">Users Groups</span>
+						</div>
+					</div>
+
+					<!-- FICHIERS -->
+					<div class="categorie-panel" id="files-panel">
+						<span class="title-panel">FILES</span>
+						<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
+					</div>
+
+					<!-- GROUPES DE FICHIERS -->
+					<div class="categorie-panel" id="filesgroups-panel">
+						<span class="title-panel">FILES GROUPS</span>
+						<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
+					</div>
+
+					<!-- UTILISATEURS -->
+					<div class="categorie-panel" id="users-panel">
+						<span class="title-panel">USERS</span>
+						<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
+					</div>
+
+					<!-- GROUPES UTILISATEURS -->
+					<div class="categorie-panel" id="usersgroups-panel">
+						<span class="title-panel">USERS GROUPS</span>
+						<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
+					</div>
 				</div>
 			</div>
 
@@ -81,9 +128,5 @@
 				</div>
 			</div>
 		</div>
-
-		{% if users is defined %}
-			{{ users.name }}
-		{% endif %}
 	</body>
 </html>

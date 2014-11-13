@@ -12,53 +12,58 @@ class AdvertController extends Controller
 	public function indexAction() {
 		$content = $this->get('templating')->render('PCloudPlatformBundle:Advert:index.html.twig');
 		return new Response($content);
-  }
+  	}
 
-  public function signupAction() {
-    $login 		= $_POST["login"];
-    $password = $_POST["password"];
-		$email 		= $_POST["email"];
+	public function signupAction() {
+		$login 		= $_POST["login"];
+		$password = $_POST["password"];
+			$email 		= $_POST["email"];
 
-    try {
-      $bdd  = mysql_connect("localhost", "root", "");
-      $db   = mysql_select_db("cloud");
-      $sql  = "INSERT INTO users(name, password, email)
-              VALUES( '$login', '$password', '$email')";
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "INSERT INTO users(name, password, email)
+			      VALUES( '$login', '$password', '$email')";
 
-      $request = mysql_query($sql, $bdd) or die(mysql_error());
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
-      if($request) {
-				return new Response($request);
+			if($request) {
+				return new Response("OK");
 			}
-			return new Response($request);
-    }
-    catch (Exception $e) {
-      die('Erreur : ' . $e->getMessage());
-    }
-  }
+				return new Response("FAIL");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+		}
+	}
 
 	public function loginAction() {
+		// Récupère les champs du formulaire
 		$login = $_POST["login"];
 		$password = $_POST["password"];
 
-		$response = new Response('DONE', Response::HTTP_OK);
-		return new Response($response);
-		// try {
-		// 	$bdd  = mysql_connect("localhost", "root", "");
-		// 	$db   = mysql_select_db("cloud");
-		// 	$sql  = "INSERT INTO users(name, password)
-		// 					VALUES( '$login', '$password')";
-		//
-		// 	$request = mysql_query($sql, $bdd) or die(mysql_error());
-		//
-		// 	if($request) {
-		//
-		// 	}
-		// 	return new Response(true);
-		// }
-		// catch (Exception $e) {
-		// 	die('Erreur : ' . $e->getMessage());
-		// }
+		try {
+			// Connexion à la bdd puis récupère l'utilisateur grâce au login
+			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request = $bdd->query("SELECT * FROM users WHERE name ='" . $login . "'");
+
+			$user = Array();
+			array_push($user, $request->fetch());
+			$request->closeCursor(); // Termine le traitement de la requête
+
+			$json = new JsonResponse();
+
+			// Vérifie que les mots de passe coïncident
+			if ($user[0]["password"] == $password) {
+				$json->setData($user);
+			}
+
+			return $json;
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+		}
 	}
 
 	//viewusers
@@ -73,17 +78,10 @@ class AdvertController extends Controller
 				array_push($users, $v);
 			}
 
-			// $json = new JsonResponse();
-			// $json->setData($users);
-			$json = new Response();
-			// $json->setContent(json_encode(array(
-			// 	'data' => 123,
-			// )));
-			$json->setContent(json_encode($users));
-			$json->headers->set('Content-Type', 'application/json');
-
+			$json = new JsonResponse();
+			$json->setData($users);
 			$request->closeCursor(); // Termine le traitement de la requête
-			// return new Response($json, Response::HTTP_OK);
+
 			return $json;
 		}
 		catch (Exception $e) {

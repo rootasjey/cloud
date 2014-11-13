@@ -1,0 +1,63 @@
+
+/*---------------*/
+/*----HEADER----*/
+/*-------------*/
+.main-ui .header {
+  height: 500px;
+  overflow: hidden;
+  background-size: 100% 100%;
+  background: url("../img/background.jpg") #eee no-repeat;
+
+  transition: 1s;
+}
+
+/*-----------------------*/
+/*---- MENU (HEADER)----*/
+/*---------------------*/
+.main-ui .menu {
+  top: 0;
+  right: 0;
+  position: absolute;
+
+  color: white;
+  margin: 10px;
+}
+.main-ui .menu .menu-item {
+  font-size: 1.2em;
+  margin-right: 10px;
+  display: inline-block;
+
+  height: 40px;
+  width: 40px;
+
+  opacity: .5;
+  cursor: pointer;
+  transition: 0.5s;
+}
+.main-ui .menu .menu-item:hover {
+  opacity: 1;
+  transition: 0.5s;
+}
+
+
+/*-----------------------*/
+/*----TITLE (HEADER)----*/
+/*---------------------*/
+.main-ui .header .title {
+  color: white;
+  font-size: 6em;
+  text-align: center;
+
+  margin-top: 100px;
+  margin-bottom: -100px;
+
+  cursor: pointer;
+}
+.main-ui .header .subtitle {
+  color: white;
+  font-size: 1.6em;
+  text-align: center;
+
+  margin-top: 100px;
+  margin-bottom: 20px;
+}
