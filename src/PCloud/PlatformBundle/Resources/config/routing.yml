@@ -1,27 +1,33 @@
-# Home
+# Accueil
 p_cloud_platform_homepage:
     path:     /
     defaults: { _controller: PCloudPlatformBundle:Advert:index }
 
-# Add a user to the database
+# Inscrire un utilisateur à la base de données
 add_user:
     path: /signup/
     defaults: { _controller: PCloudPlatformBundle:Advert:signup }
 
-# Delete a user from the database
+# Supprimer un utilisateur de la base de données
 delete_user:
-   path: /deleteuser/
+   path: /deleteuser/{id}
    defaults: { _controller: PCloudPlatformBundle:Advert:deleteuser }
 
-# Login a user to the database
+# Logger un utilisateur à la base de données
 connect_user:
     path: /login/
     defaults: { _controller: PCloudPlatformBundle:Advert:login }
 
-# Edit a user's informations
+# Editer les informations d'un utilisateur
 edit_user:
     path: /edit/
     defaults: { _controller: PCloudPlatformBundle:Advert:edituser }
+
+# Voir la liste des utilisateurs
 view_users:
     path: /viewusers/
     defaults: {_controller: PCloudPlatformBundle:Advert:viewusers}
+
+view_users:
+    path: /viewusersgroups/
+    defaults: {_controller: PCloudPlatformBundle:Advert:viewusersgroups}

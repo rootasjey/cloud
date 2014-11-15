@@ -14,6 +14,7 @@ class AdvertController extends Controller
 		return new Response($content);
   	}
 
+	// Inscription à la base de données
 	public function signupAction() {
 		$login 		= $_POST["login"];
 		$password 	= $_POST["password"];
@@ -44,6 +45,7 @@ class AdvertController extends Controller
 		}
 	}
 
+	// Connexion à la base de données
 	public function loginAction() {
 		// Récupère les champs du formulaire
 		$login = $_POST["login"];
@@ -72,7 +74,7 @@ class AdvertController extends Controller
 		}
 	}
 
-	//viewusers
+	// Récupère les utilisateurs dans la base de données
 	public function viewusersAction(){
 		try {
 			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
@@ -86,6 +88,29 @@ class AdvertController extends Controller
 
 			$json = new JsonResponse();
 			$json->setData($users);
+			$request->closeCursor(); // Termine le traitement de la requête
+
+			return $json;
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+		}
+	}
+
+	// Récupères les groupes d'utilisateurs dans la base de données
+	public function viewusersgroupsAction(){
+		try {
+			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request = $bdd->query('SELECT * FROM usersgroups');
+
+			$usersgroups = Array();
+
+			while ($v = $request->fetch()) {
+				array_push($usersgroups, $v);
+			}
+
+			$json = new JsonResponse();
+			$json->setData($usersgroups);
 			$request->closeCursor(); // Termine le traitement de la requête
 
 			return $json;
