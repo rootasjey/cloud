@@ -10,7 +10,7 @@
 .message-panel {
   width             : 100%;
   height            : 0px;
-  padding:          : 10px;
+  padding           : 10px;
 
   color             : white;
   font-size         : 1.5em;
@@ -24,34 +24,13 @@
 
   display           : none;
 }
-
-.message-panel .action-icon {
-  height            : 40px;
-  width             : 40px;
-  display           : inline-block;
-
-  top               : 10px;
-  right             : 10px;
-  position          : absolute;
-
-  cursor            : pointer;
-  transition        : 0.5s;
-}
-.message-panel .action-icon:hover {
-  -webkit-transform : rotate(180deg);
-  -moz-transform    : rotate(180deg);
-  -ms-transform     : rotate(180deg);
-  -o-transform      : rotate(180deg);
-
-  transition: 0.5s;
-}
 .message-panel-content {
   margin-top        : 20px;
 }
 
-/*----------------*/
-/*-----ICONS-----*/
-/*--------------*/
+/*--------------------------*/
+/*-----CONTENU CENTRAL-----*/
+/*------------------------*/
 .middle .icon {
   height        : 100px;
   width         : 100px;
@@ -70,6 +49,7 @@
     margin          : auto;
     margin-top      : 42px;
     margin-bottom   : 42px;
+    display         : none;
 }
 .middle-content .categories .square {
     height      : 200px;
@@ -84,7 +64,7 @@
     transition  : 0.5s;
 }
 .middle-content .categories .square:hover {
-    opacity             : 1;
+    /*opacity             : 1;*/
     -moz-box-shadow     : 0 0 20px #000000;
     -webkit-box-shadow  : 0 0 20px #000000;
     box-shadow          : 0 0 20px #000000;
@@ -137,6 +117,9 @@
 
     padding: 10px;
     margin-bottom: -20px;
+    margin-top: 20px;
+
+    overflow: auto;
     position: relative;
 }
 .categorie-panel .title-panel {
@@ -145,8 +128,12 @@
     text-align: center;
     display: block;
 }
+.categorie-panel-content {
+    /*width: 50%;*/
+    margin: auto;
+}
 #files-panel {
-    display: block;
+    display: none;
     background: #e74c3c;
 }
 #filesgroups-panel {
@@ -163,4 +150,128 @@
     display: none;
     position: relative;
     background: #2980b9;
+}
+
+#users-panel .categorie-panel-content {
+    width: 260px;
+}
+
+.action-panel {
+    height: 80px;
+    width: 70px;
+
+    margin: auto;
+    margin-top: 10px;
+}
+.action-panel .icon-button {
+    height: 70px;
+    width: 70px;
+
+    cursor: pointer;
+    margin: 5px;
+
+    opacity: 0.5;
+    transition: 0.5s;
+}
+.action-panel .icon-button:hover {
+    opacity: 1;
+    transition: 0.5s;
+}
+
+.row {
+    color: white;
+    display: block;
+    font-size: 1.5em;
+}
+.row .avatar {
+    height          : 60px;
+    width           : 60px;
+    background      : black;
+    display         : inline-block;
+
+    overflow        : hidden;
+    cursor          : pointer;
+    border-style    : solid;
+    border-color    : #2980b9;
+    border-width    : 0px;
+    border-radius   : 60px;
+
+    transition: 0.5s;
+}
+.row .avatar:hover {
+    border-width    : 5px;
+    transition      : 0.5s;
+}
+
+.row .row-text{
+    top             : -20px;
+    left            : 20px;
+    position        : relative;
+    display         : inline-block;
+}
+.row .icon-button {
+    height          : 30px;
+    width           : 30px;
+    cursor          : pointer;
+    display         : inline-block;
+    margin-right    : 20px;
+
+    top             : -10px;
+    position        : relative;
+
+    opacity: .5;
+    transition: 0.5s;
+}
+.row .icon-button:hover {
+    opacity: 1;
+    transition: 0.5s;
+}
+.row .user-groupid {
+    cursor: pointer;
+    transition: .5s;
+}
+.row .user-groupid:hover {
+    color: #e74c3c;
+    transition: .5s;
+
+}
+.row .user-name {
+    cursor: pointer;
+    transition: .5s;
+}
+.row .user-name:hover {
+    color: #e74c3c;
+    transition: .5s;
+
+}
+
+.icon-button[func="refreshpanel"] {
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+
+  top: 10px;
+  right: 60px;
+  position: absolute;
+
+  opacity: .5;
+  transition: .5s;
+}
+.icon-button[func="refreshpanel"]:hover {
+  opacity: 1;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+  transition: .5s;
+}
+
+/*Barre de séparation*/
+hr {
+    border-style: solid;
+    border-width: 1px;
+    border-color: white;
+    width: 170px;
+    margin: 30px;
 }

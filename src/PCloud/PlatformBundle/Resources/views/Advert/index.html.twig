@@ -4,6 +4,8 @@
 		<title>Cloud</title>
 		<script src="{{ asset('bundles/cloud/js/jquery-2.1.1.min.js')}}"></script>
 		<script src="{{ asset('bundles/cloud/js/main.js')}}"></script>
+		<script src="{{ asset('bundles/cloud/js/jquery.qtip.min.js')}}"></script>
+		<script src="{{ asset('bundles/cloud/js/imagesloaded.pkg.min.js')}}"></script>
 		<link href="{{ asset('bundles/cloud/css/style.css') }}" rel="stylesheet" />
 		<link rel="icon" type="icon/ico" href="{{ asset('favicon.ico') }}">
 	</head>
@@ -11,122 +13,25 @@
 	<body>
 		<div class="main-ui">
 			<!-- HEADER -->
-			<div class="header">
-				<div class="menu">
-					<img class="menu-item" func="login" src="{{ asset('bundles/cloud/icon/internal-icon.png') }}" alt="search" />
-					<img class="menu-item" func="search" src="{{ asset('bundles/cloud/icon/search-icon.png') }}" alt="search" />
-					<img class="menu-item" func="help" src="{{ asset('bundles/cloud/icon/help-filled.png') }}" alt="help" />
-				</div>
+			{{ include('header.html.twig') }}
 
-				<div class="title">CLOUD</div>
-				<div class="subtitle">A more personal one</div>
-			</div>
-
+			<!-- CONTENT -->
 			<div class="middle">
 				<!-- MESSAGE PANEL -->
-				<div class="message-panel">
-					<!-- Close icon -->
-					<img class="action-icon" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
-
-					<div class="message-panel-content">
-						<!-- Message pane's content goes there -->
-					</div>
-				</div>
+				{{ include('message.html.twig') }}
 
 				<!-- SEARCH PANEL	 -->
-				<div class="search-panel">
-					<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
-					<form id="searchform" action="/" method="post">
-						<div class="form-title">Search files and folders</div>
-						<input type="text" name="searchquery">
-						<input type="submit" name="valid" value="SEARCH">
-					</form>
-				</div>
+				{{ include('search.html.twig') }}
 
-				<!-- CONNECTION FORM -->
-				<div class="connection-panel">
-					<!-- CLOSE ICON -->
-					<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-black-icon.png') }}" alt="cancel" />
-
-					<form id="userform" action="/cloud/web/app_dev.php/login/" method="post">
-						<!-- ICON -->
-						<img src="{{ asset('bundles/cloud/icon/lock-icon.png') }}" alt="login" class="icon"/>
-
-						<!-- LOGIN INPUT -->
-						<span class="title">login</span>
-						<input type="text" name="login" placeholder="John">
-
-						<!-- PASSWORD INPUT -->
-						<span class="title">password</span>
-						<input type="password" name="password" placeholder="superpassword">
-
-						<!-- EMAIL INPUT -->
-						<div class="signup-section">
-							<span class="title">email</span>
-							<input type="email" name="email" placeholder="johnreese@mail.com">
-						</div>
-
-						<!-- SUBMIT BUTTON -->
-						<input type="submit" name="valid" value="OKAY">
-						<div class="button-function" func="signup" isactive="false">Don't have an account yet?</div>
-					</form>
-				</div>
+				<!-- CONNECTION PANEL -->
+				{{ include('connection.html.twig') }}
 
 				<!-- CONTENU -->
-				<div class="middle-content">
-					<!-- FICHIERS, UTILISATEURS & GROUPES -->
-					<div class="categories">
-						<div class="square" func="files">
-							<img class="square-icon" src="{{ asset('bundles/cloud/icon/file-icon.png')}}" alt="files" />
-							<span class="square-bottom-text">Files</span>
-						</div>
-						<div class="square" func="filesgroups">
-							<img class="square-icon" src="{{ asset('bundles/cloud/icon/filesgroups-icon.png')}}" alt="files" />
-							<span class="square-bottom-text">Files Groups</span>
-						</div>
-						<div class="square" func="users">
-							<img class="square-icon" src="{{ asset('bundles/cloud/icon/usersgroups-icon.png')}}" alt="files" />
-							<span class="square-bottom-text">Users</span>
-						</div>
-						<div class="square" func="usersgroups">
-							<img class="square-icon" src="{{ asset('bundles/cloud/icon/user-icon.png')}}" alt="files" />
-							<span class="square-bottom-text">Users Groups</span>
-						</div>
-					</div>
-
-					<!-- FICHIERS -->
-					<div class="categorie-panel" id="files-panel">
-						<span class="title-panel">FILES</span>
-						<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
-					</div>
-
-					<!-- GROUPES DE FICHIERS -->
-					<div class="categorie-panel" id="filesgroups-panel">
-						<span class="title-panel">FILES GROUPS</span>
-						<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
-					</div>
-
-					<!-- UTILISATEURS -->
-					<div class="categorie-panel" id="users-panel">
-						<span class="title-panel">USERS</span>
-						<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
-					</div>
-
-					<!-- GROUPES UTILISATEURS -->
-					<div class="categorie-panel" id="usersgroups-panel">
-						<span class="title-panel">USERS GROUPS</span>
-						<img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
-					</div>
-				</div>
+				{{ include('content.html.twig') }}
 			</div>
 
 			<!-- FOOTER -->
-			<div class="bottom">
-				<div class="text">
-					<span>Development 2014 - 2015 // <a href="https://github.com/rootasjey/cloud">See on GitHub</a> </span><br>
-					<span>An Open Source Versailles' University Project by Master students</span> <br>
-				</div>
-			</div>
+			{{ include('footer.html.twig') }}
 		</div>
 	</body>
 </html>

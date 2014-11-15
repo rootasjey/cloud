@@ -1,0 +1,94 @@
+<!-- CONTENT.HTML.TWIG -->
+<div class="middle-content">
+    <!-- BOUTONS POUR VISUALISER LES -->
+    <!-- FICHIERS, UTILISATEURS & GROUPES -->
+    <div class="categories">
+        <div class="square" func="files">
+            <img class="square-icon" src="{{ asset('bundles/cloud/icon/file-icon.png')}}" alt="files" />
+            <span class="square-bottom-text">Files</span>
+        </div>
+        <div class="square" func="filesgroups">
+            <img class="square-icon" src="{{ asset('bundles/cloud/icon/filesgroups-icon.png')}}" alt="files" />
+            <span class="square-bottom-text">Files Groups</span>
+        </div>
+        <div class="square" func="users">
+            <img class="square-icon" src="{{ asset('bundles/cloud/icon/user-icon.png')}}" alt="files" />
+            <span class="square-bottom-text">Users</span>
+        </div>
+        <div class="square" func="usersgroups">
+            <img class="square-icon" src="{{ asset('bundles/cloud/icon/usersgroups-icon.png')}}" alt="files" />
+            <span class="square-bottom-text">Users Groups</span>
+        </div>
+    </div>
+
+
+    <!-- BLOCS INDIVIDUELS -->
+    <!-- FICHIERS -->
+    <div class="categorie-panel" id="files-panel">
+        <!-- Titre et bouton de fermeture -->
+        <span class="title-panel">FILES</span>
+        <img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
+        <img class="icon-button" func="refreshpanel" src="{{ asset('bundles/cloud/icon/reload-icon.png') }}" alt="refresh" />
+
+        <!-- Ajouter, Supprimer, Editer -->
+        <div class="action-panel">
+            <img class="icon-button" func="add" src="{{ asset('bundles/cloud/icon/addfile-icon.png') }}" alt="addfile" />
+            <!-- <img class="icon-button" func="edit" src="{{ asset('bundles/cloud/icon/editfile-icon.png') }}" alt="addfile" />
+            <img class="icon-button" func="delete" src="{{ asset('bundles/cloud/icon/deletefile-icon.png') }}" alt="addfile" /> -->
+        </div>
+
+        <div class="categorie-panel-content">
+            <!-- Le contenu va ici (résultat des requête sql) -->
+        </div>
+    </div>
+
+    <!-- GROUPES DE FICHIERS -->
+    <div class="categorie-panel" id="filesgroups-panel">
+        <!-- Titre et bouton de fermeture -->
+        <span class="title-panel">FILES GROUPS</span>
+        <img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
+        <img class="icon-button" func="refreshpanel" src="{{ asset('bundles/cloud/icon/reload-icon.png') }}" alt="refresh" />
+
+        <div class="action-panel">
+            <img class="icon-button" func="add" src="{{ asset('bundles/cloud/icon/addfolder-icon.png') }}" alt="addfile" />
+        </div>
+
+
+        <div class="categorie-panel-content">
+            <!-- Le contenu va ici (résultat des requête sql) -->
+        </div>
+    </div>
+
+    <!-- UTILISATEURS -->
+    <div class="categorie-panel" id="users-panel">
+        <!-- Titre et bouton de fermeture -->
+        <span class="title-panel">USERS</span>
+        <img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
+        <img class="icon-button" func="refreshpanel" src="{{ asset('bundles/cloud/icon/reload-icon.png') }}" alt="refresh" />
+
+        <div class="action-panel">
+            <img class="icon-button" func="add" src="{{ asset('bundles/cloud/icon/adduser-icon.png') }}" alt="addfile" />
+        </div>
+
+        <hr> </hr>
+        <div class="categorie-panel-content">
+            <!-- Le contenu va ici (résultat des requête sql) -->
+        </div>
+    </div>
+
+    <!-- GROUPES UTILISATEURS -->
+    <div class="categorie-panel" id="usersgroups-panel">
+        <!-- Titre et bouton de fermeture -->
+        <span class="title-panel">USERS GROUPS</span>
+        <img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-white-icon.png') }}" alt="cancel" />
+        <img class="icon-button" func="refreshpanel" src="{{ asset('bundles/cloud/icon/reload-icon.png') }}" alt="refresh" />
+
+        <div class="action-panel">
+            <img class="icon-button" func="add" src="{{ asset('bundles/cloud/icon/addgroup-icon.png') }}" alt="addfile" />
+        </div>
+
+        <div class="categorie-panel-content">
+            <!-- Le contenu va ici (résultat des requête sql) -->
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+<!-- CONNECTION PANEL -->
+<div class="connection-panel">
+    <!-- CLOSE ICON -->
+    <img class="icon-button" func="closepanel" src="{{ asset('bundles/cloud/icon/cancel-black-icon.png') }}" alt="cancel" />
+
+    <form id="userform" action="/cloud/web/app_dev.php/login/" method="post">
+        <!-- ICON -->
+        <img src="{{ asset('bundles/cloud/icon/lock-icon.png') }}" alt="login" class="icon"/>
+
+        <!-- LOGIN INPUT -->
+        <span class="title">login</span>
+        <input type="text" name="login" placeholder="John">
+
+        <!-- PASSWORD INPUT -->
+        <span class="title">password</span>
+        <input type="password" name="password" placeholder="superpassword">
+
+        <!-- EMAIL INPUT -->
+        <div class="signup-section">
+            <span class="title">email</span>
+            <input type="email" name="email" placeholder="johnreese@mail.com">
+        </div>
+
+        <!-- SUBMIT BUTTON -->
+        <input type="submit" name="valid" value="OKAY">
+        <div class="button-function" func="signup" isactive="false">Don't have an account yet?</div>
+    </form>
+</div>

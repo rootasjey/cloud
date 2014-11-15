@@ -16,8 +16,8 @@ class AdvertController extends Controller
 
 	public function signupAction() {
 		$login 		= $_POST["login"];
-		$password = $_POST["password"];
-			$email 		= $_POST["email"];
+		$password 	= $_POST["password"];
+		$email 		= $_POST["email"];
 
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");
@@ -28,7 +28,13 @@ class AdvertController extends Controller
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
 			if($request) {
-				return new Response("OK");
+				$response = new JsonResponse();
+				$response->setData(array(
+					'name' => $login,
+					'email'=> $email
+				));
+
+				return $response;
 			}
 				return new Response("FAIL");
 		}

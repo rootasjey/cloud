@@ -2,6 +2,8 @@
 /* INDEX.CSS  */
 /* ---------- */
 
+/*GLOBAL STYLE*/
+
 body {
   font-family: quicksandregular;
   background-color: #2c3e50;
@@ -24,8 +26,8 @@ body {
 }
 
 .icon-button[func="closepanel"] {
-  height: 30px;
-  width: 30px;
+  height: 40px;
+  width: 40px;
   cursor: pointer;
 
   top: 10px;
@@ -33,7 +35,7 @@ body {
   position: absolute;
 
   opacity: .5;
-  transition: 0.5s;
+  transition: .5s;
 }
 .icon-button[func="closepanel"]:hover {
   opacity: 1;
@@ -42,5 +44,5 @@ body {
   -ms-transform: rotate(180deg);
   -o-transform: rotate(180deg);
   transform: rotate(180deg);
-  transition: 0.5s;
+  transition: .5s;
 }
