@@ -10,7 +10,7 @@ add_user:
 
 # Supprimer un utilisateur de la base de données
 delete_user:
-   path: /deleteuser/{id}
+   path: /deleteuser/
    defaults: { _controller: PCloudPlatformBundle:Advert:deleteuser }
 
 # Logger un utilisateur à la base de données
@@ -26,8 +26,19 @@ edit_user:
 # Voir la liste des utilisateurs
 view_users:
     path: /viewusers/
-    defaults: {_controller: PCloudPlatformBundle:Advert:viewusers}
+    defaults: { _controller: PCloudPlatformBundle:Advert:viewusers }
 
-view_users:
+# Voir la liste des groupes d'utilisateurs
+view_usersgroups:
     path: /viewusersgroups/
-    defaults: {_controller: PCloudPlatformBundle:Advert:viewusersgroups}
+    defaults: { _controller: PCloudPlatformBundle:Advert:viewusersgroups }
+
+# Voir la liste des fichiers
+view_files:
+    path: /viewfiles/
+    defaults: { _controller: PCloudPlatformBundle:Advert:viewfiles }
+
+# Voir la liste des groupes de fichiers
+view_filesgroups:
+    path: /viewfilesgroups/
+    defaults: { _controller: PCloudPlatformBundle:Advert:viewfilesgroups }

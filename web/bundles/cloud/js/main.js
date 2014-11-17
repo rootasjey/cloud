@@ -29,26 +29,6 @@ function initialize() {
 // ----------------
 // Charge les effets hover sur les éléments de la page d'index
 function defaultHoverEvents() {
-  // $(".main-ui .header .title").hover(
-  //   function () {
-  //   $(".main-ui .header").css({
-  //     height: '700px'
-  //   });
-  // }, function () {
-  //     $(".main-ui .header").css({
-  //       height: '500px'
-  //     });
-  // });
-
-    $("#userform .button-function[func='signup']").hover(
-        function () {
-          $(this).css({ textDecoration: "underline"});
-        },
-        function () {
-          $(this).css({ textDecoration: "none" });
-        }
-    );
-
     $(".categories .square").hover(
         function () {
             $(this).css({ opacity: "1" });
@@ -76,7 +56,7 @@ function defaultClickEvents() {
     });
 
     // AFFICHE/CACHE signup form
-    $("#userform .button-function[func='signup']").click(function () {
+    $("#userform .text-button[func='signup']").click(function () {
         toggleSignupClicked();
     });
 
@@ -85,8 +65,14 @@ function defaultClickEvents() {
         logout();
     });
 
+    // AIDE
     $(".menu-item[func='help']").click(function () {
 
+    });
+
+    // Recharge la page quand on clique sur le titre
+    $(".main-ui .header .title").click(function () {
+        window.location.reload(true);
     });
 }
 
@@ -175,6 +161,99 @@ function addTooltip(selector, textContent, cpos, tpos) {
 
 
 
+// FONCTIONS DU HEADER
+// -------------------
+// Affiche l'avatar de l'utilisateur au niveau du header
+function showUserAvatar() {
+    var avatar  = $(".header-avatar").css({ display: "block" });
+    var img     = $(".header-avatar-img").css({ opacity: "0" });
+    var text    = $(".header-avatar-name").html(_user.name).css({ opacity: "0" });
+
+    // Animation d'ouverture
+    // Anime d'abord l'image
+    img.css({
+        top: "20px"
+    }).animate({
+        top: "0",
+        opacity: "1",
+    });
+
+    // Anime le texte
+    text.css({
+        top: "20px"
+    }).animate({
+        top: "0",
+        opacity: "1",
+    }, {
+        duration: 500
+    });
+
+    avatar.off("click");
+    avatar.click(function () {
+        toggleHeaderHeight();
+    });
+}
+
+// Masque l'avatar de l'utilisateur au niveau du header
+function hideUserAvatar() {
+    avatar.off("click");
+
+    var img = $(".header-avatar-img");
+    var text = $(".header-avatar-name");
+
+    // Animation de fermeture
+    // Anime le texte
+    text.animate({
+        top: "20px",
+        opacity: "0",
+    });
+
+    // Anime l'image
+    img.animate({
+        top: "20px",
+        opacity: "0",
+    }, {
+        duration: 200,
+        complete: function () {
+            window.setTimeout(function () {
+                $(".header-avatar").css({ display: "none" });
+            }, 200);
+
+        }
+    });
+
+
+}
+
+// Agrandit/Réduit le header selon une condition
+function toggleHeaderHeight() {
+    var header = $(".main-ui .header");
+    if (header.css("height") < "700px") {
+        expendHeader();
+    }
+    else {
+        minimizeHeader();
+    }
+}
+
+// Agrandit la taille du header
+function expendHeader() {
+    $(".main-ui .header").css({
+        height: '700px'
+    });
+}
+
+// Réduit la taille du header
+function minimizeHeader() {
+    $(".main-ui .header").css({
+        height: '500px'
+    });
+}
+// FIN FONCTIONS DU HEADER
+// -------------------
+
+
+
 // DEBUT AUTRES
 // ------------
 // Affiche un message à l'utilisateur
@@ -199,6 +278,44 @@ function showMessage(message, type) {
     else {
         messagepanelContent.html(message);
     }
+}
+
+function startLoadingAnimation() {
+    $(".loader").css({ display: "block" });
+    $(".loader-inner").css({ display: "inline-block" });
+}
+function stopLoadingAnimation() {
+    $(".loader").css({ display: "none" });
+    $(".loader-inner").css({ display: "none" });
+}
+
+function startLoadingAnimationCustomPlace(selector) {
+    // Enlève toute animation précédente, s'il y en a
+    stopLoadingAnimationCustomPlace(selector);
+
+    var loader = $("<span>", {
+        class: 'loader'
+    });
+
+    var loaderInner = $("<span>", {
+        class: 'loader-inner'
+    });
+
+    var loaderText = $("<div>",{
+        class: "loader-text",
+        html: "<span> chargement... </span>"
+    });
+
+    $(selector).append(loader).append(loaderText);
+    loader.append(loaderInner);
+
+    loader.css({ display: "block" });
+    loaderInner.css({ display: "inline-block" });
+}
+function stopLoadingAnimationCustomPlace(selector) {
+    $(selector + " .loader").remove();
+    $(selector + " .loader-inner").remove();
+    $(selector + " .loader-text").remove();
 }
 
 // Vérifie qu'un object n'est pas nul ou non défini

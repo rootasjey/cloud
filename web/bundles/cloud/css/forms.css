@@ -53,8 +53,11 @@
   opacity: 1;
   transition: 0.5s;
 }
-#userform .button-function[func='signup'] {
+#userform .text-button {
   cursor: pointer;
+}
+#userform .text-button:hover {
+  text-decoration: underline;
 }
 #userform .signup-section {
   display: none;

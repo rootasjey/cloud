@@ -55,6 +55,11 @@
   margin-bottom     : -100px;
 
   cursor            : pointer;
+  transition        : .5s;
+}
+.main-ui .header .title:hover {
+    color           : #e74c3c;
+    transition      : .5s;
 }
 .main-ui .header .subtitle {
   color             : white;
@@ -65,67 +70,50 @@
   margin-bottom     : 20px;
 }
 
+.header-avatar {
+    height      : 200px;
+    width       : 200px;
 
-/*ANIMATION*/
-.loader {
-  width             : 30px;
-  height            : 30px;
-  margin            : auto;
-  display           : none;
-  position          : relative;
+    opacity     : 0.5;
+    display     : none;
+    overflow    : hidden;
+    text-align  : center;
 
-  border            : 4px solid #e74c3c;
-  animation         : loader 4s infinite ease;
+    margin      : auto;
+    margin-top  : 50px;
+    cursor      : pointer;
+    position    : relative;
+
+    transition  : .5s;
 }
-
-.loader-inner {
-  vertical-align    : top;
-  display           : block;
-  width             : 100%;
-  background-color  : #e74c3c;
-  animation         : loader-inner 4s infinite ease-in;
+.header-avatar:hover {
+    opacity     : 1;
+    transition  : .5s;
 }
+.header-avatar .header-avatar-img {
+    height          : 120px;
+    width           : 120px;
 
-@keyframes loader {
-  0% {
-    transform: rotate(0deg);
-  }
+    margin          : auto;
+    position        : relative;
+    overflow        : hidden;
+    border-radius   : 80px;
+    background      : rgba(37, 32, 32, 0.76);
 
-  25% {
-    transform: rotate(180deg);
-  }
+    border-width    : 2px;
+    border-style    : solid;
+    border-color    : white;
 
-  50% {
-    transform: rotate(180deg);
-  }
-
-  75% {
-    transform: rotate(360deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+    transition      : .5s;
 }
-
-@keyframes loader-inner {
-  0% {
-    height: 0%;
-  }
-
-  25% {
-    height: 0%;
-  }
-
-  50% {
-    height: 100%;
-  }
-
-  75% {
-    height: 100%;
-  }
-
-  100% {
-    height: 0%;
-  }
+.header-avatar .header-avatar-img:hover {
+    height          : 140px;
+    width           : 140px;
+    transition      : .5s;
+}
+.header-avatar .header-avatar-name {
+    color           : white;
+    font-size       : 2em;
+    position        : relative;
+    overflow        : hidden;
 }

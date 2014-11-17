@@ -178,6 +178,8 @@
     transition: 0.5s;
 }
 
+
+/*STYLE POUR LA LISTE DES UTILISATEURS*/
 .row {
     color: white;
     display: block;
@@ -245,6 +247,73 @@
 
 }
 
+/*STYLE POUR LA LISTE DES GROUPES*/
+.group-card {
+    height: 230px;
+    width: 200px;
+
+    color: white;
+    font-size: 1.5em;
+    text-align: center;
+
+    opacity: .8;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 10px;
+    background-color: #2c3e50;
+
+    margin: 10px;
+    padding: 20px;
+    position: relative;
+    display: inline-block;
+
+    -moz-box-shadow     : 0 0 5px #000000;
+    -webkit-box-shadow  : 0 0 5px #000000;
+    box-shadow          : 0 0 5px #000000;
+
+    transition: .5s;
+}
+.group-card:hover {
+    opacity: 1;
+
+    -moz-box-shadow     : 0 0 20px #000000;
+    -webkit-box-shadow  : 0 0 20px #000000;
+    box-shadow          : 0 0 20px #000000;
+
+    transition: .5s;
+}
+.group-card-header {
+    height: 40px;
+    width: 100%;
+    background: #e74c3c;
+
+    top: -20px;
+    left: -20px;
+    position: relative;
+
+    color: white;
+    padding: 20px;
+}
+.group-card .group-id {
+    display: block;
+}
+.group-card .group-title {
+    display: block;
+}
+.group-card .text-button {
+    cursor: pointer;
+    font-size: 0.7em;
+    margin-right: 10px;
+
+    display: inline-block;
+
+    left: 5px;
+    position: relative;
+}
+.group-card .text-button:hover {
+    text-decoration: underline;
+}
+
 .icon-button[func="refreshpanel"] {
   height: 40px;
   width: 40px;
@@ -274,4 +343,61 @@ hr {
     border-color: white;
     width: 170px;
     margin: 30px;
+}
+
+/*STYLE POUR LA LISTE DES FICHIERS*/
+#files-panel .files-list {
+    background: #eee;
+    overflow: hidden;
+
+    width: 800px;
+    margin: auto;
+    margin-top: 50px;
+
+    padding: 20px;
+    border-radius: 10px;
+}
+#files-panel .files-list thead {
+    width: 110%;
+    padding: 20px;
+    font-size: 1.4em;
+
+    display: inline-block;
+    border-radius: 10px;
+
+    top: -20px;
+    left: -20px;
+    position: relative;
+}
+#files-panel .files-list tbody {
+    width: 100%;
+    padding: 20px;
+    display: inline-block;
+
+    left: -20px;
+    bottom: -20px;
+    position: relative;
+    background-color: white;
+}
+#files-panel .files-list th {
+    margin-right: 80px;
+    display: inline-block;
+}
+#files-panel .files-list tr {
+    cursor: pointer;
+    transition: .5s;
+}
+#files-panel .files-list tr:hover {
+    background: #eee;
+    transition: .5s;
+}
+#files-panel .files-list .td-name, .td-group, .td-type, .td-pubdate, .td-owner {
+    width: 148px;
+    display: inline-block;
+}
+#files-panel .files-list .td-path, .td-tags {
+    display: none;
+}
+#files-panel .files-list .td-owner {
+    text-align: center;
 }

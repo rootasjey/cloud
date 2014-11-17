@@ -4,9 +4,9 @@
 /*-------------*/
 .bottom {
   color: white;
-  /*height: 200px;*/
   padding: 20px;
 
+  position: relative;
   margin-top: 10px;
   background-color: #28323b;
 }
@@ -15,18 +15,36 @@
 /*----TEXT (FOOTER)----*/
 /*--------------------*/
 .bottom .text {
-  opacity: .6;
+  opacity       : .6;
 }
 .bottom .text a {
-  opacity: .6;
-  color: white;
+  opacity       : .6;
+  color         : white;
   text-decoration: none;
 
-  transition: 0.5s;
+  transition    : 0.5s;
 }
 .bottom .text a:hover {
-  opacity: 1;
-  color: #e74c3c;
+  opacity       : 1;
+  color         : #e74c3c;
 
-  transition: 0.5s;
+  transition    : 0.5s;
+}
+
+.menu-item[func='help'] {
+    height      : 40px;
+    width       : 40px;
+
+    top         : 20px;
+    right       : 20px;
+    position    : absolute;
+
+    cursor      : pointer;
+    opacity     : 0.7;
+    transition  : .5s;
+}
+
+.menu-item[func='help']:hover {
+    opacity     : 1;
+    transition  : .5s;
 }

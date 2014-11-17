@@ -98,17 +98,65 @@ function openCategoriePanel(panel) {
 // -------------------------
 
 
+// DEBUT FONCTIONS AJAX
+// --------------------
+// Envoie une requête ajax à la route passée en paramètre
+function sendAjaxRequest(url) {
+    var http = new XMLHttpRequest();
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            var data = JSON.parse(http.response);
+
+            if (url == "/cloud/web/app_dev.php/viewusers") {
+                viewUsersResult(data);
+            }
+            else if (url == "/cloud/web/app_dev.php/viewusersgroups") {
+                viewUsersgroupsResult(data);
+            }
+            else if (url == "/cloud/web/app_dev.php/viewfiles") {
+                viewFilesResult(data);
+            }
+            else if (url == "/cloud/web/app_dev.php/viewfilesgroups") {
+                viewFilesgroupsResult(data);
+            }
+        }
+    }
+    http.open("POST", url);
+    http.send();
+}
+// FIN FONCTIONS AJAX
+// ------------------
+
+
 
 // DEBUT FONCTIONS DEMANDANT LES DONNEES
 // ------------------------------------
 // Affiche la liste des fichiers
 function viewFiles() {
+    // Test si on n'a pas déjà récupéré les fichiers
+    var content = $("#files-panel .table-body tr");
+    if (content.length > 0)
+        return;
 
+    var url = "/cloud/web/app_dev.php/viewfiles";
+    sendAjaxRequest(url);
+
+    // startLoadingAnimation(); // starts loading animation
+    startLoadingAnimationCustomPlace("#files-panel .categorie-panel-content");
 }
 
 // Affiche la liste des groupes de fichiers
 function viewFilesgroups() {
+    // Test si on n'a pas déjà récupéré les utilisateurs
+    var content = $("#filesgroups-panel .categorie-panel-content .group-card");
+    if (content.length > 0)
+        return;
 
+    var url = "/cloud/web/app_dev.php/viewfilesgroups";
+    sendAjaxRequest(url);
+
+    startLoadingAnimationCustomPlace("#filesgroups-panel .categorie-panel-content");
 }
 
 // Affiche les utilisateurs
@@ -121,20 +169,21 @@ function viewUsers() {
     var url = "/cloud/web/app_dev.php/viewusers";
     sendAjaxRequest(url);
 
-    startLoadingAnimation(); // starts loading animation
+    // startLoadingAnimation(); // starts loading animation
+    startLoadingAnimationCustomPlace("#users-panel .categorie-panel-content");
 }
 
 // Affiche la liste des groupes d'utilisateurs
 function viewUsersgroups() {
     // Test si on n'a pas déjà récupéré les utilisateurs
-    var content = $("#usersgroups-panel .categorie-panel-content .row");
+    var content = $("#usersgroups-panel .categorie-panel-content .group-card");
     if (content.length > 0)
         return;
 
     var url = "/cloud/web/app_dev.php/viewusersgroups";
     sendAjaxRequest(url);
 
-    startLoadingAnimation(); // starts loading animation
+    startLoadingAnimationCustomPlace("#usersgroups-panel .categorie-panel-content");
 }
 
 // FIN FONCTIONS DEMANDANT LES DONNEES
@@ -153,6 +202,7 @@ function viewUsersResult(data) {
         return;
     }
 
+    // Récupère l'objet où on va insérer le contenu
     var content = $("#users-panel .categorie-panel-content");
 
     // Traitement des données
@@ -164,6 +214,7 @@ function viewUsersResult(data) {
             src : "/cloud/web/bundles/cloud/icon/user-icon.png"
         });
 
+        // Crée les éléments groupid (id du groupe) et name (nom)
         var groupid = $("<span>", { class: 'user-groupid', html: data[i].groupid });
         var name = $("<span>", { class: 'user-name', html: " " + data[i].name });
 
@@ -178,12 +229,14 @@ function viewUsersResult(data) {
             userid: data[i].id
         }).appendTo(content);
 
+        // Crée l'icone d'édition
         var editIcon = $("<img>", {
             class: "icon-button",
             func: "edit-user",
             src : "/cloud/web/bundles/cloud/icon/edit-icon.png"
         });
 
+        // Crée l'icone de suppression
         var deleteIcon = $("<img>", {
             class: "icon-button",
             func: "delete-user",
@@ -191,9 +244,12 @@ function viewUsersResult(data) {
         });
 
         // Insère le contenu dans la ligne
+        // Attache l'icone d'édition, de suppression, l'avatar
+        // et enfin le contenu de la ligne à l'objet row (ligne)
         row.append(editIcon).append(deleteIcon).append(avatar).append(rowtext);
 
         // Ajoute le groupid et le nom de l'utilisateur au contenu de la ligne
+        // Attache le groupid et le nom au contenu de la ligne (rowtext)
         rowtext.append(groupid).append(name);
     }
 
@@ -203,8 +259,161 @@ function viewUsersResult(data) {
     addTooltip(".icon-button[func='edit-user']", "editer");
     addTooltip(".icon-button[func='delete-user']", "supprimer");
 
-    stopLoadingAnimation();
+    // Arrête l'animation de chargement
+    stopLoadingAnimationCustomPlace("#users-panel .categorie-panel-content");
 }
 
+function viewUsersgroupsResult(data) {
+    if (data.length < 1) {
+        // Affiche un message si on n'a récupéré aucune donnée
+        var textMessage = "There's no result for this request.";
+        showMessage(textMessage, "error");
+        return;
+    }
+
+    // Récupère l'objet où on va insérer le contenu
+    var content = $("#usersgroups-panel .categorie-panel-content");
+
+    // Traitement des données
+    for (var i = 0; i < data.length; i++) {
+        // Crée la carte de groupe
+        var card = $("<div>", {
+            class: "group-card"
+        }).appendTo(content);
+
+        // Crée le header
+        var header = $("<div>", {
+            class:"group-card-header"
+        });
+
+        // Crée le contenu
+        var groupid = $("<span>", { class: 'group-id', html: data[i].id });
+        var grouptitle = $("<span>", { class: 'group-title', html: data[i].title });
+
+        // Attache les éléments au DOM (Document Object Model)
+        card.append(header);        // attache l'objet header au parent card
+        card.append(groupid);       // attache l'objet groupid au parent card
+        header.append(grouptitle);  // attache l'objet grouptitle au parent header
+
+
+        //  Crée un bouton text  (pour l'édition)
+        var edit = $("<div>", {
+            class: "text-button",
+            func : "edit",
+            html: "edit"
+        });
+
+        //  Crée un second bouton text (pour la suppression)
+        var del = $("<div>", {
+            class: "text-button",
+            func : "delete",
+            html: "delete"
+        });
+
+        header.append(edit);
+        header.append(del);
+    }
+
+    // Ajoute les toolitps de description
+    // addTooltip(".avatar", "avatar");
+    // addTooltip(".user-groupid", "id du group de l'utilisateur");
+    // addTooltip(".icon-button[func='edit-user']", "editer");
+    // addTooltip(".icon-button[func='delete-user']", "supprimer");
+
+    // Stop l'animation de chargement
+    stopLoadingAnimationCustomPlace("#usersgroups-panel .categorie-panel-content");
+}
+
+function viewFilesResult(data) {
+    if (data.length < 1) {
+        // Affiche un message si on n'a récupéré aucune donnée
+        var textMessage = "There's no result for this request.";
+        showMessage(textMessage, "error");
+        return;
+    }
+
+    // Récupère l'objet où on va insérer le contenu
+    var content = $("#files-panel .categorie-panel-content .files-list .table-body");
+
+    // Traitement des données
+    for (var i = 0; i < data.length; i++) {
+        var tr = $("<tr>");
+
+        var name    = $("<td>", { class:"td-name" }).html(data[i].name);
+        var group   = $("<td>", { class:"td-group" }).html(data[i].groupid);
+        var path    = $("<td>", { class:"td-path" }).html(data[i].path);
+        var type    = $("<td>", { class:"td-type" }).html(data[i].type);
+        var pubdate = $("<td>", { class:"td-pubdate" }).html(data[i].pubDate);
+        var tags    = $("<td>", { class:"td-tags" }).html(data[i].tags);
+        var owner   = $("<td>", { class:"td-owner" }).html(data[i].owner);
+
+        tr.append(name).append(group).append(path).append(type).append(pubdate).append(tags).append(owner);
+        content.append(tr);
+    }
+
+    // Arrête l'animation de chargement
+    stopLoadingAnimationCustomPlace("#files-panel .categorie-panel-content");
+}
+
+function viewFilesgroupsResult(data) {
+    if (data.length < 1) {
+        // Affiche un message si on n'a récupéré aucune donnée
+        var textMessage = "There's no result for this request.";
+        showMessage(textMessage, "error");
+        return;
+    }
+
+    // Récupère l'objet où on va insérer le contenu
+    var content = $("#filesgroups-panel .categorie-panel-content");
+
+    // Traitement des données
+    for (var i = 0; i < data.length; i++) {
+        // Crée la carte de groupe
+        var card = $("<div>", {
+            class: "group-card"
+        }).appendTo(content);
+
+        // Crée le header
+        var header = $("<div>", {
+            class:"group-card-header"
+        });
+
+        // Crée le contenu
+        var groupid = $("<span>", { class: 'group-id', html: data[i].id });
+        var grouptitle = $("<span>", { class: 'group-title', html: data[i].title });
+
+        // Attache les éléments au DOM (Document Object Model)
+        card.append(header);        // attache l'objet header au parent card
+        card.append(groupid);       // attache l'objet groupid au parent card
+        header.append(grouptitle);  // attache l'objet grouptitle au parent header
+
+
+        //  Crée un bouton text  (pour l'édition)
+        var edit = $("<div>", {
+            class: "text-button",
+            func : "edit",
+            html: "edit"
+        });
+
+        //  Crée un second bouton text (pour la suppression)
+        var del = $("<div>", {
+            class: "text-button",
+            func : "delete",
+            html: "delete"
+        });
+
+        header.append(edit);
+        header.append(del);
+    }
+
+    // Ajoute les toolitps de description
+    // addTooltip(".avatar", "avatar");
+    // addTooltip(".user-groupid", "id du group de l'utilisateur");
+    // addTooltip(".icon-button[func='edit-user']", "editer");
+    // addTooltip(".icon-button[func='delete-user']", "supprimer");
+
+    // Stop l'animation de chargement
+    stopLoadingAnimationCustomPlace("#filesgroups-panel .categorie-panel-content");
+}
 // FIN FONCTIONS TRAITANT LES RESULTATS DES DONNEES
 // --------------------------------------------------

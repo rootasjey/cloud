@@ -167,13 +167,49 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::edituserAction',  '_route' => 'edit_user',);
         }
 
-        // view_users
-        if (rtrim($pathinfo, '/') === '/viewusers') {
-            if (substr($pathinfo, -1) !== '/') {
-                return $this->redirect($pathinfo.'/', 'view_users');
+        if (0 === strpos($pathinfo, '/view')) {
+            if (0 === strpos($pathinfo, '/viewusers')) {
+                // view_users
+                if (rtrim($pathinfo, '/') === '/viewusers') {
+                    if (substr($pathinfo, -1) !== '/') {
+                        return $this->redirect($pathinfo.'/', 'view_users');
+                    }
+
+                    return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewusersAction',  '_route' => 'view_users',);
+                }
+
+                // view_usersgroups
+                if (rtrim($pathinfo, '/') === '/viewusersgroups') {
+                    if (substr($pathinfo, -1) !== '/') {
+                        return $this->redirect($pathinfo.'/', 'view_usersgroups');
+                    }
+
+                    return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewusersgroupsAction',  '_route' => 'view_usersgroups',);
+                }
+
             }
 
-            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewusersAction',  '_route' => 'view_users',);
+            if (0 === strpos($pathinfo, '/viewfiles')) {
+                // view_files
+                if (rtrim($pathinfo, '/') === '/viewfiles') {
+                    if (substr($pathinfo, -1) !== '/') {
+                        return $this->redirect($pathinfo.'/', 'view_files');
+                    }
+
+                    return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewfilesAction',  '_route' => 'view_files',);
+                }
+
+                // view_filesgroups
+                if (rtrim($pathinfo, '/') === '/viewfilesgroups') {
+                    if (substr($pathinfo, -1) !== '/') {
+                        return $this->redirect($pathinfo.'/', 'view_filesgroups');
+                    }
+
+                    return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewfilesgroupsAction',  '_route' => 'view_filesgroups',);
+                }
+
+            }
+
         }
 
         // _welcome

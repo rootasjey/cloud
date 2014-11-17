@@ -119,4 +119,51 @@ class AdvertController extends Controller
 			die('Erreur : ' . $e->getMessage());
 		}
 	}
+
+	// Récupères la liste des fichiers dans la base de données
+	public function viewfilesAction()
+	{
+		try {
+			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request = $bdd->query('SELECT * FROM files');
+
+			$files = Array();
+
+			while ($v = $request->fetch()) {
+				array_push($files, $v);
+			}
+
+			$json = new JsonResponse();
+			$json->setData($files);
+			$request->closeCursor(); // Termine le traitement de la requête
+
+			return $json;
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+		}
+	}
+
+	// Récupères les groupes de fichiers dans la base de données
+	public function viewfilesgroupsAction(){
+		try {
+			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request = $bdd->query('SELECT * FROM filesgroups');
+
+			$filesgroups = Array();
+
+			while ($v = $request->fetch()) {
+				array_push($filesgroups, $v);
+			}
+
+			$json = new JsonResponse();
+			$json->setData($filesgroups);
+			$request->closeCursor(); // Termine le traitement de la requête
+
+			return $json;
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+		}
+	}
 }

@@ -6,23 +6,6 @@
 
 // DEBUT METHODES AJAX
 // -------------------
-// Envoie une requête ajax à la route passée en paramètre
-function sendAjaxRequest(url) {
-  var http = new XMLHttpRequest();
-
-  http.onreadystatechange = function () {
-    if (http.readyState === 4 && http.status === 200) {
-      var data = JSON.parse(http.response);
-
-      if (url == "/cloud/web/app_dev.php/viewusers") {
-        viewUsersResult(data);
-      }
-    }
-  }
-  http.open("POST", url);
-  http.send();
-}
-
 // Prépare la fonction de validation du formulaire
 function prepareLoginForm() {
   var form = "#userform";
@@ -94,7 +77,7 @@ function prepareAjaxForm(form) {
 // Afiche/Masque le formulaire d'inscription
 function toggleSignupClicked() {
   // Si on est en mode connexion
-  if ($("#userform .button-function[func='signup']").attr("isactive") === "false") {
+  if ($("#userform .text-button[func='signup']").attr("isactive") === "false") {
 
     // On passe en mode (nouvelle) inscription
     var signupsection = $("#userform .signup-section").css("display", "block");
@@ -111,7 +94,7 @@ function toggleSignupClicked() {
     });
 
     // Indique qu'on est en mode inscription et modifie le texte
-    $("#userform .button-function[func='signup']")
+    $("#userform .text-button[func='signup']")
       .attr("isactive", "true")
       .html("Already have an account?");
 
@@ -120,7 +103,7 @@ function toggleSignupClicked() {
   }
   else {
     // On passe en mode connexion
-    $("#userform .button-function[func='signup']")
+    $("#userform .text-button[func='signup']")
       .attr("isactive", "false")
       .html("Don't have an account yet?");
 
@@ -184,6 +167,9 @@ function loginResult(response) {
             $(this).css("display", "none");
         }
     });
+
+    // Affiche l'avatar au niveau du header
+    showUserAvatar();
   }
   else {
     var textMessage = "Sorry, wrong password or login";
@@ -242,6 +228,35 @@ function logout() {
 
     showMessage("You've been correctly disconnected", "error");
     checkAuth();
+
+    // Ferme tous les blocks
+    closeAllPanels();
+
+    // Affiche le block de connexion
+    showConnectionPanel();
+
+    // Masque l'avatar du header
+    hideUserAvatar();
+}
+
+function closeAllPanels() {
+    var files       = $("#files-panel");
+    var filesgroups = $("#filesgroups-panel");
+    var users       = $("#users-panel");
+    var usersgroups = $("#usersgroups-panel");
+
+    if (files.css("display") !== "none") {
+        closePanel(files);
+    }
+    if (filesgroups.css("display") !== "none") {
+        closePanel(filesgroups);
+    }
+    if (users.css("display") !== "none") {
+        closePanel(users);
+    }
+    if (usersgroups.css("display") !== "none") {
+        closePanel(usersgroups);
+    }
 }
 // FIN FONCTIONS AUTRES
 // --------------------
