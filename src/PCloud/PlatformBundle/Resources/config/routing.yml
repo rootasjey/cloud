@@ -10,8 +10,10 @@ add_user:
 
 # Supprimer un utilisateur de la base de données
 delete_user:
-   path: /deleteuser/
+   path: /deleteuser/{id}
    defaults: { _controller: PCloudPlatformBundle:Advert:deleteuser }
+   requirements:
+       id: \d+
 
 # Logger un utilisateur à la base de données
 connect_user:

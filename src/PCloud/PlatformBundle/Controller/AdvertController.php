@@ -74,8 +74,29 @@ class AdvertController extends Controller
 		}
 	}
 
+	// Supprime un utilisateur de la base de données
+	public function deleteuserAction($id) {
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "DELETE FROM users WHERE id='" . $id . "'";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				return new Response("OK");
+			}
+				return new Response("FAIL");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("FAIL");
+		}
+	}
+
 	// Récupère les utilisateurs dans la base de données
-	public function viewusersAction(){
+	public function viewusersAction() {
 		try {
 			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
 			$request = $bdd->query('SELECT * FROM users');
@@ -98,7 +119,7 @@ class AdvertController extends Controller
 	}
 
 	// Récupères les groupes d'utilisateurs dans la base de données
-	public function viewusersgroupsAction(){
+	public function viewusersgroupsAction() {
 		try {
 			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
 			$request = $bdd->query('SELECT * FROM usersgroups');
@@ -121,8 +142,7 @@ class AdvertController extends Controller
 	}
 
 	// Récupères la liste des fichiers dans la base de données
-	public function viewfilesAction()
-	{
+	public function viewfilesAction() {
 		try {
 			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
 			$request = $bdd->query('SELECT * FROM files');
@@ -145,7 +165,7 @@ class AdvertController extends Controller
 	}
 
 	// Récupères les groupes de fichiers dans la base de données
-	public function viewfilesgroupsAction(){
+	public function viewfilesgroupsAction() {
 		try {
 			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
 			$request = $bdd->query('SELECT * FROM filesgroups');

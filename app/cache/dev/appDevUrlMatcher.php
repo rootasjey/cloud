@@ -141,12 +141,8 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         }
 
         // delete_user
-        if (rtrim($pathinfo, '/') === '/deleteuser') {
-            if (substr($pathinfo, -1) !== '/') {
-                return $this->redirect($pathinfo.'/', 'delete_user');
-            }
-
-            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deleteuserAction',  '_route' => 'delete_user',);
+        if (0 === strpos($pathinfo, '/deleteuser') && preg_match('#^/deleteuser/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'delete_user')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deleteuserAction',));
         }
 
         // connect_user

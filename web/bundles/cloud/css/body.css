@@ -86,12 +86,12 @@
     background-color: black;
 }
 .square-icon {
-    height: 100px;
-    width: 100px;
+    height      : 100px;
+    width       : 100px;
 
-    margin: auto;
-    margin-top: 30px;
-    display: block;
+    margin      : auto;
+    margin-top  : 30px;
+    display     : block;
 }
 
 
@@ -109,81 +109,80 @@
 }
 
 .categorie-panel {
-    top: -10px;
-    left: -10px;
+    top             : -10px;
+    left            : -10px;
 
-    width: 100%;
-    height: 500px;
+    width           : 100%;
+    height          : 500px;
 
-    padding: 10px;
-    margin-bottom: -20px;
-    margin-top: 20px;
+    padding         : 10px;
+    margin-bottom   : -20px;
+    margin-top      : 20px;
 
-    overflow: auto;
-    position: relative;
+    overflow        : auto;
+    position        : relative;
 }
 .categorie-panel .title-panel {
-    color: white;
-    font-size: 3em;
-    text-align: center;
-    display: block;
+    color       : white;
+    font-size   : 3em;
+    text-align  : center;
+    display     : block;
 }
 .categorie-panel-content {
     /*width: 50%;*/
     margin: auto;
 }
 #files-panel {
-    display: none;
-    background: #e74c3c;
+    display     : none;
+    background  : #e74c3c;
 }
 #filesgroups-panel {
-    display: none;
-    position: relative;
-    background: #c0392b;
+    display     : none;
+    position    : relative;
+    background  : #c0392b;
 }
 #users-panel {
-    display: none;
-    position: relative;
-    background: #3498db;
+    display     : none;
+    position    : relative;
+    background  : #3498db;
 }
 #usersgroups-panel {
-    display: none;
-    position: relative;
-    background: #2980b9;
+    display     : none;
+    position    : relative;
+    background  : #2980b9;
 }
-
 #users-panel .categorie-panel-content {
     width: 260px;
 }
 
 .action-panel {
-    height: 80px;
-    width: 70px;
+    height      : 80px;
+    width       : 70px;
 
-    margin: auto;
-    margin-top: 10px;
+    margin      : auto;
+    margin-top  : 10px;
 }
 .action-panel .icon-button {
-    height: 70px;
-    width: 70px;
+    height      : 70px;
+    width       : 70px;
 
-    cursor: pointer;
-    margin: 5px;
+    cursor      : pointer;
+    margin      : 5px;
 
-    opacity: 0.5;
-    transition: 0.5s;
+    opacity     : 0.5;
+    transition  : 0.5s;
 }
 .action-panel .icon-button:hover {
-    opacity: 1;
-    transition: 0.5s;
+    opacity     : 1;
+    transition  : 0.5s;
 }
 
 
 /*STYLE POUR LA LISTE DES UTILISATEURS*/
 .row {
-    color: white;
-    display: block;
-    font-size: 1.5em;
+    color       : white;
+    display     : block;
+    font-size   : 1.5em;
 }
 .row .avatar {
     height          : 60px;
@@ -225,74 +224,74 @@
     transition: 0.5s;
 }
 .row .icon-button:hover {
-    opacity: 1;
-    transition: 0.5s;
+    opacity     : 1;
+    transition  : 0.5s;
 }
 .row .user-groupid {
-    cursor: pointer;
-    transition: .5s;
+    cursor      : pointer;
+    transition  : .5s;
 }
 .row .user-groupid:hover {
-    color: #e74c3c;
-    transition: .5s;
+    color       : #e74c3c;
+    transition  : .5s;
 
 }
 .row .user-name {
-    cursor: pointer;
-    transition: .5s;
+    cursor      : pointer;
+    transition  : .5s;
 }
 .row .user-name:hover {
-    color: #e74c3c;
-    transition: .5s;
+    color       : #e74c3c;
+    transition  : .5s;
 
 }
 
 /*STYLE POUR LA LISTE DES GROUPES*/
 .group-card {
-    height: 230px;
-    width: 200px;
+    height              : 230px;
+    width               : 200px;
 
-    color: white;
-    font-size: 1.5em;
-    text-align: center;
+    color               : white;
+    font-size           : 1.5em;
+    text-align          : center;
 
-    opacity: .8;
-    cursor: pointer;
-    overflow: hidden;
-    border-radius: 10px;
-    background-color: #2c3e50;
+    opacity             : .8;
+    cursor              : pointer;
+    overflow            : hidden;
+    border-radius       : 10px;
+    background-color    : #2c3e50;
 
-    margin: 10px;
-    padding: 20px;
-    position: relative;
-    display: inline-block;
+    margin              : 10px;
+    padding             : 20px;
+    position            : relative;
+    display             : inline-block;
 
     -moz-box-shadow     : 0 0 5px #000000;
     -webkit-box-shadow  : 0 0 5px #000000;
     box-shadow          : 0 0 5px #000000;
 
-    transition: .5s;
+    transition          : .5s;
 }
 .group-card:hover {
-    opacity: 1;
+    opacity             : 1;
 
     -moz-box-shadow     : 0 0 20px #000000;
     -webkit-box-shadow  : 0 0 20px #000000;
     box-shadow          : 0 0 20px #000000;
 
-    transition: .5s;
+    transition          : .5s;
 }
 .group-card-header {
-    height: 40px;
-    width: 100%;
-    background: #e74c3c;
+    height      : 40px;
+    width       : 100%;
+    background  : #e74c3c;
 
-    top: -20px;
-    left: -20px;
-    position: relative;
+    top         : -20px;
+    left        : -20px;
+    position    : relative;
 
-    color: white;
-    padding: 20px;
+    color       : white;
+    padding     : 20px;
 }
 .group-card .group-id {
     display: block;
@@ -301,29 +300,29 @@
     display: block;
 }
 .group-card .text-button {
-    cursor: pointer;
-    font-size: 0.7em;
+    cursor      : pointer;
+    font-size   : 0.7em;
     margin-right: 10px;
 
-    display: inline-block;
+    display     : inline-block;
 
-    left: 5px;
-    position: relative;
+    left        : 5px;
+    position    : relative;
 }
 .group-card .text-button:hover {
     text-decoration: underline;
 }
 
 .icon-button[func="refreshpanel"] {
-  height: 40px;
-  width: 40px;
-  cursor: pointer;
+  height    : 40px;
+  width     : 40px;
+  cursor    : pointer;
 
-  top: 10px;
-  right: 60px;
-  position: absolute;
+  top       : 10px;
+  right     : 60px;
+  position  : absolute;
 
-  opacity: .5;
+  opacity   : .5;
   transition: .5s;
 }
 .icon-button[func="refreshpanel"]:hover {
@@ -341,59 +340,63 @@ hr {
     border-style: solid;
     border-width: 1px;
     border-color: white;
-    width: 170px;
-    margin: 30px;
+    width       : 170px;
+    margin      : 30px;
 }
 
 /*STYLE POUR LA LISTE DES FICHIERS*/
 #files-panel .files-list {
-    background: #eee;
-    overflow: hidden;
+    background      : #eee;
+    overflow        : hidden;
 
-    width: 800px;
-    margin: auto;
-    margin-top: 50px;
+    width           : 800px;
+    margin          : auto;
+    margin-top      : 50px;
 
-    padding: 20px;
-    border-radius: 10px;
+    padding         : 20px;
+    border-radius   : 10px;
+    display         : none;
+    position        : relative;
 }
 #files-panel .files-list thead {
-    width: 110%;
-    padding: 20px;
-    font-size: 1.4em;
+    width           : 110%;
+    padding         : 20px;
+    font-size       : 1.4em;
 
-    display: inline-block;
-    border-radius: 10px;
+    display         : inline-block;
+    border-radius   : 10px;
 
-    top: -20px;
-    left: -20px;
-    position: relative;
+    top             : -20px;
+    left            : -20px;
+    position        : relative;
 }
 #files-panel .files-list tbody {
-    width: 100%;
-    padding: 20px;
-    display: inline-block;
+    width           : 100%;
+    padding         : 20px;
+    display         : inline-block;
 
-    left: -20px;
-    bottom: -20px;
-    position: relative;
+    left            : -20px;
+    bottom          : -20px;
+    position        : relative;
     background-color: white;
 }
 #files-panel .files-list th {
     margin-right: 80px;
-    display: inline-block;
+    display     : inline-block;
 }
 #files-panel .files-list tr {
-    cursor: pointer;
-    transition: .5s;
+    cursor      : pointer;
+    position    : relative;
+    opacity     : 0;
+    transition  : .5s;
 }
 #files-panel .files-list tr:hover {
     background: #eee;
     transition: .5s;
 }
 #files-panel .files-list .td-name, .td-group, .td-type, .td-pubdate, .td-owner {
-    width: 148px;
-    display: inline-block;
+    width   : 148px;
+    display : inline-block;
 }
 #files-panel .files-list .td-path, .td-tags {
     display: none;

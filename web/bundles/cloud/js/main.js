@@ -196,6 +196,7 @@ function showUserAvatar() {
 
 // Masque l'avatar de l'utilisateur au niveau du header
 function hideUserAvatar() {
+    var avatar  = $(".header-avatar");
     avatar.off("click");
 
     var img = $(".header-avatar-img");

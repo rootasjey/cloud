@@ -24,6 +24,8 @@ function showCategories() {
 
         delay += 200;
     });
+
+    clickRefresh();
 }
 
 // Masque les catégories si l'utilisateur se déconnecte
@@ -125,6 +127,23 @@ function sendAjaxRequest(url) {
     http.open("POST", url);
     http.send();
 }
+
+function sendAjaxRequestWithParameters(url, parameter) {
+    var http = new XMLHttpRequest();
+    var _url = url + "/" + parameter;
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            var data = http.response;
+
+            if (_url == "/cloud/web/app_dev.php/deleteuser/" + parameter) {
+                viewDeleteuserResult(data);
+            }
+        }
+    }
+    http.open("POST", _url);
+    http.send();
+}
 // FIN FONCTIONS AJAX
 // ------------------
 
@@ -169,7 +188,6 @@ function viewUsers() {
     var url = "/cloud/web/app_dev.php/viewusers";
     sendAjaxRequest(url);
 
-    // startLoadingAnimation(); // starts loading animation
     startLoadingAnimationCustomPlace("#users-panel .categorie-panel-content");
 }
 
@@ -186,6 +204,11 @@ function viewUsersgroups() {
     startLoadingAnimationCustomPlace("#usersgroups-panel .categorie-panel-content");
 }
 
+function deleteUser(id) {
+    var url = "/cloud/web/app_dev.php/deleteuser";
+    // sendAjaxRequest(url);
+    sendAjaxRequestWithParameters(url, id);
+}
 // FIN FONCTIONS DEMANDANT LES DONNEES
 // -----------------------------------
 
@@ -240,6 +263,7 @@ function viewUsersResult(data) {
         var deleteIcon = $("<img>", {
             class: "icon-button",
             func: "delete-user",
+            userid: data[i].id,
             src : "/cloud/web/bundles/cloud/icon/minus-icon.png"
         });
 
@@ -258,6 +282,9 @@ function viewUsersResult(data) {
     addTooltip(".user-groupid", "id du group de l'utilisateur");
     addTooltip(".icon-button[func='edit-user']", "editer");
     addTooltip(".icon-button[func='delete-user']", "supprimer");
+
+    // Evénements
+    clickDelete(); // événement de suppression
 
     // Arrête l'animation de chargement
     stopLoadingAnimationCustomPlace("#users-panel .categorie-panel-content");
@@ -333,6 +360,7 @@ function viewFilesResult(data) {
     }
 
     // Récupère l'objet où on va insérer le contenu
+    var fileslist = $("#files-panel .categorie-panel-content .files-list");
     var content = $("#files-panel .categorie-panel-content .files-list .table-body");
 
     // Traitement des données
@@ -353,6 +381,13 @@ function viewFilesResult(data) {
 
     // Arrête l'animation de chargement
     stopLoadingAnimationCustomPlace("#files-panel .categorie-panel-content");
+
+    // Animations
+    fileslist.css({ display: "block", opacity: "0", top: "20px"})
+             .animate({ opacity: "1", top :"0" });
+    $("#files-panel .files-list tr").each(function () {
+        $(this).css({ opacity: "0", top: "20px" }).animate({ opacity: "1", top: "0" });
+    });
 }
 
 function viewFilesgroupsResult(data) {
@@ -415,5 +450,56 @@ function viewFilesgroupsResult(data) {
     // Stop l'animation de chargement
     stopLoadingAnimationCustomPlace("#filesgroups-panel .categorie-panel-content");
 }
+
+function viewDeleteuserResult(data) {
+    if (data === "OK") {
+        var text = "L'utilisateur a été supprimé(e) avec succès."
+        showMessage(text, "error");
+        refreshUsers();
+    }
+    else {
+        var text = "Désolé, nous n'avons pas pu supprimer l'utilisateur."
+        showMessage(text, "error");
+        refreshUsers();
+    }
+}
 // FIN FONCTIONS TRAITANT LES RESULTATS DES DONNEES
 // --------------------------------------------------
+
+// DEBUT FONCTIONS DE RAFRAICHISSEMENT DES DONNEES
+// -----------------------------------------------
+function refreshUsers() {
+    // Vide le contenu
+    var content = $("#users-panel .categorie-panel-content");
+    content.html("");
+
+    // Envoie une nouvelle requête au serveur
+    viewUsers();
+}
+
+// FIN FONCTIONS DE RAFRAICHISSEMENT DES DONNEES
+// -----------------------------------------------
+
+
+// DEBUT EVENEMENTS
+// ----------------
+function clickDelete() {
+    $(".icon-button[func='delete-user']").click(function () {
+        var id = $(this).attr("userid");
+        deleteUser(id);
+    });
+}
+
+function clickRefresh() {
+    $(".icon-button[func='refreshpanel']").off("click");
+    $(".icon-button[func='refreshpanel']").click(function () {
+        var panel = $(this).parent();
+        var id = panel.attr("id");
+
+        if (id === "users-panel") {
+            refreshUsers();
+        }
+    });
+}
+// FIN EVENEMENTS
+// --------------
