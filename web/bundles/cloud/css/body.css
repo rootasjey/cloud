@@ -46,9 +46,9 @@
 .middle-content .categories {
     width           : 78%;
     padding         : 10px;
-    margin          : auto;
-    margin-top      : 42px;
-    margin-bottom   : 42px;
+    margin          : 25%;
+    margin-top      : 10px;
+    margin-bottom   : 10px;
     display         : none;
 }
 .middle-content .categories .square {
