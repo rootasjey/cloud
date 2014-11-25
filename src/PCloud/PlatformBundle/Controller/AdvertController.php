@@ -69,6 +69,7 @@ class AdvertController extends Controller
 
 			return $json;
 		}
+
 		catch (Exception $e) {
 			die('Erreur : ' . $e->getMessage());
 		}

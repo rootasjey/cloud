@@ -11,60 +11,80 @@ function prepareLoginForm() {
   var form = "#userform";
   prepareAjaxForm(form);
 }
+//fonction qui verifie que les champs ne sont pas vide
+function verifyEmpty() {
+  var login     = $("input[name='login']");
+  var password  = $("input[name='password']");
+  var button    = $("input[type='submit']");
+
+  button.prop("disabled", true);
+
+  login.change(function () {
+      var loginValue = $(this)[0].value;
+      if (loginValue === "") {
+          showMessage("Vous devez entrer un login valide", "error");
+          button.prop("disabled", true);
+      }
+      else {
+          button.prop("disabled", false);
+      }
+  });
+}
 
 // Lie la fonction ajax au formulaire
 // (qui sera appelée lors de la validation/l'envoi du formulaire)
 function prepareAjaxForm(form) {
-  var request; // variable to hold request
+    var request; // variable to hold request
+    verifyEmpty();
 
-  // Bind to the submit event of our form
-  $(form).submit(function(event) {
-      if (request) request.abort(); // abort any pending request
+    // Bind to the submit event of our form
+    $(form).submit(function(event) {
+        if (request) request.abort(); // abort any pending request
 
-      // Setup some local variables
-      var $form = $(this);
-      var $inputs = $form.find("input, select, button, textarea"); // cache fields
-      var serializedData = $form.serialize();  // serialize the data in the form
-      var url = $(this).attr('action');
+        // Setup some local variables
+        var $form = $(this);
+        var $inputs = $form.find("input, select, button, textarea"); // cache fields
+        var serializedData = $form.serialize();  // serialize the data in the form
+        var url = $(this).attr('action');
 
-      $inputs.prop("disabled", true); // disable inputs for the duration of the ajax request
+        $inputs.prop("disabled", true); // disable inputs for the duration of the ajax request
 
 
-      request = $.ajax({
-          url: url,
-          type: "POST",
-          data: serializedData
-      });
+        request = $.ajax({
+        url: url,
+        type: "POST",
+        data: serializedData
+        });
 
-      // callback handler that will be called on success
-      request.done(function(response, textStatus, jqXHR) {
-          if (url === "/cloud/web/app_dev.php/login/") {
-            loginResult(response);
-          }
-          else if (url === "/cloud/web/app_dev.php/signup/") {
-            signupResult(response);
-          }
-          else if (url === "/cloud/web/app_dev.php/viewusers") {
-            // Vérifie la route
-            console.log(response);
-          }
-      });
+        // callback handler that will be called on success
+        request.done(function(response, textStatus, jqXHR) {
+            if (url === "/cloud/web/app_dev.php/login/") {
+                loginResult(response);
+            }
+            else if (url === "/cloud/web/app_dev.php/signup/") {
+                signupResult(response);
+            }
+            else if (url === "/cloud/web/app_dev.php/viewusers") {
+                // Vérifie la route
+                console.log(response);
+            }
+        });
 
-      // callback handler that will be called on failure
-      request.fail(function(jqXHR, textStatus, errorThrown) {
-          console.error("The following error occured : " + textStatus, errorThrown);
-      });
+            // callback handler that will be called on failure
+            request.fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("The following error occured : " + textStatus, errorThrown);
+        });
 
-  // callback handler that will be called regardless
-  // if the request failed or succeeded
-  request.always(function () {
-      // reenable the inputs
-      $inputs.prop("disabled", false);
-  });
+        // callback handler that will be called regardless
+        // if the request failed or succeeded
+        request.always(function () {
+            // reenable the inputs
+            $inputs.prop("disabled", false);
+        });
 
-  // prevent default posting of form
-  event.preventDefault();
-  });
+        // prevent default posting of form
+        event.preventDefault();
+    });
 }
 
 // FIN METHODES AJAX
