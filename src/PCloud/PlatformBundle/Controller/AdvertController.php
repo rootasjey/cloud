@@ -187,4 +187,43 @@ class AdvertController extends Controller
 			die('Erreur : ' . $e->getMessage());
 		}
 	}
+
+	//creation des utilisateurs
+	public function creatuserAction() {
+
+		try
+		{
+			// On se connecte � MySQL
+			//$bdd = new PDO('mysql:host=localhost;', 'root', '');
+		$bdd = new \PDO('mysql:host=localhost;', 'mot', 'user');
+		}
+		catch(Exception $e)
+		{
+			// En cas d'erreur, on affiche un message et on arr�te tout
+				die('Erreur : '.$e->getMessage());
+		}
+		// GRANT SELECT ON cloud.users TO 'tt4'@localhost;
+
+		// $requestgrant=$bdd->prepare("GRANT INSERT ON cloud.users TO 'mot'@localhost;");
+		// $requestgrant->execute();
+
+		$test1='mot';
+		$test2='localhost';
+		$test3='user';
+		$request=$bdd->prepare("insert into cloud.users(`id`,`groupid`,`name`,`password`,`email`,`subscriptiondate`)
+		value (?,?,?,?,?,?);");
+		$request->execute(array(26,1,$test3,'2','1','1'));
+
+		/*en premier*/
+		$request=$bdd->prepare("CREATE user ?@? IDENTIFIED BY ?;");
+		$request->execute(array($test1,$test2,$test3));
+		echo "reussi";
+		//$responce=$bdd->query('select * from cloud.vue1 ');
+		/* while($test=$responce->fetch()){
+		echo $test['name'];
+		}*/
+	
+
+	}
+
 }

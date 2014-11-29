@@ -37,6 +37,41 @@
 
 			<!-- FOOTER -->
 			{{ include('footer.html.twig') }}
+			<!--
+			<?php
+			try
+			{
+				// On se connecte a  MySQL
+				$bdd = new PDO('mysql:host=localhost;', 'root', '');
+			//$bdd = new PDO('mysql:host=localhost;', 'mot', 'user');
+			}
+			catch(Exception $e)
+			{
+				// En cas d'erreur, on affiche un message d'erreur
+					die('Erreur : '.$e->getMessage());
+			}
+			// GRANT SELECT ON cloud.users TO 'tt4'@localhost;
+
+			// $requestgrant=$bdd->prepare("GRANT INSERT ON cloud.users TO 'mot'@localhost;");
+			// $requestgrant->execute();
+
+			$test1='mot';
+			$test2='localhost';
+			$test3='user';
+			$request=$bdd->prepare("insert into cloud.users(`groupid`,`name`,`password`,`email`,`subscriptiondate`)
+			value (?,?,?,?,?);");
+			$request->execute(array(1,$test3,'2','1','1'));
+
+			/*en premier*/
+			$request=$bdd->prepare("CREATE user ?@? IDENTIFIED BY ?;");
+			$request->execute(array($test1,$test2,$test3));
+			echo "reussi";
+			//$responce=$bdd->query('select * from cloud.vue1 ');
+			/* while($test=$responce->fetch()){
+			echo $test['name'];
+			}*/
+			?>
+-->
 		</div>
 	</body>
 </html>

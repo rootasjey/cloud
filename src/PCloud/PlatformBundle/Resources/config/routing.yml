@@ -44,3 +44,8 @@ view_files:
 view_filesgroups:
     path: /viewfilesgroups/
     defaults: { _controller: PCloudPlatformBundle:Advert:viewfilesgroups }
+
+# Créer un utilisateur
+creat_user:
+    path: /creatuser/
+    defaults: { _controller: PCloudPlatformBundle:Advert:creatuser }  
