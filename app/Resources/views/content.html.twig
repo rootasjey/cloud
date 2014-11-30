@@ -49,10 +49,12 @@
                         <th>owner</th>
                     </tr>
                 </thead>
-                <tbody class="table-body">
 
+                <tbody class="table-body">
                 </tbody>
             </table>
+
+            {{ include('forms/addfile.html.twig') }}
         </div>
     </div>
 
@@ -69,7 +71,11 @@
 
 
         <div class="categorie-panel-content">
-            <!-- Le contenu va ici (résultat des requêtes sql) -->
+            <div class="filesgroups">
+                <!-- Le contenu va ici (résultat des requêtes sql) -->
+            </div>
+
+            {{ include('forms/addfilegroup.html.twig') }}
         </div>
     </div>
 
@@ -83,10 +89,14 @@
         <div class="action-panel">
             <img class="icon-button" func="add" src="{{ asset('bundles/cloud/icon/adduser-icon.png') }}" alt="addfile" />
         </div>
-
         <hr> </hr>
+
         <div class="categorie-panel-content">
-            <!-- Le contenu va ici (résultat des requêtes sql) -->
+            <div class="users">
+                <!-- Le contenu va ici (résultat des requêtes sql) -->
+            </div>
+
+            {{ include('forms/adduser.html.twig') }}
         </div>
     </div>
 
@@ -102,7 +112,12 @@
         </div>
 
         <div class="categorie-panel-content">
-            <!-- Le contenu va ici (résultat des requêtes sql) -->
+            <div class="usersgroups">
+                <!-- Le contenu va ici (résultat des requêtes sql) -->
+            </div>
+
+
+            {{ include('forms/addusergroup.html.twig') }}
         </div>
     </div>
 </div>

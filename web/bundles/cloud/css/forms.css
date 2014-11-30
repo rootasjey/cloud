@@ -5,14 +5,14 @@
 .connection-panel {
     position  : relative;
 }
-#userform{
+form{
   width     : 300px;
   margin    : auto;
   position  : relative;
 }
-#userform input[type='text'],
-  #userform input[type='password'],
-  #userform input[type='email'] {
+form input[type='text'],
+form input[type='password'],
+form input[type='email'] {
 
     display: block;
     margin-bottom: 10px;
@@ -28,9 +28,10 @@
 
     position: relative;
 }
-#userform input[type='submit'] {
+form input[type='submit'] {
   color: white;
   display: block;
+  margin-top: 20px;
   margin-bottom: 10px;
 
   height: 40px;
@@ -48,17 +49,33 @@
   background-color: #e74c3c;
   transition: 0.5s;
 }
-#userform input[type='submit']:hover {
+form input[type='submit']:hover {
   background-color: #27ae60;
   opacity: 1;
   transition: 0.5s;
 }
-#userform .text-button {
+form .text-button {
   cursor: pointer;
 }
-#userform .text-button:hover {
+form .text-button:hover {
   text-decoration: underline;
 }
-#userform .signup-section {
+form .signup-section {
   display: none;
+}
+form select {
+    display: block;
+}
+
+.contentform {
+    display: none;
+}
+.contentform .title {
+    color: white;
+}
+.contentform input[type='submit'] {
+    background-color: rgba(0,0,0,0.2);
+}
+.contentform input[type='submit']:hover {
+    background-color: rgba(0,0,0,0.7);
 }

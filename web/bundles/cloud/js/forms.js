@@ -11,6 +11,27 @@ function prepareLoginForm() {
   var form = "#userform";
   prepareAjaxForm(form);
 }
+
+function prepareAdduserForm() {
+    var form = "#adduserform";
+    prepareAjaxForm(form);
+}
+
+function prepareAddfileForm() {
+    var form = "#addfileform";
+    prepareAjaxForm(form);
+}
+
+function prepareAddusergroupForm() {
+    var form = "#addusergroupform";
+    prepareAjaxForm(form);
+}
+
+function prepareAddfilegroupForm() {
+    var form = "#addfilegroupform";
+    prepareAjaxForm(form);
+}
+
 //fonction qui verifie que les champs ne sont pas vide
 function verifyEmpty() {
   var login     = $("input[name='login']");
@@ -51,22 +72,31 @@ function prepareAjaxForm(form) {
 
 
         request = $.ajax({
-        url: url,
-        type: "POST",
-        data: serializedData
+            url: url,
+            type: "POST",
+            data: serializedData
         });
 
         // callback handler that will be called on success
         request.done(function(response, textStatus, jqXHR) {
+
             if (url === "/cloud/web/app_dev.php/login/") {
                 loginResult(response);
             }
             else if (url === "/cloud/web/app_dev.php/signup/") {
                 signupResult(response);
             }
-            else if (url === "/cloud/web/app_dev.php/viewusers") {
-                // Vérifie la route
-                console.log(response);
+            else if (url === "/cloud/web/app_dev.php/adduser") {
+                adduserResult(response);
+            }
+            else if (url === "/cloud/web/app_dev.php/addfile") {
+                addfileResult(response);
+            }
+            else if (url === "/cloud/web/app_dev.php/addusergroup") {
+                addusergroupResult(response);
+            }
+            else if (url === "/cloud/web/app_dev.php/addfilegroup") {
+                addfilegroupResult(response);
             }
         });
 
@@ -139,7 +169,7 @@ function toggleSignupClicked() {
   }
 }
 
-// Afiche/Masque le panneau de connexion
+// Affiche le panneau de connexion
 function showConnectionPanel() {
     var cpanel = $(".connection-panel");
     if (cpanel.css("display") === "block")
@@ -157,6 +187,122 @@ function showConnectionPanel() {
     })
 }
 
+// Masque le panneau de connexion
+function hideConnectionPanel() {
+    // Masque le panel de connexion
+    var cpanel = $(".connection-panel");
+
+    cpanel.animate({
+        height: "0"
+    }, {
+        complete: function () {
+            $(this).css("display", "none");
+        }
+    });
+
+    // Affiche l'avatar au niveau du header
+    showUserAvatar();
+}
+
+function toggleAddFile() {
+    // Récupère le formulaire s'il est présent
+    var form = $("#files-panel .contentform");
+
+    // Affiche le formulaire s'il n'est pas visible
+    if (form.css("display") !== "block") {
+        // Masque la liste de fichiers
+        $("#files-panel .files-list").css({ display: "none" });
+
+        // Affiche le formulaire
+        form.css({ display: "block", opacity: "0" })
+        .animate({ opacity: "1" });
+    }
+    else { // Masque le formulaire s'il est visible
+
+        // Masque le formulaire
+        form.css({ display: "none" });
+
+        // Affiche la liste de fichiers
+        $("#files-panel .files-list")
+        .css({ display: "block", opacity: "0" })
+        .animate({ opacity: "1" });
+    }
+}
+
+function toggleAddUser() {
+    // Récupère le formulaire s'il est présent
+    var form = $("#users-panel .contentform");
+
+    // Affiche le formulaire s'il n'est pas visible
+    if (form.css("display") !== "block") {
+        // Masque la liste de fichiers
+        $("#users-panel .users").css({ display: "none" });
+
+        // Affiche le formulaire
+        form.css({ display: "block", opacity: "0" })
+        .animate({ opacity: "1" });
+    }
+    else { // Masque le formulaire s'il est visible
+
+        // Masque le formulaire
+        form.css({ display: "none" });
+
+        // Affiche la liste de fichiers
+        $("#users-panel .users")
+        .css({ display: "block", opacity: "0" })
+        .animate({ opacity: "1" });
+    }
+}
+
+function toggleAddFilegroup() {
+    // Récupère le formulaire s'il est présent
+    var form = $("#filesgroups-panel .contentform");
+
+    // Affiche le formulaire s'il n'est pas visible
+    if (form.css("display") !== "block") {
+        // Masque la liste de fichiers
+        $("#filesgroups-panel .filesgroups").css({ display: "none" });
+
+        // Affiche le formulaire
+        form.css({ display: "block", opacity: "0" })
+        .animate({ opacity: "1" });
+    }
+    else { // Masque le formulaire s'il est visible
+
+        // Masque le formulaire
+        form.css({ display: "none" });
+
+        // Affiche la liste de fichiers
+        $("#filesgroups-panel .filesgroups")
+        .css({ display: "block", opacity: "0" })
+        .animate({ opacity: "1" });
+    }
+}
+
+function toggleAddUsergroup() {
+    // Récupère le formulaire s'il est présent
+    var form = $("#usersgroups-panel .contentform");
+
+    // Affiche le formulaire s'il n'est pas visible
+    if (form.css("display") !== "block") {
+        // Masque la liste de fichiers
+        $("#usersgroups-panel .usersgroups").css({ display: "none" });
+
+        // Affiche le formulaire
+        form.css({ display: "block", opacity: "0" })
+        .animate({ opacity: "1" });
+    }
+    else { // Masque le formulaire s'il est visible
+
+        // Masque le formulaire
+        form.css({ display: "none" });
+
+        // Affiche la liste de fichiers
+        $("#usersgroups-panel .usersgroups")
+        .css({ display: "block", opacity: "0" })
+        .animate({ opacity: "1" });
+    }
+}
 // FIN FONCTIONS LIEES A L'AFFICHAGE
 // ---------------------------------
 
@@ -175,48 +321,95 @@ function loginResult(response) {
     checkAuth();
 
     // Affiche un message
-    var textMessage = "You're now logged in";
+    var textMessage = "Vous êtes maintenant connecté(e)";
     showMessage(textMessage, "information");
 
-    // Masque le panel de connexion
-    $(".connection-panel")
-    .animate({
-        height: "0"
-    }, {
-        complete: function () {
-            $(this).css("display", "none");
-        }
-    });
 
-    // Affiche l'avatar au niveau du header
-    showUserAvatar();
+    showConnectionPanel();
   }
   else {
-    var textMessage = "Sorry, wrong password or login";
+    var textMessage = "Désolé, le login ou le mot de passe est erroné";
     showMessage(textMessage, "error");
   }
 }
 
 // Fonction post-traitement ajax pour l'inscription
 function signupResult(response) {
-    if (response === "OK") {
-        var textMessage = "Your account has been created!";
+    if (response !== "fail") {
+        var textMessage = "Votre compte a bien été crée!";
         showMessage(textMessage, "information");
 
-        console.log(response);
-
+        // Remplit l'objet (javascript) _user
+        _user.name          = response["name"];
+        _user.email         = response["email"];
         _user.isconnected = true;
+
         checkAuth();
+        hideConnectionPanel();
     }
     else {
-        var textMessage = "Sorry, there was a problem";
+        var textMessage = "Désolé, un problème est survenu lors de la création de votre compte";
         showMessage(textMessage, "error");
     }
 }
 
+function adduserResult(response) {
+    if (response !== "fail") {
+        var textMEssage = "L'utilisateur a bien été ajouté";
+        showMessage(textMessage, "information");
+
+        // Recharger la liste des fichiers
+        refreshUsers();
+    }
+    else {
+        var textMEssage = "Désole, l'utilisateur n'a pas pu etre ajouté";
+        showMessage(textMessage, "error");
+    }
+}
+
+function addfileResult(response) {
+    if (response !== "fail") {
+        var textMEssage = "Le fichier a bien été ajouté";
+        showMessage(textMessage, "information");
+
+        // Recharger la liste des fichiers
+        refreshFiles();
+    }
+    else {
+        var textMEssage = "Désole, le fichier n'a pas pu etre ajouté";
+        showMessage(textMessage, "error");
+    }
+}
+
+function addusergroupResult(response) {
+    if (response !== "fail") {
+        var textMEssage = "Le groupe d'utilisateurs a bien été ajouté";
+        showMessage(textMessage, "information");
+
+        // Recharger la liste des fichiers
+        refreshUsersgroups();
+    }
+    else {
+        var textMEssage = "Désole, le groupe d'utilisateurs n'a pas pu etre ajouté";
+        showMessage(textMessage, "error");
+    }
+}
+
+function addfilegroupResult(response) {
+    if (response !== "fail") {
+        var textMEssage = "Le groupe de fichiers a bien été ajouté";
+        showMessage(textMessage, "information");
+
+        // Recharger la liste des fichiers
+        refreshFilesgroups();
+    }
+    else {
+        var textMEssage = "Désole, le groupe de fichiers n'a pas pu etre ajouté";
+        showMessage(textMessage, "error");
+    }
+}
 // FIN FONCTIONS DE TRAITEMENT DES DONNEES
 // ---------------------------------------
-
 
 
 // DEBUT FONCTIONS AUTRES

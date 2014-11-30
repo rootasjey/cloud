@@ -16,6 +16,7 @@ class AdvertController extends Controller
 
 	// Inscription à la base de données
 	public function signupAction() {
+		$groupid 	= "3"; // groupe par défaut
 		$login 		= $_POST["login"];
 		$password 	= $_POST["password"];
 		$email 		= $_POST["email"];
@@ -23,8 +24,8 @@ class AdvertController extends Controller
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");
 			$db   = mysql_select_db("cloud");
-			$sql  = "INSERT INTO users(name, password, email)
-			      VALUES( '$login', '$password', '$email')";
+			$sql  = "INSERT INTO users(groupid, name, password, email)
+			      VALUES('$groupid', '$login', '$password', '$email')";
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
@@ -37,24 +38,26 @@ class AdvertController extends Controller
 
 				return $response;
 			}
-				return new Response("FAIL");
+
+			return new Response("fail");
 		}
 
 		catch (Exception $e) {
 			die('Erreur : ' . $e->getMessage());
+			return new Response("fail");
 		}
 	}
 
 	// Connexion à la base de données
 	public function loginAction() {
 		// Récupère les champs du formulaire
-		$login = $_POST["login"];
-		$password = $_POST["password"];
+		$login 		= $_POST["login"];
+		$password 	= $_POST["password"];
 
 		try {
 			// Connexion à la bdd puis récupère l'utilisateur grâce au login
-			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
-			$request = $bdd->query("SELECT * FROM users WHERE name ='" . $login . "'");
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query("SELECT * FROM users WHERE name ='" . $login . "'");
 
 			$user = Array();
 			array_push($user, $request->fetch());
@@ -99,10 +102,10 @@ class AdvertController extends Controller
 	// Récupère les utilisateurs dans la base de données
 	public function viewusersAction() {
 		try {
-			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
-			$request = $bdd->query('SELECT * FROM users');
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query('SELECT * FROM users');
 
-			$users = Array();
+			$users 		= Array();
 
 			while ($v = $request->fetch()) {
 				array_push($users, $v);
@@ -122,8 +125,8 @@ class AdvertController extends Controller
 	// Récupères les groupes d'utilisateurs dans la base de données
 	public function viewusersgroupsAction() {
 		try {
-			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
-			$request = $bdd->query('SELECT * FROM usersgroups');
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query('SELECT * FROM usersgroups');
 
 			$usersgroups = Array();
 
@@ -145,10 +148,10 @@ class AdvertController extends Controller
 	// Récupères la liste des fichiers dans la base de données
 	public function viewfilesAction() {
 		try {
-			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
-			$request = $bdd->query('SELECT * FROM files');
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query('SELECT * FROM files');
 
-			$files = Array();
+			$files 		= Array();
 
 			while ($v = $request->fetch()) {
 				array_push($files, $v);
@@ -168,8 +171,8 @@ class AdvertController extends Controller
 	// Récupères les groupes de fichiers dans la base de données
 	public function viewfilesgroupsAction() {
 		try {
-			$bdd = new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
-			$request = $bdd->query('SELECT * FROM filesgroups');
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query('SELECT * FROM filesgroups');
 
 			$filesgroups = Array();
 
@@ -222,8 +225,76 @@ class AdvertController extends Controller
 		/* while($test=$responce->fetch()){
 		echo $test['name'];
 		}*/
-	
 
+
+	}
+
+	public function adduserAction() {
+		$groupid 	= "3"; // groupe par défaut
+		$login 		= $_POST["login"];
+		$password 	= $_POST["password"];
+		$email 		= $_POST["email"];
+
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "INSERT INTO users(groupid, name, password, email)
+			VALUES('$groupid', '$login', '$password', '$email')";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				$response = new JsonResponse();
+				$response->setData(array(
+					'name' => $login,
+					'email'=> $email
+				));
+
+				return $response;
+			}
+
+			return new Response("fail");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("fail");
+		}
+	}
+
+	public function addfileAction() {
+		$groupid 	= "1"; // groupe par défaut
+		$owner 		= $_POST["owner"];
+		$path 		= $_POST["path"];
+		$name 		= $_POST["name"];
+		$type 		= $_POST["type"];
+		$tags 		= $_POST["tags"];
+
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "INSERT INTO files(groupid, owner, path, name, type, tags)
+			VALUES('$groupid', '$owner', '$path', '$name', '$type', '$tags')";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				$response = new JsonResponse();
+				$response->setData(array(
+					'name' => $login,
+					'email'=> $email
+				));
+
+				return $response;
+			}
+
+			return new Response("fail");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("fail");
+		}
 	}
 
 }

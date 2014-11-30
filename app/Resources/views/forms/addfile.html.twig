@@ -1,0 +1,38 @@
+<!-- ADD FILE FORM -->
+<!-- This file will be included in the content.html.twig -->
+
+<form id="addfileform" class="contentform" action="/cloud/web/app_dev.php/addfile/" method="post">
+    <!-- ICON -->
+    <!-- <img src="{{ asset('bundles/cloud/icon/lock-icon.png') }}" alt="login" class="icon"/> -->
+
+    <!-- NAME INPUT -->
+    <span class="title">name</span>
+    <input type="text" name="name" placeholder="file's name">
+
+    <!-- PATH INPUT -->
+    <span class="title">path</span>
+    <input type="text" name="path" placeholder="path's file">
+
+    <!-- TAGS INPUT -->
+    <span class="title">tags</span>
+    <input type="text" name="tags" placeholder="tags">
+
+    <!-- FILE'S GROUP -->
+    <span class="title">file's group</span>
+    <select name="group">
+        <!-- Sera rempli dynamiquement -->
+    </select>
+
+    <!-- TYPE -->
+    <span class="title">file's type</span>
+    <select name="type">
+        <option value="text">Text</option>
+        <option value="image">Image</option>
+        <option value="music">Music</option>
+        <option value="video">Video</option>
+        <option value="other">Other</option>
+    </select>
+
+    <!-- SUBMIT BUTTON -->
+    <input type="submit" name="valid" value="UPLOAD">
+</form>

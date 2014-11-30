@@ -1,0 +1,32 @@
+<!-- ADD USER FORM -->
+<!-- This file will be included in the content.html.twig -->
+
+<form id="adduserform" class="contentform" action="/cloud/web/app_dev.php/adduser/" method="post">
+    <!-- ICON -->
+    <!-- <img src="{{ asset('bundles/cloud/icon/lock-icon.png') }}" alt="login" class="icon"/> -->
+
+    <!-- LOGIN INPUT -->
+    <span class="title">login</span>
+    <input type="text" name="login" placeholder="login">
+
+    <!-- PASSWORD INPUT -->
+    <span class="title">password</span>
+    <input type="password" name="password" placeholder="password">
+
+    <!-- PASSWORD CONFIRM INPUT -->
+    <span class="title">confirm password</span>
+    <input type="password" name="passwordconfirm" placeholder="password">
+
+    <!-- TAGS INPUT -->
+    <span class="title">email</span>
+    <input type="email" name="email" placeholder="email">
+
+    <!-- FILE'S GROUP -->
+    <span class="title">file's group</span>
+    <select name="group">
+        <!-- Sera rempli dynamiquement -->
+    </select>
+
+    <!-- SUBMIT BUTTON -->
+    <input type="submit" name="valid" value="ADD USER">
+</form>

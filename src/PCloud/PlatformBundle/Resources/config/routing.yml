@@ -4,7 +4,7 @@ p_cloud_platform_homepage:
     defaults: { _controller: PCloudPlatformBundle:Advert:index }
 
 # Inscrire un utilisateur à la base de données
-add_user:
+signup:
     path: /signup/
     defaults: { _controller: PCloudPlatformBundle:Advert:signup }
 
@@ -16,7 +16,7 @@ delete_user:
        id: \d+
 
 # Logger un utilisateur à la base de données
-connect_user:
+login:
     path: /login/
     defaults: { _controller: PCloudPlatformBundle:Advert:login }
 
@@ -48,4 +48,24 @@ view_filesgroups:
 # Créer un utilisateur
 creat_user:
     path: /creatuser/
-    defaults: { _controller: PCloudPlatformBundle:Advert:creatuser }  
+    defaults: { _controller: PCloudPlatformBundle:Advert:creatuser }
+
+# Ajout d'un utilisateur dans la base de données
+add_user:
+    path: /adduser/
+    defaults: { _controller: PCloudPlatformBundle:Advert:adduser }
+
+# Ajout d'un fichier dans la base de données
+add_file:
+    path: /addfile/
+    defaults: { _controller: PCloudPlatformBundle:Advert:addfile }
+
+# Ajout d'un group d'utilisateurs dans la base de données
+add_usergroup:
+    path: /addusergroup/
+    defaults: { _controller: PCloudPlatformBundle:Advert:addusergroup }
+
+# Ajout d'un groupe de fichiers dans la base de données
+add_filegroup:
+    path: /addfilegroup/
+    defaults: { _controller: PCloudPlatformBundle:Advert:addfilegroup }

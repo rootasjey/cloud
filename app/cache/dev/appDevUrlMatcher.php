@@ -208,6 +208,15 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
         }
 
+        // creat_user
+        if (rtrim($pathinfo, '/') === '/creatuser') {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'creat_user');
+            }
+
+            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::creatuserAction',  '_route' => 'creat_user',);
+        }
+
         // _welcome
         if (rtrim($pathinfo, '/') === '') {
             if (substr($pathinfo, -1) !== '/') {

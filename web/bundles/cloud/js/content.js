@@ -25,6 +25,7 @@ function showCategories() {
         delay += 200;
     });
 
+    clickAdd();
     clickRefresh();
 }
 
@@ -168,7 +169,7 @@ function viewFiles() {
 // Affiche la liste des groupes de fichiers
 function viewFilesgroups() {
     // Test si on n'a pas déjà récupéré les utilisateurs
-    var content = $("#filesgroups-panel .categorie-panel-content .group-card");
+    var content = $("#filesgroups-panel .categorie-panel-content .filesgroups .group-card");
     if (content.length > 0)
         return;
 
@@ -181,7 +182,7 @@ function viewFilesgroups() {
 // Affiche les utilisateurs
 function viewUsers() {
     // Test si on n'a pas déjà récupéré les utilisateurs
-    var content = $("#users-panel .categorie-panel-content .row");
+    var content = $("#users-panel .categorie-panel-content .users .row");
     if (content.length > 0)
         return;
 
@@ -194,7 +195,7 @@ function viewUsers() {
 // Affiche la liste des groupes d'utilisateurs
 function viewUsersgroups() {
     // Test si on n'a pas déjà récupéré les utilisateurs
-    var content = $("#usersgroups-panel .categorie-panel-content .group-card");
+    var content = $("#usersgroups-panel .categorie-panel-content .usersgroups .group-card");
     if (content.length > 0)
         return;
 
@@ -226,7 +227,7 @@ function viewUsersResult(data) {
     }
 
     // Récupère l'objet où on va insérer le contenu
-    var content = $("#users-panel .categorie-panel-content");
+    var content = $("#users-panel .categorie-panel-content .users");
 
     // Traitement des données
     for (var i = 0; i < data.length; i++) {
@@ -299,7 +300,7 @@ function viewUsersgroupsResult(data) {
     }
 
     // Récupère l'objet où on va insérer le contenu
-    var content = $("#usersgroups-panel .categorie-panel-content");
+    var content = $("#usersgroups-panel .categorie-panel-content .usersgroups");
 
     // Traitement des données
     for (var i = 0; i < data.length; i++) {
@@ -399,7 +400,7 @@ function viewFilesgroupsResult(data) {
     }
 
     // Récupère l'objet où on va insérer le contenu
-    var content = $("#filesgroups-panel .categorie-panel-content");
+    var content = $("#filesgroups-panel .categorie-panel-content .filesgroups");
 
     // Traitement des données
     for (var i = 0; i < data.length; i++) {
@@ -470,11 +471,41 @@ function viewDeleteuserResult(data) {
 // -----------------------------------------------
 function refreshUsers() {
     // Vide le contenu
-    var content = $("#users-panel .categorie-panel-content");
+    var content = $("#users-panel .categorie-panel-content .users");
     content.html("");
 
     // Envoie une nouvelle requête au serveur
     viewUsers();
+}
+
+function refreshFiles() {
+    // Vide le contenu
+    var content = $("#files-panel .categorie-panel-content .table-body");
+    content.html("");
+
+    // Masque le tableau
+    $("#files-panel .categorie-panel-content .files-list").css({ display: "none" });
+
+    // Envoie une nouvelle requête au serveur
+    viewFiles();
+}
+
+function refreshUsersgroups() {
+    // Vide le contenu
+    var content = $("#usersgroups-panel .categorie-panel-content .usersgroups");
+    content.html("");
+
+    // Envoie une nouvelle requête au serveur
+    viewUsersgroups();
+}
+
+function refreshFilesgroups() {
+    // Vide le contenu
+    var content = $("#filesgroups-panel .categorie-panel-content .filesgroups");
+    content.html("");
+
+    // Envoie une nouvelle requête au serveur
+    viewFilesgroups();
 }
 
 // FIN FONCTIONS DE RAFRAICHISSEMENT DES DONNEES
@@ -491,15 +522,50 @@ function clickDelete() {
 }
 
 function clickRefresh() {
-    $(".icon-button[func='refreshpanel']").off("click");
-    $(".icon-button[func='refreshpanel']").click(function () {
+    var button = ".icon-button[func='refreshpanel']";
+    $(button).off("click");
+    $(button).click(function () {
         var panel = $(this).parent();
         var id = panel.attr("id");
 
         if (id === "users-panel") {
             refreshUsers();
         }
+        else if (id === "usersgroups-panel") {
+            refreshUsersgroups();
+        }
+        else if (id === "files-panel") {
+            refreshFiles();
+        }
+        else if (id === "filesgroups-panel") {
+            refreshFilesgroups();
+        }
     });
+}
+
+function clickAdd() {
+    var button = ".icon-button[func='add']";
+
+    $(button).off("click");
+    $(button).click(function () {
+        var panel = $(this).parent().parent();
+        var id = panel.attr("id");
+
+
+        if (id === "users-panel") {
+            toggleAddUser();
+        }
+        else if (id === "usersgroups-panel") {
+            toggleAddUsergroup();
+        }
+        else if (id === "files-panel") {
+            toggleAddFile();
+        }
+        else if (id === "filesgroups-panel") {
+            toggleAddFilegroup();
+        }
+    });
+
 }
 // FIN EVENEMENTS
 // --------------
