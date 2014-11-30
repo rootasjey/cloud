@@ -337,7 +337,13 @@ class AdvertController extends Controller
 			$sql  = "INSERT INTO filesgroups(title)
 					 VALUES('$title')";
 
+     //pour créer la vue
+			$sq  = "CREATE VIEW cloud. $title  . AS
+			SELECT f.* FROM cloud.files f,cloud.filesgroups fg
+			WHERE f.groupid=fg.id AND fg.title= '" . $title . "'";
+
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
+			$request = mysql_query($sq, $bdd) or die(mysql_error());
 
 			if($request) {
 				$response = new JsonResponse();
@@ -451,7 +457,7 @@ class AdvertController extends Controller
 	// -----------------------------------
 	public function edituser()
 	{
-		
+
 	}
 
 
