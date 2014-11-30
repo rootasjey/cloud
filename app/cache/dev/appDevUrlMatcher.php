@@ -131,36 +131,22 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::indexAction',  '_route' => 'p_cloud_platform_homepage',);
         }
 
-        // add_user
+        // signup
         if (rtrim($pathinfo, '/') === '/signup') {
             if (substr($pathinfo, -1) !== '/') {
-                return $this->redirect($pathinfo.'/', 'add_user');
+                return $this->redirect($pathinfo.'/', 'signup');
             }
 
-            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::signupAction',  '_route' => 'add_user',);
+            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::signupAction',  '_route' => 'signup',);
         }
 
-        // delete_user
-        if (0 === strpos($pathinfo, '/deleteuser') && preg_match('#^/deleteuser/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
-            return $this->mergeDefaults(array_replace($matches, array('_route' => 'delete_user')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deleteuserAction',));
-        }
-
-        // connect_user
+        // login
         if (rtrim($pathinfo, '/') === '/login') {
             if (substr($pathinfo, -1) !== '/') {
-                return $this->redirect($pathinfo.'/', 'connect_user');
+                return $this->redirect($pathinfo.'/', 'login');
             }
 
-            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::loginAction',  '_route' => 'connect_user',);
-        }
-
-        // edit_user
-        if (rtrim($pathinfo, '/') === '/edit') {
-            if (substr($pathinfo, -1) !== '/') {
-                return $this->redirect($pathinfo.'/', 'edit_user');
-            }
-
-            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::edituserAction',  '_route' => 'edit_user',);
+            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::loginAction',  '_route' => 'login',);
         }
 
         if (0 === strpos($pathinfo, '/view')) {
@@ -215,6 +201,107 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             }
 
             return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::creatuserAction',  '_route' => 'creat_user',);
+        }
+
+        if (0 === strpos($pathinfo, '/add')) {
+            // add_user
+            if (rtrim($pathinfo, '/') === '/adduser') {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'add_user');
+                }
+
+                return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::adduserAction',  '_route' => 'add_user',);
+            }
+
+            // add_file
+            if (rtrim($pathinfo, '/') === '/addfile') {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'add_file');
+                }
+
+                return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addfileAction',  '_route' => 'add_file',);
+            }
+
+            // add_usergroup
+            if (rtrim($pathinfo, '/') === '/addusergroup') {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'add_usergroup');
+                }
+
+                return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addusergroupAction',  '_route' => 'add_usergroup',);
+            }
+
+            // add_filegroup
+            if (rtrim($pathinfo, '/') === '/addfilegroup') {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'add_filegroup');
+                }
+
+                return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addfilegroupAction',  '_route' => 'add_filegroup',);
+            }
+
+        }
+
+        if (0 === strpos($pathinfo, '/delete')) {
+            // delete_user
+            if (0 === strpos($pathinfo, '/deleteuser') && preg_match('#^/deleteuser/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'delete_user')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deleteuserAction',));
+            }
+
+            // delete_file
+            if (0 === strpos($pathinfo, '/deletefile') && preg_match('#^/deletefile/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'delete_file')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deletefileAction',));
+            }
+
+            // delete_usergroup
+            if (0 === strpos($pathinfo, '/deleteusergroup') && preg_match('#^/deleteusergroup/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'delete_usergroup')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deleteusergroupAction',));
+            }
+
+            // delete_filegroup
+            if (0 === strpos($pathinfo, '/deletefilegroup') && preg_match('#^/deletefilegroup/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'delete_filegroup')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deletefilegroupAction',));
+            }
+
+        }
+
+        if (0 === strpos($pathinfo, '/edit')) {
+            // edit_user
+            if (rtrim($pathinfo, '/') === '/edituser') {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'edit_user');
+                }
+
+                return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::edituserAction',  '_route' => 'edit_user',);
+            }
+
+            // edit_file
+            if (rtrim($pathinfo, '/') === '/editfile') {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'edit_file');
+                }
+
+                return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::editfileAction',  '_route' => 'edit_file',);
+            }
+
+            // edit_usergroup
+            if (rtrim($pathinfo, '/') === '/editusergroup') {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'edit_usergroup');
+                }
+
+                return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::editusergroupAction',  '_route' => 'edit_usergroup',);
+            }
+
+            // edit_filegroup
+            if (rtrim($pathinfo, '/') === '/editfilegroup') {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'edit_filegroup');
+                }
+
+                return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::editfilegroupAction',  '_route' => 'edit_filegroup',);
+            }
+
         }
 
         // _welcome

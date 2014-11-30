@@ -1,3 +1,7 @@
+# -------------------
+# ROUTING.YML (CLOUD)
+# -------------------
+
 # Accueil
 p_cloud_platform_homepage:
     path:     /
@@ -8,23 +12,15 @@ signup:
     path: /signup/
     defaults: { _controller: PCloudPlatformBundle:Advert:signup }
 
-# Supprimer un utilisateur de la base de données
-delete_user:
-   path: /deleteuser/{id}
-   defaults: { _controller: PCloudPlatformBundle:Advert:deleteuser }
-   requirements:
-       id: \d+
-
 # Logger un utilisateur à la base de données
 login:
     path: /login/
     defaults: { _controller: PCloudPlatformBundle:Advert:login }
 
-# Editer les informations d'un utilisateur
-edit_user:
-    path: /edit/
-    defaults: { _controller: PCloudPlatformBundle:Advert:edituser }
 
+# -----------------------
+# ROUTES DE VISUALISATION
+# -----------------------
 # Voir la liste des utilisateurs
 view_users:
     path: /viewusers/
@@ -50,6 +46,10 @@ creat_user:
     path: /creatuser/
     defaults: { _controller: PCloudPlatformBundle:Advert:creatuser }
 
+
+# -------------------------
+# ROUTES D'AJOUT DE DONNEES
+# -------------------------
 # Ajout d'un utilisateur dans la base de données
 add_user:
     path: /adduser/
@@ -69,3 +69,59 @@ add_usergroup:
 add_filegroup:
     path: /addfilegroup/
     defaults: { _controller: PCloudPlatformBundle:Advert:addfilegroup }
+
+
+# -------------------------------
+# ROUTES DE SUPPRESION DE DONNEES
+# -------------------------------
+# Suppression d'un utilisateur de la base de données
+delete_user:
+   path: /deleteuser/{id}
+   defaults: { _controller: PCloudPlatformBundle:Advert:deleteuser }
+   requirements:
+       id: \d+
+
+# Suppression d'un fichier de la base de données
+delete_file:
+   path: /deletefile/{id}
+   defaults: { _controller: PCloudPlatformBundle:Advert:deletefile }
+   requirements:
+       id: \d+
+
+# Suppression d'un groupe d'utilisateurs de la base de données
+delete_usergroup:
+   path: /deleteusergroup/{id}
+   defaults: { _controller: PCloudPlatformBundle:Advert:deleteusergroup }
+   requirements:
+       id: \d+
+
+# Suppression d'un groupe de fichiers de la base de données
+delete_filegroup:
+   path: /deletefilegroup/{id}
+   defaults: { _controller: PCloudPlatformBundle:Advert:deletefilegroup }
+   requirements:
+       id: \d+
+
+
+# ---------------------------------
+# ROUTES DE MODIFICATION DE DONNEES
+# ---------------------------------
+# Edition des informations d'un utilisateur
+edit_user:
+    path: /edituser/
+    defaults: { _controller: PCloudPlatformBundle:Advert:edituser }
+
+# Edition des informations d'un fichier
+edit_file:
+    path: /editfile/
+    defaults: { _controller: PCloudPlatformBundle:Advert:editfile }
+
+# Edition des informations d'un fichier
+edit_usergroup:
+    path: /editusergroup/
+    defaults: { _controller: PCloudPlatformBundle:Advert:editusergroup }
+
+# Edition des informations d'un fichier
+edit_filegroup:
+    path: /editfilegroup/
+    defaults: { _controller: PCloudPlatformBundle:Advert:editfilegroup }

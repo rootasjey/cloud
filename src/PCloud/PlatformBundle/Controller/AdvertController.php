@@ -9,6 +9,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AdvertController extends Controller
 {
+
+	// -------------------
+	// FONCTION PAR DEFAUT
+	// -------------------
+	// Accueil
 	public function indexAction() {
 		$content = $this->get('templating')->render('PCloudPlatformBundle:Advert:index.html.twig');
 		return new Response($content);
@@ -21,11 +26,13 @@ class AdvertController extends Controller
 		$password 	= $_POST["password"];
 		$email 		= $_POST["email"];
 
+		$today	 	= date("Y-m-d");
+
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");
 			$db   = mysql_select_db("cloud");
-			$sql  = "INSERT INTO users(groupid, name, password, email)
-			      VALUES('$groupid', '$login', '$password', '$email')";
+			$sql  = "INSERT INTO users(groupid, name, password, email, subscriptiondate)
+			      	 VALUES('$groupid', '$login', '$password', '$email', '$today')";
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
@@ -78,27 +85,11 @@ class AdvertController extends Controller
 		}
 	}
 
-	// Supprime un utilisateur de la base de données
-	public function deleteuserAction($id) {
-		try {
-			$bdd  = mysql_connect("localhost", "root", "");
-			$db   = mysql_select_db("cloud");
-			$sql  = "DELETE FROM users WHERE id='" . $id . "'";
 
-			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
-			if($request) {
-				return new Response("OK");
-			}
-				return new Response("FAIL");
-		}
-
-		catch (Exception $e) {
-			die('Erreur : ' . $e->getMessage());
-			return new Response("FAIL");
-		}
-	}
-
+	// ------------------------------------
+	// METHODES DE VISUALISATION DE DONNEES
+	// ------------------------------------
 	// Récupère les utilisateurs dans la base de données
 	public function viewusersAction() {
 		try {
@@ -229,17 +220,24 @@ class AdvertController extends Controller
 
 	}
 
+
+	// ---------------------------
+	// METHODES D'AJOUT DE DONNEES
+	// ---------------------------
+	// Ajout d'un utilisateur dans la base de données
 	public function adduserAction() {
 		$groupid 	= "3"; // groupe par défaut
 		$login 		= $_POST["login"];
 		$password 	= $_POST["password"];
 		$email 		= $_POST["email"];
 
+		$today	 	= date("Y-m-d");
+
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");
 			$db   = mysql_select_db("cloud");
-			$sql  = "INSERT INTO users(groupid, name, password, email)
-			VALUES('$groupid', '$login', '$password', '$email')";
+			$sql  = "INSERT INTO users(groupid, name, password, email, subscriptiondate)
+			VALUES('$groupid', '$login', '$password', '$email', '$today')";
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
@@ -262,6 +260,7 @@ class AdvertController extends Controller
 		}
 	}
 
+	// Ajout d'un fichier dans la base de données
 	public function addfileAction() {
 		$groupid 	= "1"; // groupe par défaut
 		$owner 		= $_POST["owner"];
@@ -270,19 +269,20 @@ class AdvertController extends Controller
 		$type 		= $_POST["type"];
 		$tags 		= $_POST["tags"];
 
+		$today	 	= date("Y-m-d");
+
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");
 			$db   = mysql_select_db("cloud");
-			$sql  = "INSERT INTO files(groupid, owner, path, name, type, tags)
-			VALUES('$groupid', '$owner', '$path', '$name', '$type', '$tags')";
+			$sql  = "INSERT INTO files(groupid, owner, path, name, type, pubDate, tags)
+			VALUES('$groupid', '$owner', '$path', '$name', '$type', '$today', '$tags')";
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
 			if($request) {
 				$response = new JsonResponse();
 				$response->setData(array(
-					'name' => $login,
-					'email'=> $email
+					'name' => $name
 				));
 
 				return $response;
@@ -296,5 +296,163 @@ class AdvertController extends Controller
 			return new Response("fail");
 		}
 	}
+
+	// Ajout d'un groupe d'utilisateurs dans la base de données
+	public function addusergroupAction() {
+		$title 		= $_POST["title"];
+
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "INSERT INTO usersgroups(title)
+					 VALUES('$title')";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				$response = new JsonResponse();
+				$response->setData(array(
+					'title' => $title
+				));
+
+				return $response;
+			}
+
+			return new Response("fail");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("fail");
+		}
+	}
+
+	// Ajout d'un groupe de fichiers dans la base de données
+	public function addfilegroupAction() {
+		$title 		= $_POST["title"];
+
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "INSERT INTO filesgroups(title)
+					 VALUES('$title')";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				$response = new JsonResponse();
+				$response->setData(array(
+					'title' => $title
+				));
+
+				return $response;
+			}
+
+			return new Response("fail");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("fail");
+		}
+	}
+
+
+	// ----------------------------------
+	// METHODES DE SUPPRESSION DE DONNEES
+	// ----------------------------------
+	// Suppression d'un utilisateur de la base de données
+	public function deleteuserAction($id) {
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "DELETE FROM users WHERE id='" . $id . "'";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				return new Response("OK");
+			}
+			return new Response("FAIL");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("FAIL");
+		}
+	}
+
+	// Suppression d'un fichier de la base de données
+	public function deletefileAction($id) {
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "DELETE FROM files WHERE id='" . $id . "'";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				return new Response("OK");
+			}
+			return new Response("FAIL");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("FAIL");
+		}
+	}
+
+	// Suppression d'un groupe d'utilisateurs de la base de données
+	public function deleteusergroupAction($id) {
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "DELETE FROM usersgroups WHERE id='" . $id . "'";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				return new Response("OK");
+			}
+			return new Response("FAIL");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("FAIL");
+		}
+	}
+
+	// Suppression d'un groupe de fichiers de la base de données
+	public function deletefilegroupAction($id) {
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "DELETE FROM filesgroups WHERE id='" . $id . "'";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				return new Response("OK");
+			}
+			return new Response("FAIL");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("FAIL");
+		}
+	}
+
+
+	// -----------------------------------
+	// METHODES DE MODIFICATION DE DONNEES
+	// -----------------------------------
+	public function edituser()
+	{
+		
+	}
+
 
 }

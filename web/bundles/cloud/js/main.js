@@ -19,10 +19,18 @@ function initialize() {
   defaultClickEvents();
   addDefaultTooltip();
 
-  prepareLoginForm();
   clickCategories();
+  prepareForms();
 }
 
+// Prépare les envoies des formulaires
+function prepareForms() {
+    prepareLoginForm();
+    prepareAdduserForm();
+    prepareAddfileForm();
+    prepareAddusergroupForm();
+    prepareAddfilegroupForm();
+}
 
 
 // DEBUT EVENEMENTS

@@ -56,7 +56,7 @@ function verifyEmpty() {
 // (qui sera appelée lors de la validation/l'envoi du formulaire)
 function prepareAjaxForm(form) {
     var request; // variable to hold request
-    verifyEmpty();
+    // verifyEmpty();
 
     // Bind to the submit event of our form
     $(form).submit(function(event) {
@@ -86,23 +86,23 @@ function prepareAjaxForm(form) {
             else if (url === "/cloud/web/app_dev.php/signup/") {
                 signupResult(response);
             }
-            else if (url === "/cloud/web/app_dev.php/adduser") {
+            else if (url === "/cloud/web/app_dev.php/adduser/") {
                 adduserResult(response);
             }
-            else if (url === "/cloud/web/app_dev.php/addfile") {
+            else if (url === "/cloud/web/app_dev.php/addfile/") {
                 addfileResult(response);
             }
-            else if (url === "/cloud/web/app_dev.php/addusergroup") {
+            else if (url === "/cloud/web/app_dev.php/addusergroup/") {
                 addusergroupResult(response);
             }
-            else if (url === "/cloud/web/app_dev.php/addfilegroup") {
+            else if (url === "/cloud/web/app_dev.php/addfilegroup/") {
                 addfilegroupResult(response);
             }
         });
 
             // callback handler that will be called on failure
             request.fail(function(jqXHR, textStatus, errorThrown) {
-            console.error("The following error occured : " + textStatus, errorThrown);
+            // console.error("The following error occured : " + textStatus, errorThrown);
         });
 
         // callback handler that will be called regardless
@@ -207,6 +207,10 @@ function hideConnectionPanel() {
 function toggleAddFile() {
     // Récupère le formulaire s'il est présent
     var form = $("#files-panel .contentform");
+
+    // Set the owner on the file
+    var ownerInput = $("#files-panel .contentform input[name='owner']");
+    ownerInput.attr("value", _user.name);
 
     // Affiche le formulaire s'il n'est pas visible
     if (form.css("display") !== "block") {
@@ -325,7 +329,7 @@ function loginResult(response) {
     showMessage(textMessage, "information");
 
 
-    showConnectionPanel();
+    hideConnectionPanel();
   }
   else {
     var textMessage = "Désolé, le login ou le mot de passe est erroné";
@@ -355,56 +359,68 @@ function signupResult(response) {
 
 function adduserResult(response) {
     if (response !== "fail") {
-        var textMEssage = "L'utilisateur a bien été ajouté";
+        var textMessage = "L'utilisateur a bien été ajouté";
         showMessage(textMessage, "information");
+
+        // Masque le formulaire
+        toggleAddUser();
 
         // Recharger la liste des fichiers
         refreshUsers();
     }
     else {
-        var textMEssage = "Désole, l'utilisateur n'a pas pu etre ajouté";
+        var textMessage = "Désole, l'utilisateur n'a pas pu etre ajouté";
         showMessage(textMessage, "error");
     }
 }
 
 function addfileResult(response) {
     if (response !== "fail") {
-        var textMEssage = "Le fichier a bien été ajouté";
+        var textMessage = "Le fichier a bien été ajouté";
         showMessage(textMessage, "information");
+
+        // Masque le formulaire
+        toggleAddFile();
 
         // Recharger la liste des fichiers
         refreshFiles();
     }
     else {
-        var textMEssage = "Désole, le fichier n'a pas pu etre ajouté";
+        var textMessage = "Désole, le fichier n'a pas pu etre ajouté";
         showMessage(textMessage, "error");
     }
 }
 
 function addusergroupResult(response) {
     if (response !== "fail") {
-        var textMEssage = "Le groupe d'utilisateurs a bien été ajouté";
+        var textMessage = "Le groupe d'utilisateurs a bien été ajouté";
         showMessage(textMessage, "information");
+
+        // Masque le formulaire
+        toggleAddUsergroup();
 
         // Recharger la liste des fichiers
         refreshUsersgroups();
     }
     else {
-        var textMEssage = "Désole, le groupe d'utilisateurs n'a pas pu etre ajouté";
+        var textMessage = "Désole, le groupe d'utilisateurs n'a pas pu etre ajouté";
         showMessage(textMessage, "error");
     }
 }
 
 function addfilegroupResult(response) {
     if (response !== "fail") {
-        var textMEssage = "Le groupe de fichiers a bien été ajouté";
+        var textMessage = "Le groupe de fichiers a bien été ajouté";
         showMessage(textMessage, "information");
+
+        // Masque le formulaire
+        toggleAddFilegroup();
 
         // Recharger la liste des fichiers
         refreshFilesgroups();
     }
     else {
-        var textMEssage = "Désole, le groupe de fichiers n'a pas pu etre ajouté";
+        var textMessage = "Désole, le groupe de fichiers n'a pas pu etre ajouté";
         showMessage(textMessage, "error");
     }
 }
