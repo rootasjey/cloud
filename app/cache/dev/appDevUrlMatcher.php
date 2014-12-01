@@ -192,6 +192,16 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
             }
 
+            // view_user
+            if (0 === strpos($pathinfo, '/viewuser') && preg_match('#^/viewuser/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'view_user')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewuserAction',));
+            }
+
+            // view_file
+            if (0 === strpos($pathinfo, '/viewfile') && preg_match('#^/viewfile/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'view_file')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewfileAction',));
+            }
+
         }
 
         // creat_user

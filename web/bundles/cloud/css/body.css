@@ -337,19 +337,24 @@
 
 /*Barre de séparation*/
 hr {
-    border-style: solid;
-    border-width: 1px;
-    border-color: white;
-    width       : 170px;
-    margin      : 30px;
+    width           : 170px;
+    margin          : auto;
+    margin-top      : 30px;
+    margin-bottom   : 30px;
+
+    border-style    : solid;
+    border-width    : 1px;
+    border-color    : white;
 }
 
 /*STYLE POUR LA LISTE DES FICHIERS*/
+
+
 #files-panel .files-list {
-    background      : #eee;
+    /*background      : #eee;*/
     overflow        : hidden;
 
-    width           : 800px;
+    width           : 640px;
     margin          : auto;
     margin-top      : 50px;
 
@@ -358,49 +363,32 @@ hr {
     display         : none;
     position        : relative;
 }
-#files-panel .files-list thead {
-    width           : 110%;
-    padding         : 20px;
-    font-size       : 1.4em;
 
-    display         : inline-block;
-    border-radius   : 10px;
+#files-panel .files-list thead tr {
+    color           : white;
+    background-color: #353030;
+}
 
-    top             : -20px;
-    left            : -20px;
-    position        : relative;
-}
-#files-panel .files-list tbody {
-    width           : 100%;
-    padding         : 20px;
-    display         : inline-block;
-
-    left            : -20px;
-    bottom          : -20px;
-    position        : relative;
-    background-color: white;
-}
-#files-panel .files-list th {
-    margin-right: 80px;
-    display     : inline-block;
-}
 #files-panel .files-list tr {
     cursor      : pointer;
     position    : relative;
+    background  : #eee;
+
     opacity     : 0;
     transition  : .5s;
 }
 #files-panel .files-list tr:hover {
-    background: #eee;
+    color     : white;
+    background: rgba(66, 65, 65, 0.67);
     transition: .5s;
 }
-#files-panel .files-list .td-name, .td-group, .td-type, .td-pubdate, .td-owner {
-    width   : 148px;
-    display : inline-block;
+
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-collapse: collapse;
 }
-#files-panel .files-list .td-path, .td-tags {
+#files-panel .files-list .td-path, .th-path,.td-tags, .th-tags {
     display: none;
-}
-#files-panel .files-list .td-owner {
-    text-align: center;
 }

@@ -1,5 +1,5 @@
 # -------------------
-# ROUTING.YML (CLOUD)
+# ROUTING.YML - CLOUD
 # -------------------
 
 # Accueil
@@ -40,6 +40,20 @@ view_files:
 view_filesgroups:
     path: /viewfilesgroups/
     defaults: { _controller: PCloudPlatformBundle:Advert:viewfilesgroups }
+
+# Voir UN utilisateur
+view_user:
+    path: /viewuser/{id}
+    defaults: { _controller: PCloudPlatformBundle:Advert:viewuser }
+    requirements:
+        id: \d+
+
+# Voir UN fichier
+view_file:
+    path: /viewfile/{id}
+    defaults: { _controller: PCloudPlatformBundle:Advert:viewfile }
+    requirements:
+        id: \d+
 
 # Créer un utilisateur
 creat_user:

@@ -138,7 +138,16 @@ function sendAjaxRequestWithParameters(url, parameter) {
             var data = http.response;
 
             if (_url == "/cloud/web/app_dev.php/deleteuser/" + parameter) {
-                viewDeleteuserResult(data);
+                viewDeleteUserResult(data);
+            }
+            else if (_url == "/cloud/web/app_dev.php/deletefile/" + parameter) {
+                viewDeleteFileResult(data);
+            }
+            else if (_url == "/cloud/web/app_dev.php/deleteusergroup/" + parameter) {
+                viewDeleteUsergroupResult(data);
+            }
+            else if (_url == "/cloud/web/app_dev.php/deletefilegroup/" + parameter) {
+                viewDeleteFilegroupResult(data);
             }
         }
     }
@@ -154,6 +163,11 @@ function sendAjaxRequestWithParameters(url, parameter) {
 // ------------------------------------
 // Affiche la liste des fichiers
 function viewFiles() {
+    // Scroll down vertically to the element
+    $('html, body').animate({
+        scrollTop: $("#files-panel").offset().top
+    }, 500);
+
     // Test si on n'a pas déjà récupéré les fichiers
     var content = $("#files-panel .table-body tr");
     if (content.length > 0)
@@ -168,6 +182,11 @@ function viewFiles() {
 
 // Affiche la liste des groupes de fichiers
 function viewFilesgroups() {
+    // Scroll down vertically to the element
+    $('html, body').animate({
+        scrollTop: $("#filesgroups-panel").offset().top
+    }, 500);
+
     // Test si on n'a pas déjà récupéré les utilisateurs
     var content = $("#filesgroups-panel .categorie-panel-content .filesgroups .group-card");
     if (content.length > 0)
@@ -181,6 +200,11 @@ function viewFilesgroups() {
 
 // Affiche les utilisateurs
 function viewUsers() {
+    // Scroll down vertically to the element
+    $('html, body').animate({
+        scrollTop: $("#users-panel").offset().top
+    }, 500);
+
     // Test si on n'a pas déjà récupéré les utilisateurs
     var content = $("#users-panel .categorie-panel-content .users .row");
     if (content.length > 0)
@@ -194,6 +218,11 @@ function viewUsers() {
 
 // Affiche la liste des groupes d'utilisateurs
 function viewUsersgroups() {
+    // Scroll down vertically to the element
+    $('html, body').animate({
+        scrollTop: $("#usersgroups-panel").offset().top
+    }, 500);
+
     // Test si on n'a pas déjà récupéré les utilisateurs
     var content = $("#usersgroups-panel .categorie-panel-content .usersgroups .group-card");
     if (content.length > 0)
@@ -205,14 +234,46 @@ function viewUsersgroups() {
     startLoadingAnimationCustomPlace("#usersgroups-panel .categorie-panel-content");
 }
 
-function deleteUser(id) {
-    var url = "/cloud/web/app_dev.php/deleteuser";
-    // sendAjaxRequest(url);
-    sendAjaxRequestWithParameters(url, id);
-}
 // FIN FONCTIONS DEMANDANT LES DONNEES
 // -----------------------------------
 
+
+// -------------------------------
+// FONCTION SUPPRIMANT DES DONNEES
+// -------------------------------
+function deleteUser(id) {
+    var url = "/cloud/web/app_dev.php/deleteuser";
+    sendAjaxRequestWithParameters(url, id);
+}
+
+function deleteFile(id) {
+    var url = "/cloud/web/app_dev.php/deletefile";
+    sendAjaxRequestWithParameters(url, id);
+}
+
+function deleteUsergroup(id) {
+    var url = "/cloud/web/app_dev.php/deleteusergroup";
+    sendAjaxRequestWithParameters(url, id);
+}
+
+function deleteFilegroup(id) {
+    var url = "/cloud/web/app_dev.php/deletefilegroup";
+    sendAjaxRequestWithParameters(url, id);
+}
+// FIN FONCTION SUPPRIMANT DES DONNEES
+// -----------------------------------
+
+// -------------------------------
+// FONCTION EDITANT DES DONNEES
+// -------------------------------
+function editUser(id) {
+    // Affiche le formulaire d'édition pré-rempli
+    getUser(id);
+    // console.log(data);
+}
+
+// FIN FONCTION SUPPRIMANT DES DONNEES
+// -----------------------------------
 
 
 // DEBUT FONCTIONS TRAITANT LES RESULTATS DES DONNEES
@@ -257,6 +318,7 @@ function viewUsersResult(data) {
         var editIcon = $("<img>", {
             class: "icon-button",
             func: "edit-user",
+            userid: data[i].id,
             src : "/cloud/web/bundles/cloud/icon/edit-icon.png"
         });
 
@@ -285,7 +347,8 @@ function viewUsersResult(data) {
     addTooltip(".icon-button[func='delete-user']", "supprimer");
 
     // Evénements
-    clickDelete(); // événement de suppression
+    clickDeleteUser();  // événement de suppression
+    clickEditUser();    // événement d'édition
 
     // Arrête l'animation de chargement
     stopLoadingAnimationCustomPlace("#users-panel .categorie-panel-content");
@@ -327,14 +390,16 @@ function viewUsersgroupsResult(data) {
         //  Crée un bouton text  (pour l'édition)
         var edit = $("<div>", {
             class: "text-button",
-            func : "edit",
+            func : "edit-usergroup",
+            groupid: data[i].id,
             html: "edit"
         });
 
         //  Crée un second bouton text (pour la suppression)
         var del = $("<div>", {
             class: "text-button",
-            func : "delete",
+            func : "delete-usergroup",
+            groupid: data[i].id,
             html: "delete"
         });
 
@@ -376,7 +441,11 @@ function viewFilesResult(data) {
         var tags    = $("<td>", { class:"td-tags" }).html(data[i].tags);
         var owner   = $("<td>", { class:"td-owner" }).html(data[i].owner);
 
+        var _edit   = $("<td>", { class: "text-button", func: "edit-file", fileid: data[i].id }).html("edit");
+        var _delete  = $("<td>", { class: "text-button", func: "delete-file", fileid: data[i].id }).html("delete");
+
         tr.append(name).append(group).append(path).append(type).append(pubdate).append(tags).append(owner);
+        tr.append(_edit).append(_delete);
         content.append(tr);
     }
 
@@ -389,12 +458,17 @@ function viewFilesResult(data) {
     $("#files-panel .files-list tr").each(function () {
         $(this).css({ opacity: "0", top: "20px" }).animate({ opacity: "1", top: "0" });
     });
+
+
+    // Evénements
+    clickEditFile();
+    clickDeleteFile();
 }
 
 function viewFilesgroupsResult(data) {
     if (data.length < 1) {
         // Affiche un message si on n'a récupéré aucune donnée
-        var textMessage = "There's no result for this request.";
+        var textMessage = "Il n'y a pas de groupe de fichiers disponibles pour le moment.";
         showMessage(textMessage, "error");
         return;
     }
@@ -427,14 +501,16 @@ function viewFilesgroupsResult(data) {
         //  Crée un bouton text  (pour l'édition)
         var edit = $("<div>", {
             class: "text-button",
-            func : "edit",
+            groupid: data[i].id,
+            func : "edit-filegroup",
             html: "edit"
         });
 
         //  Crée un second bouton text (pour la suppression)
         var del = $("<div>", {
             class: "text-button",
-            func : "delete",
+            groupid: data[i].id,
+            func : "delete-filegroup",
             html: "delete"
         });
 
@@ -452,7 +528,7 @@ function viewFilesgroupsResult(data) {
     stopLoadingAnimationCustomPlace("#filesgroups-panel .categorie-panel-content");
 }
 
-function viewDeleteuserResult(data) {
+function viewDeleteUserResult(data) {
     if (data === "OK") {
         var text = "L'utilisateur a été supprimé(e) avec succès."
         showMessage(text, "error");
@@ -461,7 +537,46 @@ function viewDeleteuserResult(data) {
     else {
         var text = "Désolé, nous n'avons pas pu supprimer l'utilisateur."
         showMessage(text, "error");
-        refreshUsers();
+        // refreshUsers();
+    }
+}
+
+function viewDeleteFileResult(data) {
+    if (data === "OK") {
+        var text = "Le fichier a été supprimé avec succès."
+        showMessage(text, "error");
+        refreshFiles();
+    }
+    else {
+        var text = "Désolé, nous n'avons pas pu supprimer le fichier."
+        showMessage(text, "error");
+        // refreshFiles();
+    }
+}
+
+function viewDeleteUsergroupResult(data) {
+    if (data === "OK") {
+        var text = "Le groupe d'utilisateurs a été supprimé avec succès."
+        showMessage(text, "error");
+        refreshUsersgroups();
+    }
+    else {
+        var text = "Désolé, nous n'avons pas pu supprimer le groupe d'utilisateurs."
+        showMessage(text, "error");
+        // refreshUsersgroups();
+    }
+}
+
+function viewDeleteFilegroupResult(data) {
+    if (data === "OK") {
+        var text = "Le groupe de fichiers a été supprimé avec succès."
+        showMessage(text, "error");
+        refreshFilesgroups();
+    }
+    else {
+        var text = "Désolé, nous n'avons pas pu supprimer le groupe de fichiers."
+        showMessage(text, "error");
+        // refreshFilesgroups();
     }
 }
 // FIN FONCTIONS TRAITANT LES RESULTATS DES DONNEES
@@ -514,10 +629,61 @@ function refreshFilesgroups() {
 
 // DEBUT EVENEMENTS
 // ----------------
-function clickDelete() {
+function clickDeleteUser() {
     $(".icon-button[func='delete-user']").click(function () {
         var id = $(this).attr("userid");
         deleteUser(id);
+    });
+}
+
+function clickEditUser() {
+    $(".icon-button[func='edit-user']").click(function () {
+        var id = $(this).attr("userid");
+        editUser(id);
+    });
+}
+
+function clickDeleteFile() {
+    $("td[func='delete-file']").click(function () {
+        var id = $(this).attr("fileid");
+        deleteFile(id);
+    });
+}
+
+
+function clickEditFile() {
+    $("td[func='edit-file']").click(function () {
+        var id = $(this).attr("fileid");
+        console.log(id);
+        editFile();
+    });
+}
+
+function clickDeleteUsergroup() {
+    $(".text-button[func='delete-usergroup']").click(function () {
+        var id = $(this).attr("groupid");
+        deleteUsergroup(id);
+    });
+}
+
+function clickEditUsergroup() {
+    $(".icon-button[func='edit-usergroup']").click(function () {
+        var id = $(this).attr("groupid");
+        editUsergroup(id);
+    });
+}
+
+function clickDeleteFilegroup() {
+    $(".icon-button[func='delete-filegroup']").click(function () {
+        var id = $(this).attr("groupid");
+        deleteFilegroup(id);
+    });
+}
+
+function clickEditFilegroup() {
+    $(".icon-button[func='edit-filegroup']").click(function () {
+        var id = $(this).attr("groupid");
+        editFilegroup(id);
     });
 }
 
@@ -565,7 +731,6 @@ function clickAdd() {
             toggleAddFilegroup();
         }
     });
-
 }
 // FIN EVENEMENTS
 // --------------

@@ -182,6 +182,50 @@ class AdvertController extends Controller
 		}
 	}
 
+	// Récupère UN SEUL utilisateur
+	public function viewuserAction($id) {
+		try {
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query("SELECT FROM users WHERE id='" . $id . "'");
+			$users 		= Array();
+
+			while ($v = $request->fetch()) {
+				array_push($users, $v);
+			}
+
+			$json = new JsonResponse();
+			$json->setData($users);
+			$request->closeCursor(); // Termine le traitement de la requête
+
+			return $json;
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+		}
+	}
+
+	// Récupère UN SEUL fichier
+	public function viewfileAction($id) {
+		try {
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query("SELECT FROM files WHERE id='" . $id . "'");
+			$users 		= Array();
+
+			while ($v = $request->fetch()) {
+				array_push($users, $v);
+			}
+
+			$json = new JsonResponse();
+			$json->setData($users);
+			$request->closeCursor(); // Termine le traitement de la requête
+
+			return $json;
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+		}
+	}
+
 	//creation des utilisateurs
 	public function creatuserAction() {
 
@@ -226,12 +270,18 @@ class AdvertController extends Controller
 	// ---------------------------
 	// Ajout d'un utilisateur dans la base de données
 	public function adduserAction() {
-		$groupid 	= "3"; // groupe par défaut
+		$groupid	= $_POST["group"];
 		$login 		= $_POST["login"];
 		$password 	= $_POST["password"];
 		$email 		= $_POST["email"];
 
 		$today	 	= date("Y-m-d");
+
+		// --------------------
+		if ($groupid === '') {
+			$groupid = 3;
+		}
+		// --------------------
 
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");
@@ -262,7 +312,7 @@ class AdvertController extends Controller
 
 	// Ajout d'un fichier dans la base de données
 	public function addfileAction() {
-		$groupid 	= "1"; // groupe par défaut
+		$groupid	= $_POST["group"];
 		$owner 		= $_POST["owner"];
 		$path 		= $_POST["path"];
 		$name 		= $_POST["name"];
@@ -270,6 +320,12 @@ class AdvertController extends Controller
 		$tags 		= $_POST["tags"];
 
 		$today	 	= date("Y-m-d");
+
+		// --------------------
+		if ($groupid === '') {
+			$groupid = "1"; // groupe par défaut
+		}
+		// --------------------
 
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");

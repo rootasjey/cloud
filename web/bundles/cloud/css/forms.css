@@ -12,7 +12,8 @@ form{
 }
 form input[type='text'],
 form input[type='password'],
-form input[type='email'] {
+form input[type='email'],
+form select {
 
     display: block;
     margin-bottom: 10px;

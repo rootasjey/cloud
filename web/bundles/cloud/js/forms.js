@@ -4,6 +4,7 @@
 // Fonctions liées à des formulaires
 
 
+// -------------------
 // DEBUT METHODES AJAX
 // -------------------
 // Prépare la fonction de validation du formulaire
@@ -121,7 +122,7 @@ function prepareAjaxForm(form) {
 // -------------------
 
 
-
+// -----------------------------------
 // DEBUT FONCTIONS LIEES A L'AFFICHAGE
 // -----------------------------------
 // Afiche/Masque le formulaire d'inscription
@@ -208,10 +209,6 @@ function toggleAddFile() {
     // Récupère le formulaire s'il est présent
     var form = $("#files-panel .contentform");
 
-    // Set the owner on the file
-    var ownerInput = $("#files-panel .contentform input[name='owner']");
-    ownerInput.attr("value", _user.name);
-
     // Affiche le formulaire s'il n'est pas visible
     if (form.css("display") !== "block") {
         // Masque la liste de fichiers
@@ -220,6 +217,13 @@ function toggleAddFile() {
         // Affiche le formulaire
         form.css({ display: "block", opacity: "0" })
         .animate({ opacity: "1" });
+
+        // Définit le propriétaire du fichier
+        var ownerInput = $("#files-panel .contentform input[name='owner']");
+        ownerInput.attr("value", _user.name);
+
+        // Remplit le 'select' pour la sélection d'un groupe de fichiers
+        getFilesgroups();
     }
     else { // Masque le formulaire s'il est visible
 
@@ -245,6 +249,9 @@ function toggleAddUser() {
         // Affiche le formulaire
         form.css({ display: "block", opacity: "0" })
         .animate({ opacity: "1" });
+
+        // Remplit le 'select' pour la sélection d'un groupe de fichiers
+        getUsersgroups();
     }
     else { // Masque le formulaire s'il est visible
 
@@ -311,6 +318,7 @@ function toggleAddUsergroup() {
 // ---------------------------------
 
 
+// -----------------------------------------
 // DEBUT FONCTIONS DE TRAITEMENT DES DONNEES
 // -----------------------------------------
 // Fonction post-traitement ajax pour la connexion
@@ -428,6 +436,107 @@ function addfilegroupResult(response) {
 // ---------------------------------------
 
 
+// -----------------------------------------
+// DEBUT FONCTIONS AJAX LIEE AUX FORMULAIRES
+// -----------------------------------------
+// Récupère les groupes de fichiers
+function getFilesgroups() {
+    var http = new XMLHttpRequest();
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            var data = JSON.parse(http.response);
+
+            populateSelectFilesgroups(data);
+        }
+    }
+    http.open("POST", "/cloud/web/app_dev.php/viewfilesgroups");
+    http.send();
+}
+
+// Remplit le 'select' lié au groupes de fichiers
+function populateSelectFilesgroups(data) {
+    if (data.length < 1) {
+        // Affiche un message si on n'a récupéré aucune donnée
+        var textMessage = "Un problème est survenu lors de la récupération des groupes de fichiers.";
+        showMessage(textMessage, "error");
+        return;
+    }
+
+    var select = $("#addfileform select[name='group']");
+
+    for (var i = 0; i < data.length; i++) {
+
+        // Crée un item option
+        var option = $("<option>", {
+            value   : data[i].id,
+            html    : data[i].title,
+        });
+
+        select.append(option);
+    }
+}
+
+// Récupère les groupes de fichiers
+function getUsersgroups() {
+    var http = new XMLHttpRequest();
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            var data = JSON.parse(http.response);
+
+            populateSelectUsersgroups(data);
+        }
+    }
+    http.open("POST", "/cloud/web/app_dev.php/viewusersgroups");
+    http.send();
+}
+
+// Remplit le 'select' lié au groupes de fichiers
+function populateSelectUsersgroups(data) {
+    if (data.length < 1) {
+        // Affiche un message si on n'a récupéré aucune donnée
+        var textMessage = "Un problème est survenu lors de la récupération des groupes d'utilisateurs";
+        showMessage(textMessage, "error");
+        return;
+    }
+
+    var select = $("#adduserform select[name='group']");
+
+    for (var i = 0; i < data.length; i++) {
+
+        // Crée un item option
+        var option = $("<option>", {
+            value   : data[i].id,
+            html    : data[i].title,
+        });
+
+        select.append(option);
+    }
+}
+
+function getUser(id) {
+    console.log(id);
+    var http = new XMLHttpRequest();
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            var data = JSON.parse(http.response);
+
+            console.log(data);
+        }
+    }
+    http.open("POST", "/cloud/web/app_dev.php/viewuser/" + id);
+    http.send();
+}
+
+
+// -----------------------------------------
+// FIN FONCTIONS AJAX LIEE AUX FORMULAIRES
+// -----------------------------------------
+
+
+// ----------------------
 // DEBUT FONCTIONS AUTRES
 // ----------------------
 // Vérifie que l'utilisateur est connecté
