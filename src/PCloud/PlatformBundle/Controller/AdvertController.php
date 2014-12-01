@@ -343,7 +343,7 @@ class AdvertController extends Controller
 			WHERE f.groupid=fg.id AND fg.title= '" . $title . "'";
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
-			$request = mysql_query($sq, $bdd) or die(mysql_error());
+			$request1 = mysql_query($sq, $bdd) or die(mysql_error());
 
 			if($request) {
 				$response = new JsonResponse();
