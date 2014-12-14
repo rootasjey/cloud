@@ -140,7 +140,7 @@ function addDefaultTooltip() {
     addTooltip(".menu-item[func='login']", "se connecter");
     addTooltip(".menu-item[func='logout']", "se déconnecter");
     addTooltip(".menu-item[func='search']", "rechercher");
-    addTooltip(".menu-item[func='help']", "aide");
+    addTooltip(".menu-item[func='help']", "aide", "bottom center", "top center");
 }
 
 // Ajoute un tooltip sur un objet
@@ -153,6 +153,27 @@ function addTooltip(selector, textContent, cpos, tpos) {
 
     // Ajoute les toolitps de description
     $(selector).qtip({
+        content: {
+            text: textContent,
+        },
+        style: { classes: 'qtip-dark'},
+        position: {
+            my: cornerPosition,
+            at: tooltipPosition
+        }
+    });
+}
+
+// Ajoute un tooltip sur un objet jQuery
+function addTooltipJquery(jqueryObject, textContent, cpos, tpos) {
+    var cornerPosition = 'top center';
+    var tooltipPosition = 'bottom center';
+
+    if (typeof cpos !== "undefined") cornerPosition = cpos;
+    if (typeof tpos !== "undefined") tooltipPosition = tpos;
+
+    // Ajoute les toolitps de description
+    $(jqueryObject).qtip({
         content: {
             text: textContent,
         },
@@ -266,7 +287,7 @@ function minimizeHeader() {
 // DEBUT AUTRES
 // ------------
 // Affiche un message à l'utilisateur
-function showMessage(message, type) {
+function showMessage(message, type, keepPrevious) {
     var messagepanel = $(".middle .message-panel");
     var messagepanelContent = $(".middle .message-panel .message-panel-content");
 
@@ -274,6 +295,7 @@ function showMessage(message, type) {
     if (type === "error") messagepanel.css("background-color", "#e74c3c");
     else if (type === "information") messagepanel.css("background-color", "#2ecc71");
 
+    // Affiche le message panel s'il n'est pas visible
     if (messagepanel.css("height") === "0px") {
         messagepanel.css({
           height: "0",
@@ -282,10 +304,20 @@ function showMessage(message, type) {
           height: "100px",
         });
 
-        messagepanelContent.html(message);
+        // Si on veut garder le message précédent
+        if (typeof keepPrevious !== "undefined") {
+            var prev = messagepanelContent.html() + "<br>";
+            messagepanelContent.html(prev + message);
+        }
+        else messagepanelContent.html(message); // sinon
     }
-    else {
-        messagepanelContent.html(message);
+    else { // Le message panel est déjà visible
+        // Si on veut garder le message précédent
+        if (typeof keepPrevious !== "undefined") {
+            var prev = messagepanelContent.html() + "<br>";
+            messagepanelContent.html(prev + message);
+        }
+        else messagepanelContent.html(message); // sinon
     }
 }
 

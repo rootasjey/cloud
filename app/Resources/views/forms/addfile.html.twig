@@ -5,6 +5,9 @@
     <!-- ICON -->
     <!-- <img src="{{ asset('bundles/cloud/icon/lock-icon.png') }}" alt="login" class="icon"/> -->
 
+    <!-- ID (input masqué) -->
+    <input type="hidden" name="id" value="">
+
     <!-- NAME INPUT -->
     <span class="title">name</span>
     <input type="text" name="name" placeholder="file's name">
@@ -12,6 +15,9 @@
     <!-- PATH INPUT -->
     <span class="title">path</span>
     <input type="text" name="path" placeholder="path's file">
+    <!-- <div class="text-button" func="browse-file">Browse</div> -->
+    <img class="icon-button" func="browse" src="{{ asset('bundles/cloud/icon/link-icon.png') }}" alt="browse" />
+
 
     <input type="hidden" name="owner">
 

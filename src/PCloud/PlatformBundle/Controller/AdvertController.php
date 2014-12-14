@@ -36,6 +36,10 @@ class AdvertController extends Controller
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
+			// $sql2 = "GRANT ALL ON cloud.* TO 'admin'@'localhost' IDENTIFIED BY 'admin'
+			// 		WITH GRANT OPTION;";
+			// $request2 = mysql_query($sql2, $bdd) or die(mysql_error());
+
 			if($request) {
 				$response = new JsonResponse();
 				$response->setData(array(
@@ -183,10 +187,10 @@ class AdvertController extends Controller
 	}
 
 	// Récupère UN SEUL utilisateur
-	public function viewuserAction($id) {
+	public function viewsingleuserAction($id) {
 		try {
 			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
-			$request 	= $bdd->query("SELECT FROM users WHERE id='" . $id . "'");
+			$request 	= $bdd->query('SELECT * FROM users WHERE id='. $id);
 			$users 		= Array();
 
 			while ($v = $request->fetch()) {
@@ -205,18 +209,18 @@ class AdvertController extends Controller
 	}
 
 	// Récupère UN SEUL fichier
-	public function viewfileAction($id) {
+	public function viewsinglefileAction($id) {
 		try {
 			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
-			$request 	= $bdd->query("SELECT FROM files WHERE id='" . $id . "'");
-			$users 		= Array();
+			$request 	= $bdd->query('SELECT * FROM files WHERE id=' . $id);
+			$files 		= Array();
 
 			while ($v = $request->fetch()) {
-				array_push($users, $v);
+				array_push($files, $v);
 			}
 
 			$json = new JsonResponse();
-			$json->setData($users);
+			$json->setData($files);
 			$request->closeCursor(); // Termine le traitement de la requête
 
 			return $json;
@@ -225,6 +229,51 @@ class AdvertController extends Controller
 			die('Erreur : ' . $e->getMessage());
 		}
 	}
+
+	// Récupère UN SEUL group d'utilisateur
+	public function viewsingleusergroupAction($id) {
+		try {
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query('SELECT * FROM usersgroups WHERE id=' . $id);
+			$usergroup 		= Array();
+
+			while ($v = $request->fetch()) {
+				array_push($usergroup, $v);
+			}
+
+			$json = new JsonResponse();
+			$json->setData($usergroup);
+			$request->closeCursor(); // Termine le traitement de la requête
+
+			return $json;
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+		}
+	}
+
+	// Récupère UN SEUL groupe de fichiers
+	public function viewsinglefilegroupAction($id) {
+		try {
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query('SELECT * FROM filesgroups WHERE id=' . $id);
+			$filegroup 		= Array();
+
+			while ($v = $request->fetch()) {
+				array_push($filegroup, $v);
+			}
+
+			$json = new JsonResponse();
+			$json->setData($filegroup);
+			$request->closeCursor(); // Termine le traitement de la requête
+
+			return $json;
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+		}
+	}
+
 
 	//creation des utilisateurs
 	public function creatuserAction() {
@@ -291,6 +340,9 @@ class AdvertController extends Controller
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
+			// $request=$bd->prepare("CREATE user ?@localhost IDENTIFIED BY ?;");
+			// $request->execute(array($login,$password));
+
 			if($request) {
 				$response = new JsonResponse();
 				$response->setData(array(
@@ -326,6 +378,9 @@ class AdvertController extends Controller
 			$groupid = "1"; // groupe par défaut
 		}
 		// --------------------
+		if ($owner === "") {
+			$owner = "bob";
+		}
 
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");
@@ -356,6 +411,7 @@ class AdvertController extends Controller
 	// Ajout d'un groupe d'utilisateurs dans la base de données
 	public function addusergroupAction() {
 		$title 		= $_POST["title"];
+		$access 	= $_POST["access"];
 
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");
@@ -364,11 +420,15 @@ class AdvertController extends Controller
 					 VALUES('$title')";
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
+			$id = mysql_insert_id();
+
 
 			if($request) {
 				$response = new JsonResponse();
 				$response->setData(array(
-					'title' => $title
+					'title' => $title,
+					'usersgroupsid' => $id,
+					'filesgroupsid' => $access
 				));
 
 				return $response;
@@ -393,21 +453,43 @@ class AdvertController extends Controller
 			$sql  = "INSERT INTO filesgroups(title)
 					 VALUES('$title')";
 
-     //pour créer la vue
-			$sq  = "CREATE VIEW cloud. $title  . AS
-			SELECT f.* FROM cloud.files f,cloud.filesgroups fg
-			WHERE f.groupid=fg.id AND fg.title= '" . $title . "'";
-
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
-			$request1 = mysql_query($sq, $bdd) or die(mysql_error());
+			$id = mysql_insert_id();
 
 			if($request) {
 				$response = new JsonResponse();
 				$response->setData(array(
+					'id' => $id,
 					'title' => $title
 				));
 
 				return $response;
+			}
+
+			return new Response("fail");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("fail");
+		}
+	}
+
+	// Ajout des droits d'accès
+	public function addaccessAction($usersgroupsid, $filesgroupsid, $write) {
+		// return new Response("OK");
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+
+			$sql  = "INSERT INTO access(usersgroupsid, filesgroupsid)
+			VALUES('$usersgroupsid', '$filesgroupsid')";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+
+			if($request) {
+				return new Response("OK");
 			}
 
 			return new Response("fail");
@@ -432,10 +514,26 @@ class AdvertController extends Controller
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
+			$response = new JsonResponse();
+
 			if($request) {
-				return new Response("OK");
+				// Si tout s'est bien passé
+				$response->setData(array(
+					'id' => $id,
+					'error' => "false"
+				));
+
+				return $response;
 			}
-			return new Response("FAIL");
+			else {
+				// Sinon
+				$response->setData(array(
+					'id' => $id,
+					'error' => "true"
+				));
+
+				return $response;
+			}
 		}
 
 		catch (Exception $e) {
@@ -453,10 +551,26 @@ class AdvertController extends Controller
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
+			$response = new JsonResponse();
+
 			if($request) {
-				return new Response("OK");
+				// Si tout s'est bien passé
+				$response->setData(array(
+					'id' => $id,
+					'error' => "false"
+				));
+
+				return $response;
 			}
-			return new Response("FAIL");
+			else {
+				// Sinon
+				$response->setData(array(
+					'id' => $id,
+					'error' => "true"
+				));
+
+				return $response;
+			}
 		}
 
 		catch (Exception $e) {
@@ -474,10 +588,26 @@ class AdvertController extends Controller
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
+			$response = new JsonResponse();
+
 			if($request) {
-				return new Response("OK");
+				// Si tout s'est bien passé
+				$response->setData(array(
+					'id' => $id,
+					'error' => "false"
+				));
+
+				return $response;
 			}
-			return new Response("FAIL");
+			else {
+				// Sinon
+				$response->setData(array(
+					'id' => $id,
+					'error' => "true"
+				));
+
+				return $response;
+			}
 		}
 
 		catch (Exception $e) {
@@ -487,7 +617,7 @@ class AdvertController extends Controller
 	}
 
 	// Suppression d'un groupe de fichiers de la base de données
-	public function deletefilegroupAction($id) {
+	public function deletefilegroupAction($id, $title) {
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");
 			$db   = mysql_select_db("cloud");
@@ -495,10 +625,28 @@ class AdvertController extends Controller
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
+			$response = new JsonResponse();
+
 			if($request) {
-				return new Response("OK");
+				// Si tout s'est bien passé
+				$response->setData(array(
+					'id' => $id,
+					'title' => $title,
+					'error' => "false"
+				));
+
+				return $response;
 			}
-			return new Response("FAIL");
+			else {
+				// Sinon
+				$response->setData(array(
+					'id' => $id,
+					'title' => $title,
+					'error' => "true"
+				));
+
+				return $response;
+			}
 		}
 
 		catch (Exception $e) {
@@ -511,9 +659,250 @@ class AdvertController extends Controller
 	// -----------------------------------
 	// METHODES DE MODIFICATION DE DONNEES
 	// -----------------------------------
-	public function edituser()
-	{
+	// Modification des données d'un utilisateur
+	public function edituserAction() {
+		$id			= $_POST["id"];
+		$groupid	= $_POST["group"];
+		$login 		= $_POST["login"];
+		$password 	= $_POST["password"];
+		$email 		= $_POST["email"];
 
+
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "UPDATE users
+					 SET name='". $login ."',
+						 groupid=". $groupid .",
+						 password='". $password ."',
+						 email='". $email . "'
+					 WHERE id=" . $id;
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				$response = new JsonResponse();
+				$response->setData(array(
+					'name' => $login,
+					'email'=> $email
+				));
+
+				return $response;
+			}
+
+			return new Response("fail");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("fail");
+		}
+	}
+
+	// Modification des données d'un groupe d'utilisateurs
+	public function editusergroupAction() {
+		$id			= $_POST["id"];
+		$title		= $_POST["title"];
+		$access		= $_POST["access"];
+
+
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "UPDATE usersgroups
+					 SET title='". $title ."'
+					 WHERE id=" . $id;
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				$response = new JsonResponse();
+				$response->setData(array(
+					'id' 	=> $id,
+					'title'	=> $title,
+					'access'=> $access
+				));
+
+				return $response;
+			}
+
+			return new Response("fail");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("fail");
+		}
+	}
+
+
+	// Modification des données d'un fichier
+	public function editfileAction() {
+		$id			= $_POST["id"];
+		$groupid	= $_POST["group"];
+		$name 		= $_POST["name"];
+		$path 		= $_POST["path"];
+		$tags 		= $_POST["tags"];
+		$type 		= $_POST["type"];
+
+
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "UPDATE files
+					 SET groupid=". $groupid .",
+					 name='". $name ."',
+					 path='". $path . "',
+					 tags='". $tags . "',
+					 type='". $type . "'
+					 WHERE id=" . $id;
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				$response = new JsonResponse();
+				$response->setData(array(
+					'name' => $id,
+					'email'=> $name
+				));
+
+				return $response;
+			}
+
+			return new Response("fail");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("fail");
+		}
+	}
+
+	// Modification des données d'un groupe de fichiers
+	public function editfilegroupAction() {
+		$id			= $_POST["id"];
+		$title		= $_POST["title"];
+
+
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "UPDATE filesgroups
+					 SET title='". $title ."'
+					 WHERE id=" . $id;
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			if($request) {
+				$response = new JsonResponse();
+				$response->setData(array(
+					'id' 	=> $id,
+					'title'	=> $title
+				));
+
+				return $response;
+			}
+
+			return new Response("fail");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("fail");
+		}
+	}
+
+
+	// Création d'une vue
+	// On est obligé de créer la vue à part car
+	// on ne peut exécuter une requête pour créer une vue contenant des var
+	public function addviewAction($id, $title) {
+		$_title = "V_" . $title;
+
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+
+			$sql = "CREATE OR REPLACE
+					DEFINER = CURRENT_USER
+					SQL SECURITY INVOKER
+					VIEW ". $_title ."
+					AS SELECT *
+					FROM filesgroups
+					WHERE id = ". $id .";";
+			// Exécution de la requête
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+			// Constitue la réponse renvoyée par le serveur
+			$response = new JsonResponse();
+
+			if($request) {
+				// Si tout s'est bien passé
+				$response->setData(array(
+					'id' => $id,
+					'title' => $_title,
+					'error' => "false"
+				));
+
+				return $response;
+			}
+			else {
+				// S'il y a eu une erreur
+				$response->setData(array(
+					'error' => "true"
+				));
+				return $response;
+			}
+
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("FAIL");
+		}
+	}
+
+	public function deleteviewAction($title) {
+		// Constitue la réponse renvoyée par le serveur
+		$response = new JsonResponse();
+
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+
+			$sql = "DROP VIEW ". $title;
+			// Exécution de la requête
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+
+			if($request) {
+				// Si tout s'est bien passé
+				$response->setData(array(
+					'title' => $title,
+					'error' => "false"
+				));
+
+				return $response;
+			}
+			else {
+				// S'il y a eu une erreur
+				$response->setData(array(
+					'title' => $title,
+					'error' => "true"
+				));
+				return $response;
+			}
+
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			// S'il y a eu une erreur
+			$response->setData(array(
+				'title' => $title,
+				'error' 	=> "true",
+				'message' 	=> $e->getMessage()
+			));
+			return $response;
+		}
 	}
 
 

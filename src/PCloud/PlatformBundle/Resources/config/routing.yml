@@ -42,23 +42,37 @@ view_filesgroups:
     defaults: { _controller: PCloudPlatformBundle:Advert:viewfilesgroups }
 
 # Voir UN utilisateur
-view_user:
-    path: /viewuser/{id}
-    defaults: { _controller: PCloudPlatformBundle:Advert:viewuser }
-    requirements:
-        id: \d+
+view_singleuser:
+    path: /viewsingleuser/{id}
+    defaults: { _controller: PCloudPlatformBundle:Advert:viewsingleuser }
 
 # Voir UN fichier
-view_file:
-    path: /viewfile/{id}
-    defaults: { _controller: PCloudPlatformBundle:Advert:viewfile }
+view_singlefile:
+    path: /viewsinglefile/{id}
+    defaults: { _controller: PCloudPlatformBundle:Advert:viewsinglefile }
     requirements:
         id: \d+
 
-# Créer un utilisateur
-creat_user:
-    path: /creatuser/
-    defaults: { _controller: PCloudPlatformBundle:Advert:creatuser }
+# Voir UN groupe d'utilisateurs
+view_singleusergroup:
+    path: /viewsingleusergroup/{id}
+    defaults: { _controller: PCloudPlatformBundle:Advert:viewsingleusergroup }
+    requirements:
+        id: \d+
+
+# Voir UN groupe de fichiers
+view_singlefilegroup:
+    path: /viewsinglefilegroup/{id}
+    defaults: { _controller: PCloudPlatformBundle:Advert:viewsinglefilegroup }
+    requirements:
+        id: \d+
+
+# Voir les accès d'un group d'utilisateurs
+view_usergroupAccess:
+    path: /viewusergroupAccess/{id}
+    defaults: { _controller: PCloudPlatformBundle:Advert:viewusergroupAccess }
+    requirements:
+        id: \d+
 
 
 # -------------------------
@@ -83,6 +97,16 @@ add_usergroup:
 add_filegroup:
     path: /addfilegroup/
     defaults: { _controller: PCloudPlatformBundle:Advert:addfilegroup }
+
+# Ajout d'un groupe de fichiers dans la base de données
+add_access:
+    path: /addaccess/{usersgroupsid}/{filesgroupsid}/{write}
+    defaults: { _controller: PCloudPlatformBundle:Advert:addaccess }
+    requirements:
+        usersgroupsid: \d+
+        filesgroupsid: \d+
+        write        : \d+
+
 
 
 # -------------------------------
@@ -111,7 +135,7 @@ delete_usergroup:
 
 # Suppression d'un groupe de fichiers de la base de données
 delete_filegroup:
-   path: /deletefilegroup/{id}
+   path: /deletefilegroup/{id}/{title}
    defaults: { _controller: PCloudPlatformBundle:Advert:deletefilegroup }
    requirements:
        id: \d+
@@ -139,3 +163,16 @@ edit_usergroup:
 edit_filegroup:
     path: /editfilegroup/
     defaults: { _controller: PCloudPlatformBundle:Advert:editfilegroup }
+
+
+# --------------------------
+# ROUTES CONCERNANT LES VUES
+# --------------------------
+# Edition des informations d'un fichier
+addview_filegroup:
+    path: /addview/{id}/{title}
+    defaults: { _controller: PCloudPlatformBundle:Advert:addview }
+
+deleteview_filegroup:
+    path: /deleteview/{title}
+    defaults: { _controller: PCloudPlatformBundle:Advert:deleteview }

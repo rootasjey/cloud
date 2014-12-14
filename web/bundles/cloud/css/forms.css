@@ -80,3 +80,13 @@ form select {
 .contentform input[type='submit']:hover {
     background-color: rgba(0,0,0,0.7);
 }
+
+#addfileform .icon-button[func='browse'] {
+    width   : 30px;
+    top     : -40px;
+    left    : 310px;
+    position: relative;
+
+    cursor: pointer;
+    display: block;
+}

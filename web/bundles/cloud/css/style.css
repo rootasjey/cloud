@@ -1,5 +1,6 @@
 /* ----------*/
-/* STYLE.CSS*/
+/* STYLE.CSS */
+/* ----------*/
 /* One CSS File to rule them all*/
 
 @import url('fonts.css');
@@ -9,4 +10,5 @@
 @import url('body.css');
 @import url('forms.css');
 @import url('search.css');
+@import url('loader.css');
 @import url('jquery.qtip.css');

@@ -192,25 +192,34 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
             }
 
-            // view_user
-            if (0 === strpos($pathinfo, '/viewuser') && preg_match('#^/viewuser/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'view_user')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewuserAction',));
+            if (0 === strpos($pathinfo, '/viewsingle')) {
+                // view_singleuser
+                if (0 === strpos($pathinfo, '/viewsingleuser') && preg_match('#^/viewsingleuser/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'view_singleuser')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewsingleuserAction',));
+                }
+
+                // view_singlefile
+                if (0 === strpos($pathinfo, '/viewsinglefile') && preg_match('#^/viewsinglefile/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'view_singlefile')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewsinglefileAction',));
+                }
+
+                // view_singleusergroup
+                if (0 === strpos($pathinfo, '/viewsingleusergroup') && preg_match('#^/viewsingleusergroup/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'view_singleusergroup')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewsingleusergroupAction',));
+                }
+
+                // view_singlefilegroup
+                if (0 === strpos($pathinfo, '/viewsinglefilegroup') && preg_match('#^/viewsinglefilegroup/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'view_singlefilegroup')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewsinglefilegroupAction',));
+                }
+
             }
 
-            // view_file
-            if (0 === strpos($pathinfo, '/viewfile') && preg_match('#^/viewfile/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'view_file')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewfileAction',));
+            // view_usergroupAccess
+            if (0 === strpos($pathinfo, '/viewusergroupAccess') && preg_match('#^/viewusergroupAccess/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'view_usergroupAccess')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewusergroupAccessAction',));
             }
 
-        }
-
-        // creat_user
-        if (rtrim($pathinfo, '/') === '/creatuser') {
-            if (substr($pathinfo, -1) !== '/') {
-                return $this->redirect($pathinfo.'/', 'creat_user');
-            }
-
-            return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::creatuserAction',  '_route' => 'creat_user',);
         }
 
         if (0 === strpos($pathinfo, '/add')) {
@@ -250,6 +259,11 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
                 return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addfilegroupAction',  '_route' => 'add_filegroup',);
             }
 
+            // add_access
+            if (0 === strpos($pathinfo, '/addaccess') && preg_match('#^/addaccess/(?P<usersgroupsid>\\d+)/(?P<filesgroupsid>\\d+)/(?P<write>\\d+)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'add_access')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addaccessAction',));
+            }
+
         }
 
         if (0 === strpos($pathinfo, '/delete')) {
@@ -269,7 +283,7 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             }
 
             // delete_filegroup
-            if (0 === strpos($pathinfo, '/deletefilegroup') && preg_match('#^/deletefilegroup/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+            if (0 === strpos($pathinfo, '/deletefilegroup') && preg_match('#^/deletefilegroup/(?P<id>\\d+)/(?P<title>[^/]++)$#s', $pathinfo, $matches)) {
                 return $this->mergeDefaults(array_replace($matches, array('_route' => 'delete_filegroup')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deletefilegroupAction',));
             }
 
@@ -312,6 +326,16 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
                 return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::editfilegroupAction',  '_route' => 'edit_filegroup',);
             }
 
+        }
+
+        // addview_filegroup
+        if (0 === strpos($pathinfo, '/addview') && preg_match('#^/addview/(?P<id>[^/]++)/(?P<title>[^/]++)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'addview_filegroup')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addviewAction',));
+        }
+
+        // deleteview_filegroup
+        if (0 === strpos($pathinfo, '/deleteview') && preg_match('#^/deleteview/(?P<title>[^/]++)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'deleteview_filegroup')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deleteviewAction',));
         }
 
         // _welcome

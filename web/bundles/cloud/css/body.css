@@ -152,7 +152,7 @@
     background  : #2980b9;
 }
 #users-panel .categorie-panel-content {
-    width: 260px;
+    width: 310px;
 }
 
 .action-panel {
@@ -200,7 +200,7 @@
     transition: 0.5s;
 }
 .row .avatar:hover {
-    border-width    : 5px;
+    border-width    : 1px;
     transition      : 0.5s;
 }
 
@@ -357,11 +357,19 @@ hr {
     width           : 640px;
     margin          : auto;
     margin-top      : 50px;
+    margin-bottom   : 50px;
 
-    padding         : 20px;
-    border-radius   : 10px;
+    border-collapse : collapse;
     display         : none;
     position        : relative;
+
+    -webkit-box-shadow: 4px 10px 17px -6px rgba(0,0,0,0.75);
+    -moz-box-shadow: 4px 10px 17px -6px rgba(0,0,0,0.75);
+    box-shadow: 4px 10px 17px -6px rgba(0,0,0,0.75);
+}
+
+#files-panel .files-list tbody {
+    background  : #eee;
 }
 
 #files-panel .files-list thead tr {
@@ -372,9 +380,8 @@ hr {
 #files-panel .files-list tr {
     cursor      : pointer;
     position    : relative;
-    background  : #eee;
 
-    opacity     : 0;
+    opacity     : 1;
     transition  : .5s;
 }
 #files-panel .files-list tr:hover {
@@ -383,11 +390,13 @@ hr {
     transition: .5s;
 }
 
+#files-panel .files-list .text-button {
+    text-decoration: underline;
+}
 
 th, td {
     padding: 10px;
     text-align: left;
-    border-collapse: collapse;
 }
 #files-panel .files-list .td-path, .th-path,.td-tags, .th-tags {
     display: none;
