@@ -85,7 +85,7 @@ add_user:
 
 # Ajout d'un fichier dans la base de données
 add_file:
-    path: /addfile/
+    path: /addfile/{grant}
     defaults: { _controller: PCloudPlatformBundle:Advert:addfile }
 
 # Ajout d'un group d'utilisateurs dans la base de données
@@ -97,15 +97,6 @@ add_usergroup:
 add_filegroup:
     path: /addfilegroup/
     defaults: { _controller: PCloudPlatformBundle:Advert:addfilegroup }
-
-# Ajout d'un groupe de fichiers dans la base de données
-add_access:
-    path: /addaccess/{usersgroupsid}/{filesgroupsid}/{write}
-    defaults: { _controller: PCloudPlatformBundle:Advert:addaccess }
-    requirements:
-        usersgroupsid: \d+
-        filesgroupsid: \d+
-        write        : \d+
 
 
 
@@ -121,7 +112,7 @@ delete_user:
 
 # Suppression d'un fichier de la base de données
 delete_file:
-   path: /deletefile/{id}
+   path: /deletefile/{grant}/{view}/{id}
    defaults: { _controller: PCloudPlatformBundle:Advert:deletefile }
    requirements:
        id: \d+
@@ -151,7 +142,7 @@ edit_user:
 
 # Edition des informations d'un fichier
 edit_file:
-    path: /editfile/
+    path: /editfile/{grant}
     defaults: { _controller: PCloudPlatformBundle:Advert:editfile }
 
 # Edition des informations d'un fichier
@@ -165,30 +156,62 @@ edit_filegroup:
     defaults: { _controller: PCloudPlatformBundle:Advert:editfilegroup }
 
 
-# --------------------------
-# ROUTES CONCERNANT LES VUES
-# --------------------------
-# Edition des informations d'un fichier
+# ------------------------------------
+# ROUTES CONCERNANT LES DROITS D'ACCES
+# ------------------------------------
+# Ajout d'une vue
 addview_filegroup:
     path: /addview/{id}/{title}
     defaults: { _controller: PCloudPlatformBundle:Advert:addview }
 
+# Suppression d'une vue
 deleteview_filegroup:
     path: /deleteview/{title}
     defaults: { _controller: PCloudPlatformBundle:Advert:deleteview }
 
+# Ajout d'un utilisateur pour se connecter à mysql
 addgrant_filegroup:
     path: /addgrant/{user}
     defaults: { _controller: PCloudPlatformBundle:Advert:addgrant }
 
+# Ajout d'un droit d'accès sur une vue pour un utilisateur
 addgrantonview:
     path: /addgrantonview/{user}/{view}
     defaults: { _controller: PCloudPlatformBundle:Advert:addgrantonview }
 
+# Ajout d'un droit d'accès sur une vue pour un utilisateur
+deletegrantfromview:
+    path: /deletegrantfromview/{user}/{view}
+    defaults: { _controller: PCloudPlatformBundle:Advert:deletegrantfromview }
+
+
+# Ajout d'une entrée dans la table access
+# indiquant les groupes de fichiers dont un groupe d'utilisateurs a le droit de voir
+add_access:
+    path: /addaccess/{usersgroupsid}/{filesgroupsid}/{write}
+    defaults: { _controller: PCloudPlatformBundle:Advert:addaccess }
+    requirements:
+        usersgroupsid: \d+
+        filesgroupsid: \d+
+        write        : \d+
+
+deleteaccess:
+    path: /deleteaccess/{usersgroupsid}/{filesgroupsid}
+    defaults: { _controller: PCloudPlatformBundle:Advert:deleteaccess }
+
+# Récupère les droits d'un groupe d'utilisateurs
 getusergrant:
     path: /getusergrant/{groupid}
     defaults: { _controller: PCloudPlatformBundle:Advert:getusergrant }
 
+# Récupère les groupes de fichiers dont un groupe d'utilisateurs a le droit de voir
 getaccess:
     path: /getaccess/{usersgroupsid}
     defaults: { _controller: PCloudPlatformBundle:Advert:getaccess }
+
+# ---------
+# RECHERCHE
+# ---------
+search:
+    path: /search/{terms}
+    defaults: { _controller: PCloudPlatformBundle:Advert:search }

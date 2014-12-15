@@ -63,6 +63,9 @@ function prepareAjaxForm(form) {
     $(form).submit(function(event) {
         if (request) request.abort(); // abort any pending request
 
+        var path = $("input[type='file']").val();
+        $("input[name='path']").val(path);
+
         // Setup some local variables
         var $form = $(this);
         var $inputs = $form.find("input, select, button, textarea"); // cache fields
@@ -71,6 +74,7 @@ function prepareAjaxForm(form) {
 
         $inputs.prop("disabled", true); // disable inputs for the duration of the ajax request
 
+        console.log(url);
 
         request = $.ajax({
             url: url,
@@ -90,7 +94,7 @@ function prepareAjaxForm(form) {
             else if (url === "/cloud/web/app_dev.php/adduser/") {
                 adduserResult(response);
             }
-            else if (url === "/cloud/web/app_dev.php/addfile/") {
+            else if (url.indexOf("/cloud/web/app_dev.php/addfile/") > -1) {
                 addfileResult(response);
             }
             else if (url === "/cloud/web/app_dev.php/addusergroup/") {
@@ -247,14 +251,16 @@ function toggleAddFile(groupSelected) {
         if (typeof groupSelected !== "undefined") {
 
             // On est dans l'UPDATE
-            form.attr("action", "/cloud/web/app_dev.php/editfile/");
+            var urlForm = "/cloud/web/app_dev.php/editfile/" + _user.useraccess;
+            form.attr("action", urlForm);
 
             // Modifie le texte du bouton valid
             $(formSelector + " input[type='submit']").val("UPDATE FILE");
         }
         else {
             // On est dans l'AJOUT
-            form.attr("action", "/cloud/web/app_dev.php/addfile/");
+            var urlForm = "/cloud/web/app_dev.php/addfile/" + _user.useraccess;
+            form.attr("action", urlForm);
 
             $(formSelector + " input").val("");
             ownerInput.attr("value", _user.name);
@@ -394,6 +400,9 @@ function toggleAddUsergroup(groupSelected) {
     var formSelector = "#usersgroups-panel .contentform";
     var form = $(formSelector);
 
+    // Masque la liste des acces du groupe
+    hideGroupAccess();
+
     // Affiche le formulaire s'il n'est pas visible
     if (form.css("display") !== "block") {
         // Masque la liste de fichiers
@@ -407,7 +416,6 @@ function toggleAddUsergroup(groupSelected) {
         $("#usersgroups-panel .icon-button[func='add']").attr("src", "/cloud/web/bundles/cloud/icon/return-icon.png");
 
 
-
         // Modifie l'url d'envoie du formulaire selon le cas d'utilisation
         if (typeof groupSelected !== "undefined") {
 
@@ -416,10 +424,6 @@ function toggleAddUsergroup(groupSelected) {
 
             // Modifie le texte du bouton valid
             $(formSelector + " input[type='submit']").val("UPDATE GROUP");
-
-
-            // console.log("input: " + groupSelected);
-            // getUserGroupAccessBinded(groupSelected);
 
             // Remplit le 'select' pour la sélection des accès
             getAllUsergroupAccess(groupSelected);
@@ -588,7 +592,7 @@ function addusergroupResult(response) {
         var filesgroupsid = response.filesgroupsid;
         var title         = response.title;
 
-        addGroupAccess(usersgroupsid, filesgroupsid, 0, title);
+        // addGroupAccess(usersgroupsid, filesgroupsid, 0, title);
 
         Grant(title);
     }
@@ -692,6 +696,39 @@ function addGroupAccess(usersgroupsid, filesgroupsid, write, usergroupName) {
     http.open("POST", url);
     http.send();
 }
+
+function deleteGroupAccess(usersgroupsid, filesgroupsid, usergroupName) {
+    var http = new XMLHttpRequest();
+    var url = "/cloud/web/app_dev.php/deleteaccess/" + usersgroupsid + "/" + filesgroupsid;
+
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            console.log(http.response);
+
+            var data = JSON.parse(http.response);
+            console.log(data);
+
+            // Rafraichir les données
+            refreshGroupAccess(data[0].usersgroupsid);
+
+
+            if (data.error === "false") {
+                var textMessage = "Les règles d'accès ont correctement été supprimées pour le groupe <strong>"
+                + usergroupName + "</strong>";
+                showMessage(textMessage, "information", "keep");
+            }
+            else {
+                var textMessage = "Désole, les règles d'accès n'ont pas pu être supprimées pour le groupe <strong>"
+                + usergroupName + "</strong>";
+                showMessage(textMessage, "error", "keep");
+            }
+        }
+    }
+    http.open("POST", url);
+    http.send();
+}
+
 
 // EDITION
 // --------
@@ -910,7 +947,10 @@ function populatSelectUsergroupAcess(data, groupSelected) {
         });
         containerGroupAccessUnbinded.append(access);
 
-        clickAddAccessToUsergroup(access);
+        access.click(function () {
+            clickAddAccessToUsergroup($(this));
+        });
+
     }
 
     // Récupère les groupes de fichiers liés
@@ -944,6 +984,26 @@ function getUserGroupAccessBinded(usergroupid) {
     http.send();
 }
 
+
+function hideGroupAccess() {
+    console.log("toto");
+    $("#usersgroups-panel .group-access").css({ display: "none"});
+    var containerGroupAccessBinded = $("#usersgroups-panel .group-access .group-access-binded");
+    var containerGroupAccessUnbinded = $("#usersgroups-panel .group-access .group-access-unbinded");
+
+    containerGroupAccessBinded.html("");
+    containerGroupAccessUnbinded.html("");
+}
+
+function refreshGroupAccess(usersgroupsid) {
+    var containerGroupAccessBinded = $("#usersgroups-panel .group-access .group-access-binded");
+    var containerGroupAccessUnbinded = $("#usersgroups-panel .group-access .group-access-unbinded");
+
+    containerGroupAccessBinded.html("");
+    containerGroupAccessUnbinded.html("");
+
+    getAllUsergroupAccess(usersgroupsid); // id du groupe d'utilisateurs en param
+}
 
 function fillAdduserInputs(data) {
     var form = "#adduserform ";
@@ -1059,7 +1119,7 @@ function getUserGroup(id) {
     http.send();
 }
 
-function getFileGroup(id, type) {
+function getFileGroup(id, type, fileid) {
     var url = "/cloud/web/app_dev.php/viewsinglefilegroup/" + id;
     var http = new XMLHttpRequest();
 
@@ -1073,6 +1133,9 @@ function getFileGroup(id, type) {
             }
             else if (type === "addview") {
                 addviewfilegroup(id, data[0].title);
+            }
+            else if (type === "deletefile") {
+                processDeleteFile(data[0].title, fileid);
             }
             else if (type === "adduseraccess") {
                 var container = $("#usersgroups-panel .group-access .group-access-binded");

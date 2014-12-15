@@ -229,12 +229,8 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             }
 
             // add_file
-            if (rtrim($pathinfo, '/') === '/addfile') {
-                if (substr($pathinfo, -1) !== '/') {
-                    return $this->redirect($pathinfo.'/', 'add_file');
-                }
-
-                return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addfileAction',  '_route' => 'add_file',);
+            if (0 === strpos($pathinfo, '/addfile') && preg_match('#^/addfile/(?P<grant>[^/]++)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'add_file')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addfileAction',));
             }
 
             // add_usergroup
@@ -255,11 +251,6 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
                 return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addfilegroupAction',  '_route' => 'add_filegroup',);
             }
 
-            // add_access
-            if (0 === strpos($pathinfo, '/addaccess') && preg_match('#^/addaccess/(?P<usersgroupsid>\\d+)/(?P<filesgroupsid>\\d+)/(?P<write>\\d+)$#s', $pathinfo, $matches)) {
-                return $this->mergeDefaults(array_replace($matches, array('_route' => 'add_access')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addaccessAction',));
-            }
-
         }
 
         if (0 === strpos($pathinfo, '/delete')) {
@@ -269,7 +260,7 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             }
 
             // delete_file
-            if (0 === strpos($pathinfo, '/deletefile') && preg_match('#^/deletefile/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+            if (0 === strpos($pathinfo, '/deletefile') && preg_match('#^/deletefile/(?P<grant>[^/]++)/(?P<view>[^/]++)/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
                 return $this->mergeDefaults(array_replace($matches, array('_route' => 'delete_file')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deletefileAction',));
             }
 
@@ -296,12 +287,8 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
             }
 
             // edit_file
-            if (rtrim($pathinfo, '/') === '/editfile') {
-                if (substr($pathinfo, -1) !== '/') {
-                    return $this->redirect($pathinfo.'/', 'edit_file');
-                }
-
-                return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::editfileAction',  '_route' => 'edit_file',);
+            if (0 === strpos($pathinfo, '/editfile') && preg_match('#^/editfile/(?P<grant>[^/]++)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'edit_file')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::editfileAction',));
             }
 
             // edit_usergroup
@@ -347,6 +334,21 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
         }
 
+        // deletegrantfromview
+        if (0 === strpos($pathinfo, '/deletegrantfromview') && preg_match('#^/deletegrantfromview/(?P<user>[^/]++)/(?P<view>[^/]++)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'deletegrantfromview')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deletegrantfromviewAction',));
+        }
+
+        // add_access
+        if (0 === strpos($pathinfo, '/addaccess') && preg_match('#^/addaccess/(?P<usersgroupsid>\\d+)/(?P<filesgroupsid>\\d+)/(?P<write>\\d+)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'add_access')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addaccessAction',));
+        }
+
+        // deleteaccess
+        if (0 === strpos($pathinfo, '/deleteaccess') && preg_match('#^/deleteaccess/(?P<usersgroupsid>[^/]++)/(?P<filesgroupsid>[^/]++)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'deleteaccess')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deleteaccessAction',));
+        }
+
         if (0 === strpos($pathinfo, '/get')) {
             // getusergrant
             if (0 === strpos($pathinfo, '/getusergrant') && preg_match('#^/getusergrant/(?P<groupid>[^/]++)$#s', $pathinfo, $matches)) {
@@ -358,6 +360,11 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
                 return $this->mergeDefaults(array_replace($matches, array('_route' => 'getaccess')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::getaccessAction',));
             }
 
+        }
+
+        // search
+        if (0 === strpos($pathinfo, '/search') && preg_match('#^/search/(?P<terms>[^/]++)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'search')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::searchAction',));
         }
 
         // _welcome

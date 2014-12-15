@@ -76,8 +76,6 @@ class AdvertController extends Controller
 			array_push($user, $request->fetch());
 			$request->closeCursor(); // Termine le traitement de la requête
 
-
-
 			// Vérifie que les mots de passe coïncident
 			if ($user[0]["password"] == $password) {
 				$response->setData($user);
@@ -358,7 +356,7 @@ class AdvertController extends Controller
 	}
 
 	// Ajout d'un fichier dans la base de données
-	public function addfileAction() {
+	public function addfileAction($grant) {
 		$groupid	= $_POST["group"];
 		$owner 		= $_POST["owner"];
 		$path 		= $_POST["path"];
@@ -367,6 +365,8 @@ class AdvertController extends Controller
 		$tags 		= $_POST["tags"];
 
 		$today	 	= date("Y-m-d");
+
+		$path = addslashes($path);
 
 		// --------------------
 		if ($groupid === '') {
@@ -378,7 +378,7 @@ class AdvertController extends Controller
 		}
 
 		try {
-			$bdd  = mysql_connect("localhost", "root", "");
+			$bdd  = mysql_connect("localhost", $grant, $grant);
 			$db   = mysql_select_db("cloud");
 			$sql  = "INSERT INTO files(groupid, owner, path, name, type, pubDate, tags)
 			VALUES('$groupid', '$owner', '$path', '$name', '$type', '$today', '$tags')";
@@ -408,7 +408,7 @@ class AdvertController extends Controller
 	// Ajout d'un groupe d'utilisateurs dans la base de données
 	public function addusergroupAction() {
 		$title 		= $_POST["title"];
-		$access 	= $_POST["access"];
+		// $access 	= $_POST["access"];
 		$response 	= new JsonResponse();
 
 		try {
@@ -425,7 +425,7 @@ class AdvertController extends Controller
 				$response->setData(array(
 					'title' 		=> $title,
 					'usersgroupsid' => $id,
-					'filesgroupsid' => $access,
+					// 'filesgroupsid' => $access,
 					'error'			=> 'false'
 				));
 				return $response;
@@ -433,7 +433,7 @@ class AdvertController extends Controller
 			else {
 				$response->setData(array(
 					'title' 		=> $title,
-					'filesgroupsid' => $access,
+					// 'filesgroupsid' => $access,
 					'error'			=> 'true'
 				));
 				return $response;
@@ -444,7 +444,7 @@ class AdvertController extends Controller
 			die('Erreur : ' . $e->getMessage());
 			$response->setData(array(
 				'title' 		=> $title,
-				'filesgroupsid' => $access,
+				// 'filesgroupsid' => $access,
 				'error'			=> 'true',
 				'content'		=> $e->getMessage()
 			));
@@ -484,31 +484,6 @@ class AdvertController extends Controller
 		}
 	}
 
-	// Ajout des droits d'accès
-	public function addaccessAction($usersgroupsid, $filesgroupsid, $write) {
-		// return new Response("OK");
-		try {
-			$bdd  = mysql_connect("localhost", "root", "");
-			$db   = mysql_select_db("cloud");
-
-			$sql  = "INSERT INTO access(usersgroupsid, filesgroupsid)
-			VALUES('$usersgroupsid', '$filesgroupsid')";
-
-			$request = mysql_query($sql, $bdd) or die(mysql_error());
-
-
-			if($request) {
-				return new Response("OK");
-			}
-
-			return new Response("fail");
-		}
-
-		catch (Exception $e) {
-			die('Erreur : ' . $e->getMessage());
-			return new Response("fail");
-		}
-	}
 
 
 	// ----------------------------------
@@ -552,11 +527,11 @@ class AdvertController extends Controller
 	}
 
 	// Suppression d'un fichier de la base de données
-	public function deletefileAction($id) {
+	public function deletefileAction($grant, $view, $id) {
 		try {
-			$bdd  = mysql_connect("localhost", "root", "");
+			$bdd  = mysql_connect("localhost", $grant, $grant);
 			$db   = mysql_select_db("cloud");
-			$sql  = "DELETE FROM files WHERE id='" . $id . "'";
+			$sql  = "DELETE FROM " . $view . " WHERE id='" . $id . "'";
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
@@ -748,7 +723,7 @@ class AdvertController extends Controller
 
 
 	// Modification des données d'un fichier
-	public function editfileAction() {
+	public function editfileAction($grant) {
 		$id			= $_POST["id"];
 		$groupid	= $_POST["group"];
 		$name 		= $_POST["name"];
@@ -758,7 +733,7 @@ class AdvertController extends Controller
 
 
 		try {
-			$bdd  = mysql_connect("localhost", "root", "");
+			$bdd  = mysql_connect("localhost", $grant, $grant);
 			$db   = mysql_select_db("cloud");
 			$sql  = "UPDATE files
 					 SET groupid=". $groupid .",
@@ -823,6 +798,11 @@ class AdvertController extends Controller
 		}
 	}
 
+
+
+	// --------------------------
+	// GESTION DES DROITS D'ACCES
+	// --------------------------
 
 	// Création d'une vue
 	// On est obligé de créer la vue à part car
@@ -955,11 +935,48 @@ class AdvertController extends Controller
 	public function addgrantonviewAction($user, $view) {
 		try {
 			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
-			$request 	= $bdd->query("GRANT ALL PRIVILEGES ON cloud." . $view ."
+			$request 	= $bdd->query("GRANT SELECT, INSERT, DELETE, UPDATE ON cloud." . $view ."
 			 							TO '" . $user ."'@'localhost'");
 
-			// $request2 	= $bdd->query("GRANT ALL PRIVILEGES ON cloud.v_hiver_2014
-			// 							TO 'NouvelleGen'@'localhost'");
+			// $request 	= $bdd->query("GRANT ALL PRIVILEGES ON cloud.*
+			// 							TO '" . $user ."'@'localhost' WITH GRANT OPTION");
+
+			// Récupération des valeurs
+			if (request) {
+				$response = new JsonResponse();
+				$response->setData(array(
+					'error'			=> 'false'
+				));
+				return $response;
+			}
+			else {
+				if (request) {
+					$response = new JsonResponse();
+					$response->setData(array(
+						'error'			=> 'true'
+					));
+					return $response;
+				}
+			}
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			if (request) {
+				$response = new JsonResponse();
+				$response->setData(array(
+					'error'		=> 'true',
+					'message'	=> $e->getMessage()
+				));
+				return $response;
+			}
+		}
+	}
+
+	public function deletegrantfromviewAction($user, $view) {
+		try {
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query("REVOKE ALL PRIVILEGES ON cloud." . $view ."
+									   FROM '" . $user ."'@'localhost'");
 
 
 			// Récupération des valeurs
@@ -993,6 +1010,77 @@ class AdvertController extends Controller
 		}
 	}
 
+	// Ajout des droits d'accès
+	public function addaccessAction($usersgroupsid, $filesgroupsid, $write) {
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+
+			$sql  = "INSERT INTO access(usersgroupsid, filesgroupsid)
+			VALUES('$usersgroupsid', '$filesgroupsid')";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+
+			if($request) {
+				return new Response("OK");
+			}
+
+			return new Response("fail");
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			return new Response("fail");
+		}
+	}
+
+	// Ajout des droits d'accès
+	public function deleteaccessAction($usersgroupsid, $filesgroupsid) {
+		$response = new JsonResponse();
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+
+			$sql  = "DELETE FROM cloud.access
+			WHERE usersgroupsid=" . $usersgroupsid . "
+			AND filesgroupsid =" . $filesgroupsid;
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+
+			if($request) {
+				$response->setData(array(
+					'usersgroupsid' => $usersgroupsid,
+					'filesgroupsid'	=> $filesgroupsid,
+					'error'			=> 'false'
+				));
+				return $response;
+			}
+			else {
+				$response->setData(array(
+					'usersgroupsid' => $usersgroupsid,
+					'filesgroupsid'	=> $filesgroupsid,
+					'error'			=> 'true'
+				));
+				return $response;
+			}
+
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			$response->setData(array(
+				'usersgroupsid' => $usersgroupsid,
+				'filesgroupsid'	=> $filesgroupsid,
+				'error'		=> 'true',
+				'message'	=> $e->getMessage()
+			));
+			return $response;
+		}
+	}
+
+
 	public function getaccessAction($usersgroupsid) {
 		try {
 			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
@@ -1015,5 +1103,27 @@ class AdvertController extends Controller
 		}
 	}
 
+	public function searchAction($view, $grant, $terms) {
+		try {
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', $grant, $grant);
+			$request 	= $bdd->query("SELECT * FROM " . $view ."
+									   WHERE CONTAINS(name, '". $terms) . "');";
+
+			$access 	= Array();
+
+			while ($v = $request->fetch()) {
+				array_push($access, $v);
+			}
+
+			$json = new JsonResponse();
+			$json->setData($access);
+			$request->closeCursor(); // Termine le traitement de la requête
+
+			return $json;
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+		}
+	}
 
 }

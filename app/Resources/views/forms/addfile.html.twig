@@ -14,9 +14,13 @@
 
     <!-- PATH INPUT -->
     <span class="title">path</span>
-    <input type="text" name="path" placeholder="path's file">
+    <input type="hidden" name="path" placeholder="path's file">
     <!-- <div class="text-button" func="browse-file">Browse</div> -->
-    <img class="icon-button" func="browse" src="{{ asset('bundles/cloud/icon/link-icon.png') }}" alt="browse" />
+    <!-- <img class="icon-button" func="browse"  src="{{ asset('bundles/cloud/icon/link-icon.png') }}" alt="browse"
+            onclick="performClick('theFile');"/>
+
+    <a href="#" onclick="performClick('theFile');">Open file dialog</a> -->
+    <input name="file" type="file" id="theFile" />
 
 
     <input type="hidden" name="owner">

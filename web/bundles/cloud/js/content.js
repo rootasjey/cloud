@@ -6,7 +6,7 @@ var _pendingAjaxRequest = "";
 
 // DEBUT FONCTIONS D'AFFICHAGE
 // ---------------------------
-// Affiche les catégories après identification de l'utilisateur
+// Affiche les cat�gories apr�s identification de l'utilisateur
 function showCategories() {
     var delay = 200;
     $(".middle-content .categories").css({ display: "block" });
@@ -29,7 +29,7 @@ function showCategories() {
     clickRefresh();
 }
 
-// Masque les catégories si l'utilisateur se déconnecte
+// Masque les cat�gories si l'utilisateur se d�connecte
 function hideCategories() {
     var delay = 200;
 
@@ -49,16 +49,16 @@ function hideCategories() {
     }, 1200);
 }
 
-// Se déclenche quand un utilisateur click sur une des catégories
+// Se d�clenche quand un utilisateur click sur une des cat�gories
 function clickCategories() {
     $(".square").click(function () {
-        // Récupère le sélecteur ainsi que l'objet (jquery) panel
+        // R�cup�re le s�lecteur ainsi que l'objet (jquery) panel
         // Puis lance la fonction permettant d'afficher ou masquer le panel
         var selector = "#" + $(this).attr("func") + "-panel";
         var panel = $(selector);
         openCategoriePanel(panel);
 
-        // Lance la requête ajax adéquate
+        // Lance la requ�te ajax ad�quate
         var square = $(this);
         if (square.attr("func") === "files") {
             viewFiles();
@@ -75,7 +75,7 @@ function clickCategories() {
     });
 }
 
-// Affiche/Masque les sections des catégories
+// Affiche/Masque les sections des cat�gories
 function openCategoriePanel(panel) {
     if (panel.css("display") === "none") {
         panel.css({
@@ -103,9 +103,9 @@ function openCategoriePanel(panel) {
 
 // DEBUT FONCTIONS AJAX
 // --------------------
-// Envoie une requête ajax à la route passée en paramètre
+// Envoie une requ�te ajax � la route pass�e en param�tre
 function sendAjaxRequest(url) {
-    // Bloque la fonction ajax si elle est déjà lancée avec la même url
+    // Bloque la fonction ajax si elle est d�j� lanc�e avec la m�me url
     if (_pendingAjaxRequest === url) {
         return;
     }
@@ -124,8 +124,8 @@ function sendAjaxRequest(url) {
                 viewUsersgroupsResult(data);
             }
             else if (url.indexOf("/cloud/web/app_dev.php/viewfiles/") > -1) {
-                // viewFilesResult(data);
-                getSelectedViewResult(data);
+                viewFilesResult(data);
+                // getSelectedViewResult(data);
             }
             else if (url.indexOf("/cloud/web/app_dev.php/viewfilesgroups") > -1) {
                 viewFilesgroupsResult(data);
@@ -136,6 +136,9 @@ function sendAjaxRequest(url) {
             else if (url.indexOf("/cloud/web/app_dev.php/viewsinglefilegroup") > -1) {
                 getGroupTitleResult(data);
             }
+            else if (url.indexOf("/cloud/web/app_dev.php/deletefile/") > -1) {
+                viewDeleteFileResult(data);
+            }
         }
     }
     http.open("POST", url);
@@ -144,9 +147,9 @@ function sendAjaxRequest(url) {
     _pendingAjaxRequest = url;
 }
 
-// Envoie une requête ajax vers la route avec des paramètres
+// Envoie une requ�te ajax vers la route avec des param�tres
 function sendAjaxRequestWithParameters(url, parameter) {
-    // Bloque la fonction ajax si elle est déjà lancée avec la même url
+    // Bloque la fonction ajax si elle est d�j� lanc�e avec la m�me url
     if (_pendingAjaxRequest === url) {
         return;
     }
@@ -157,6 +160,7 @@ function sendAjaxRequestWithParameters(url, parameter) {
     http.onreadystatechange = function () {
         if (http.readyState === 4 && http.status === 200) {
             var data = http.response;
+            console.log(data);
             data = JSON.parse(data);
 
 
@@ -196,7 +200,7 @@ function viewFiles() {
         scrollTop: $("#files-panel").offset().top
     }, 500);
 
-    // Test si on n'a pas déjà récupéré les fichiers
+    // Test si on n'a pas d�j� r�cup�r� les fichiers
     var content = $("#files-panel .table-body tr");
     if (content.length > 0)
         return;
@@ -208,7 +212,7 @@ function viewFiles() {
     // startLoadingAnimation(); // starts loading animation
     startLoadingAnimationCustomPlace("#files-panel .categorie-panel-content");
 
-    // à déplacer
+    // � d�placer
     getAccess();
 }
 
@@ -219,7 +223,7 @@ function viewFilesgroups() {
         scrollTop: $("#filesgroups-panel").offset().top
     }, 500);
 
-    // Test si on n'a pas déjà récupéré les utilisateurs
+    // Test si on n'a pas d�j� r�cup�r� les utilisateurs
     var content = $("#filesgroups-panel .categorie-panel-content .filesgroups .group-card");
     if (content.length > 0)
         return;
@@ -237,7 +241,7 @@ function viewUsers() {
         scrollTop: $("#users-panel").offset().top
     }, 500);
 
-    // Test si on n'a pas déjà récupéré les utilisateurs
+    // Test si on n'a pas d�j� r�cup�r� les utilisateurs
     var content = $("#users-panel .categorie-panel-content .users .row");
     if (content.length > 0)
         return;
@@ -255,7 +259,7 @@ function viewUsersgroups() {
         scrollTop: $("#usersgroups-panel").offset().top
     }, 500);
 
-    // Test si on n'a pas déjà récupéré les utilisateurs
+    // Test si on n'a pas d�j� r�cup�r� les utilisateurs
     var content = $("#usersgroups-panel .categorie-panel-content .usersgroups .group-card");
     if (content.length > 0)
         return;
@@ -280,9 +284,17 @@ function deleteUser(id) {
 }
 
 // Supprime un fichier
-function deleteFile(id) {
-    var url = "/cloud/web/app_dev.php/deletefile";
-    sendAjaxRequestWithParameters(url, id);
+function deleteFile(id, groupid) {
+    // Récupère le nom de la vue du fichier
+    // >récupère le titre du groupe du fichier
+    getFileGroup(groupid, "deletefile", id);
+}
+
+function processDeleteFile(viewTitle, fileid) {
+    viewTitle = "v_" + viewTitle;
+    console.log(viewTitle);
+    var url = "/cloud/web/app_dev.php/deletefile/" +  _user.useraccess + "/" + viewTitle + "/" + fileid;
+    sendAjaxRequest(url);
 }
 
 // Supprime un groupe d'utilisateurs
@@ -312,25 +324,25 @@ function deleteView(title) {
 // -------------------------------
 // Edite un utilisateur
 function editUser(id) {
-    // Affiche le formulaire d'édition pré-rempli
+    // Affiche le formulaire d'�dition pr�-rempli
     getUser(id);
 }
 
 // Edite un fichier
 function editFile(id) {
-    // Affiche le formulaire d'édition pré-rempli
+    // Affiche le formulaire d'�dition pr�-rempli
     getFile(id, "edit");
 }
 
 // Edite un groupe d'utilisateurs
 function editUserGroup(id) {
-    // Affiche le formulaire d'édition pré-rempli
+    // Affiche le formulaire d'�dition pr�-rempli
     getUserGroup(id);
 }
 
 // Edite un groupe de fichiers
 function editFileGroup(id) {
-    // Affiche le formulaire d'édition pré-rempli
+    // Affiche le formulaire d'�dition pr�-rempli
     getFileGroup(id, "edit");
 }
 
@@ -342,29 +354,29 @@ function editFileGroup(id) {
 // --------------------------------------------------
 // Fonction post-traitement ajax pour la vue des utilisateurs
 function viewUsersResult(data) {
-    _pendingAjaxRequest = null; // requête ajax terminée
+    _pendingAjaxRequest = null; // requ�te ajax termin�e
 
     if (data.length < 1) {
-        // Affiche un message si on n'a récupéré aucune donnée
+        // Affiche un message si on n'a r�cup�r� aucune donn�e
         var textMessage = "Il n'y a aucun utilisateur pour le moment";
         showMessage(textMessage, "error");
         stopLoadingAnimationCustomPlace("#users-panel .categorie-panel-content");
         return;
     }
 
-    // Récupère l'objet où on va insérer le contenu
+    // R�cup�re l'objet o� on va ins�rer le contenu
     var content = $("#users-panel .categorie-panel-content .users");
 
-    // Traitement des données
+    // Traitement des donn�es
     for (var i = 0; i < data.length; i++) {
-        // Crée l'avatar
+        // Cr�e l'avatar
         var avatar = $("<img>", {
             class:"avatar",
             alt: "avatar",
             src : "/cloud/web/bundles/cloud/icon/user-icon.png"
         });
 
-        // Crée les éléments groupid (id du groupe) et name (nom)
+        // Cr�e les �l�ments groupid (id du groupe) et name (nom)
         var groupid = $("<span>", { class: 'user-groupid', html: data[i].groupid });
         var name = $("<span>", { class: 'user-name', html: " " + data[i].name });
 
@@ -376,18 +388,18 @@ function viewUsersResult(data) {
             name.html(name.html().substring(0, 4) + "...");
         }
 
-        // Crée le contenu de la ligne d'informations
+        // Cr�e le contenu de la ligne d'informations
         var rowtext = $("<div>", {
             class: "row-text"
         });
 
-        // Crée la ligne d'informations des utilisateurs
+        // Cr�e la ligne d'informations des utilisateurs
         var row = $("<div>", {
             class: "row",
             userid: data[i].id
         }).appendTo(content);
 
-        // Crée l'icone d'édition
+        // Cr�e l'icone d'�dition
         var editIcon = $("<img>", {
             class: "icon-button",
             func: "edit-user",
@@ -395,7 +407,7 @@ function viewUsersResult(data) {
             src : "/cloud/web/bundles/cloud/icon/edit-icon.png"
         });
 
-        // Crée l'icone de suppression
+        // Cr�e l'icone de suppression
         var deleteIcon = $("<img>", {
             class: "icon-button",
             func: "delete-user",
@@ -403,9 +415,9 @@ function viewUsersResult(data) {
             src : "/cloud/web/bundles/cloud/icon/minus-icon.png"
         });
 
-        // Insère le contenu dans la ligne
-        // Attache l'icone d'édition, de suppression, l'avatar
-        // et enfin le contenu de la ligne à l'objet row (ligne)
+        // Ins�re le contenu dans la ligne
+        // Attache l'icone d'�dition, de suppression, l'avatar
+        // et enfin le contenu de la ligne � l'objet row (ligne)
         row.append(editIcon).append(deleteIcon).append(avatar).append(rowtext);
 
         // Ajoute le groupid et le nom de l'utilisateur au contenu de la ligne
@@ -425,43 +437,43 @@ function viewUsersResult(data) {
     addTooltip(".icon-button[func='edit-user']", "editer");
     addTooltip(".icon-button[func='delete-user']", "supprimer");
 
-    // Evénements
-    clickDeleteUser();  // événement de suppression
-    clickEditUser();    // événement d'édition
+    // Ev�nements
+    clickDeleteUser();  // �v�nement de suppression
+    clickEditUser();    // �v�nement d'�dition
 
-    // Arrête l'animation de chargement
+    // Arr�te l'animation de chargement
     stopLoadingAnimationCustomPlace("#users-panel .categorie-panel-content");
 }
 
 // Fonction post-traitement ajax pour la vue des groupes d'utilisateurs
 function viewUsersgroupsResult(data) {
-    _pendingAjaxRequest = null; // requête ajax terminée
+    _pendingAjaxRequest = null; // requ�te ajax termin�e
 
     if (data.length < 1) {
-        // Affiche un message si on n'a récupéré aucune donnée
+        // Affiche un message si on n'a r�cup�r� aucune donn�e
         var textMessage = "Il n'y a pas de groupe d'utilisateurs pour le moment";
         showMessage(textMessage, "error");
         stopLoadingAnimationCustomPlace("#usersgroups-panel .categorie-panel-content");
         return;
     }
 
-    // Récupère l'objet où on va insérer le contenu
+    // R�cup�re l'objet o� on va ins�rer le contenu
     var content = $("#usersgroups-panel .categorie-panel-content .usersgroups");
 
-    // Traitement des données
+    // Traitement des donn�es
     for (var i = 0; i < data.length; i++) {
-        // Crée la carte de groupe
+        // Cr�e la carte de groupe
         var card = $("<div>", {
             class   : "group-card",
             groupid : data[i].id
         }).appendTo(content);
 
-        // Crée le header
+        // Cr�e le header
         var header = $("<div>", {
             class:"group-card-header"
         });
 
-        // Crée le contenu
+        // Cr�e le contenu
         var groupid = $("<span>", { class: 'group-id', html: data[i].id });
         var grouptitle = $("<span>", { class: 'group-title', html: data[i].title });
 
@@ -471,13 +483,13 @@ function viewUsersgroupsResult(data) {
             grouptitle.html(grouptitle.html().substring(0, 12) + "...");
         }
 
-        // Attache les éléments au DOM (Document Object Model)
+        // Attache les �l�ments au DOM (Document Object Model)
         card.append(header);        // attache l'objet header au parent card
         card.append(groupid);       // attache l'objet groupid au parent card
         header.append(grouptitle);  // attache l'objet grouptitle au parent header
 
 
-        //  Crée un bouton text  (pour l'édition)
+        //  Cr�e un bouton text  (pour l'�dition)
         var edit = $("<div>", {
             class: "text-button",
             func : "edit-usergroup",
@@ -485,7 +497,7 @@ function viewUsersgroupsResult(data) {
             html: "edit"
         });
 
-        //  Crée un second bouton text (pour la suppression)
+        //  Cr�e un second bouton text (pour la suppression)
         var del = $("<div>", {
             class: "text-button",
             func : "delete-usergroup",
@@ -503,7 +515,7 @@ function viewUsersgroupsResult(data) {
     // addTooltip(".icon-button[func='edit-user']", "editer");
     // addTooltip(".icon-button[func='delete-user']", "supprimer");
 
-    // Evénements
+    // Ev�nements
     clickDeleteUsergroup();
     clickEditUsergroup();
 
@@ -513,80 +525,80 @@ function viewUsersgroupsResult(data) {
 
 // Fonction post-traitement ajax pour la vue des fichiers
 function viewFilesResult(data) {
-    _pendingAjaxRequest = null; // requête ajax terminée
-    console.log("tata");
-    // if (data.length < 1) {
-    //     // Affiche un message si on n'a récupéré aucune donnée
-    //     var textMessage = "There's no result for this request.";
-    //     showMessage(textMessage, "error");
-    //     return;
-    // }
-    //
-    // // Récupère l'objet où on va insérer le contenu
-    // var fileslist = $("#files-panel .categorie-panel-content .files-list");
-    // var content = $("#files-panel .categorie-panel-content .files-list .table-body");
-    //
-    // // Traitement des données
-    // for (var i = 0; i < data.length; i++) {
-    //     var tr = $("<tr>");
-    //
-    //     var name    = $("<td>", { class:"td-name" }).html(data[i].name);
-    //     var group   = $("<td>", { class:"td-group" }).html(data[i].groupid);
-    //     var path    = $("<td>", { class:"td-path" }).html(data[i].path);
-    //     var type    = $("<td>", { class:"td-type" }).html(data[i].type);
-    //     var pubdate = $("<td>", { class:"td-pubdate" }).html(data[i].pubDate);
-    //     var tags    = $("<td>", { class:"td-tags" }).html(data[i].tags);
-    //     var owner   = $("<td>", { class:"td-owner" }).html(data[i].owner);
-    //
-    //     var _edit   = $("<td>", { class: "text-button", func: "edit-file", fileid: data[i].id }).html("edit");
-    //     var _delete  = $("<td>", { class: "text-button", func: "delete-file", fileid: data[i].id }).html("delete");
-    //
-    //     tr.append(name).append(group).append(path).append(type).append(pubdate).append(tags).append(owner);
-    //     tr.append(_edit).append(_delete);
-    //     content.append(tr);
-    // }
-    //
-    // // Arrête l'animation de chargement
-    // stopLoadingAnimationCustomPlace("#files-panel .categorie-panel-content");
-    //
-    // // Animations
-    // fileslist.css({ display: "block", opacity: "0", top: "20px"})
-    //          .animate({ opacity: "1", top :"0" });
-    //
-    //
-    // // Evénements
-    // clickEditFile();
-    // clickDeleteFile();
+    _pendingAjaxRequest = null; // requete ajax terminee
+    // console.log("tata");
+    if (data.length < 1) {
+        // Affiche un message si on n'a recupere aucune donnee
+        var textMessage = "There's no result for this request.";
+        showMessage(textMessage, "error");
+        return;
+    }
+
+    // Reeupere l'objet on va inserer le contenu
+    var fileslist = $("#files-panel .categorie-panel-content .files-list");
+    var content = $("#files-panel .categorie-panel-content .files-list .table-body");
+
+    // Traitement des donnees
+    for (var i = 0; i < data.length; i++) {
+        var tr = $("<tr>");
+
+        var name    = $("<td>", { class:"td-name" }).html(data[i].name);
+        var group   = $("<td>", { class:"td-group" }).html(data[i].groupid);
+        var path    = $("<td>", { class:"td-path" }).html(data[i].path);
+        var type    = $("<td>", { class:"td-type" }).html(data[i].type);
+        var pubdate = $("<td>", { class:"td-pubdate" }).html(data[i].pubDate);
+        var tags    = $("<td>", { class:"td-tags" }).html(data[i].tags);
+        var owner   = $("<td>", { class:"td-owner" }).html(data[i].owner);
+
+        var _edit   = $("<td>", { class: "text-button", func: "edit-file", fileid: data[i].id, filegroupid: data[i].groupid }).html("edit");
+        var _delete  = $("<td>", { class: "text-button", func: "delete-file", fileid: data[i].id, filegroupid: data[i].groupid }).html("delete");
+
+        tr.append(name).append(group).append(path).append(type).append(pubdate).append(tags).append(owner);
+        tr.append(_edit).append(_delete);
+        content.append(tr);
+    }
+
+    // Arrete l'animation de chargement
+    stopLoadingAnimationCustomPlace("#files-panel .categorie-panel-content");
+
+    // Animations
+    fileslist.css({ display: "block", opacity: "0", top: "20px"})
+             .animate({ opacity: "1", top :"0" });
+
+
+    // Evenements
+    clickEditFile();
+    clickDeleteFile();
 }
 
 // Fonction post-traitement ajax pour la vue des groupes de fichiers
 function viewFilesgroupsResult(data) {
-    _pendingAjaxRequest = null; // requête ajax terminée
+    _pendingAjaxRequest = null; // requ�te ajax termin�e
 
     if (data.length < 1) {
-        // Affiche un message si on n'a récupéré aucune donnée
+        // Affiche un message si on n'a r�cup�r� aucune donn�e
         var textMessage = "Il n'y a pas de groupe de fichiers disponibles pour le moment.";
         showMessage(textMessage, "error");
         stopLoadingAnimationCustomPlace("#filesgroups-panel .categorie-panel-content");
         return;
     }
 
-    // Récupère l'objet où on va insérer le contenu
+    // R�cup�re l'objet o� on va ins�rer le contenu
     var content = $("#filesgroups-panel .categorie-panel-content .filesgroups");
 
-    // Traitement des données
+    // Traitement des donn�es
     for (var i = 0; i < data.length; i++) {
-        // Crée la carte de groupe
+        // Cr�e la carte de groupe
         var card = $("<div>", {
             class: "group-card"
         }).appendTo(content);
 
-        // Crée le header
+        // Cr�e le header
         var header = $("<div>", {
             class:"group-card-header"
         });
 
-        // Crée le contenu
+        // Cr�e le contenu
         var groupid = $("<span>", { class: 'group-id', html: data[i].id });
         var grouptitle = $("<span>", { class: 'group-title', html: data[i].title });
 
@@ -596,13 +608,13 @@ function viewFilesgroupsResult(data) {
             grouptitle.html(grouptitle.html().substring(0, 12) + "...");
         }
 
-        // Attache les éléments au DOM (Document Object Model)
+        // Attache les �l�ments au DOM (Document Object Model)
         card.append(header);        // attache l'objet header au parent card
         card.append(groupid);       // attache l'objet groupid au parent card
         header.append(grouptitle);  // attache l'objet grouptitle au parent header
 
 
-        //  Crée un bouton text  (pour l'édition)
+        //  Cr�e un bouton text  (pour l'�dition)
         var edit = $("<div>", {
             class       : "text-button",
             groupid     : data[i].id,
@@ -611,7 +623,7 @@ function viewFilesgroupsResult(data) {
             html        : "edit"
         });
 
-        //  Crée un second bouton text (pour la suppression)
+        //  Cr�e un second bouton text (pour la suppression)
         var del = $("<div>", {
             class       : "text-button",
             groupid     : data[i].id,
@@ -630,7 +642,7 @@ function viewFilesgroupsResult(data) {
     // addTooltip(".icon-button[func='edit-user']", "editer");
     // addTooltip(".icon-button[func='delete-user']", "supprimer");
 
-    // Evénements
+    // Ev�nements
     clickDeleteFilegroup();
     clickEditFilegroup();
 
@@ -642,40 +654,40 @@ function viewFilesgroupsResult(data) {
 // Suppressions
 // ------------
 function viewDeleteUserResult(data) {
-    _pendingAjaxRequest = null; // requête ajax terminée
+    _pendingAjaxRequest = null; // requ�te ajax termin�e
 
     if (data.error !== "true") {
-        var text = "L'utilisateur a été supprimé(e) avec succès."
+        var text = "L'utilisateur a �t� supprim�(e) avec succ�s."
         showMessage(text, "error");
         refreshUsers();
     }
     else {
-        var text = "Désolé, nous n'avons pas pu supprimer l'utilisateur."
+        var text = "D�sol�, nous n'avons pas pu supprimer l'utilisateur."
         showMessage(text, "error");
         // refreshUsers();
     }
 }
 
 function viewDeleteFileResult(data) {
-    _pendingAjaxRequest = null; // requête ajax terminée
+    _pendingAjaxRequest = null; // requ�te ajax termin�e
 
     if (data.error !== "true") {
-        var text = "Le fichier a été supprimé avec succès."
+        var text = "Le fichier a ete supprime avec succes."
         showMessage(text, "error");
         refreshFiles();
     }
     else {
-        var text = "Désolé, nous n'avons pas pu supprimer le fichier."
+        var text = "Desole, nous n'avons pas pu supprimer le fichier."
         showMessage(text, "error");
         // refreshFiles();
     }
 }
 
 function viewDeleteUsergroupResult(data) {
-    _pendingAjaxRequest = null; // requête ajax terminée
+    _pendingAjaxRequest = null; // requ�te ajax termin�e
 
     if (data.error !== "true") {
-        var text = "Le groupe d'utilisateurs a été supprimé avec succès."
+        var text = "Le groupe d'utilisateurs a �t� supprim� avec succ�s."
         showMessage(text, "error");
 
         var card = $(".group-card[groupid='" + data.id + "']");
@@ -685,25 +697,25 @@ function viewDeleteUsergroupResult(data) {
         });
     }
     else {
-        var text = "Désolé, nous n'avons pas pu supprimer le groupe d'utilisateurs."
+        var text = "D�sol�, nous n'avons pas pu supprimer le groupe d'utilisateurs."
         showMessage(text, "error");
         // refreshUsersGroups();
     }
 }
 
 function viewDeleteFilegroupResult(data) {
-    _pendingAjaxRequest = null; // requête ajax terminée
+    _pendingAjaxRequest = null; // requ�te ajax termin�e
 
     if (data.error !== "true") {
-        var text = "Le groupe de fichiers <strong>" + data.title + "</strong> a été supprimé avec succès."
+        var text = "Le groupe de fichiers <strong>" + data.title + "</strong> a �t� supprim� avec succ�s."
         showMessage(text, "error");
         refreshFilesgroups();
 
-        // Suppression de la vue associée au groupe de fichiers
+        // Suppression de la vue associ�e au groupe de fichiers
         deleteView(data.title);
     }
     else {
-        var text = "Désolé, nous n'avons pas pu supprimer le groupe de fichiers <strong>"
+        var text = "D�sol�, nous n'avons pas pu supprimer le groupe de fichiers <strong>"
                     + data.title + "</strong>."
         showMessage(text, "error");
         // refreshFilesgroups();
@@ -716,12 +728,12 @@ function viewDeleteViewResult(data) {
     if (data.error !== "true") {
         var text = "La vue <strong>"+ data.title +
                     "</strong> du groupe de fichiers <strong> " + group +
-                    "</strong>  a été supprimé avec succès."
+                    "</strong>  a �t� supprim� avec succ�s."
         showMessage(text, "error", "keep");
 
     }
     else {
-        var text = "Désolé, nous n'avons pas pu supprimer la vue <strong> " + data.title
+        var text = "D�sol�, nous n'avons pas pu supprimer la vue <strong> " + data.title
                     + "</strong> du groupe de fichiers" + group + "</strong> ";
         text += "<br>" + data.message;
         showMessage(text, "error", "keep");
@@ -737,7 +749,7 @@ function refreshUsers() {
     var content = $("#users-panel .categorie-panel-content .users");
     content.html("");
 
-    // Envoie une nouvelle requête au serveur
+    // Envoie une nouvelle requ�te au serveur
     viewUsers();
 }
 
@@ -749,7 +761,7 @@ function refreshFiles() {
     // Masque le tableau
     $("#files-panel .categorie-panel-content .files-list").css({ display: "none" });
 
-    // Envoie une nouvelle requête au serveur
+    // Envoie une nouvelle requ�te au serveur
     viewFiles();
 }
 
@@ -758,7 +770,7 @@ function refreshUsersGroups() {
     var content = $("#usersgroups-panel .categorie-panel-content .usersgroups");
     content.html("");
 
-    // Envoie une nouvelle requête au serveur
+    // Envoie une nouvelle requ�te au serveur
     viewUsersgroups();
 }
 
@@ -767,7 +779,7 @@ function refreshFilesgroups() {
     var content = $("#filesgroups-panel .categorie-panel-content .filesgroups");
     content.html("");
 
-    // Envoie une nouvelle requête au serveur
+    // Envoie une nouvelle requ�te au serveur
     viewFilesgroups();
 }
 
@@ -780,7 +792,7 @@ function refreshFilesgroups() {
 // ------
 // DELETE
 // ------
-// Evènement de click pour supprimer un utilisateur
+// Ev�nement de click pour supprimer un utilisateur
 function clickDeleteUser() {
     $(".icon-button[func='delete-user']").click(function () {
         var id = $(this).attr("userid");
@@ -788,15 +800,16 @@ function clickDeleteUser() {
     });
 }
 
-// Evènement de click pour supprimer un fichier
+// Ev�nement de click pour supprimer un fichier
 function clickDeleteFile() {
     $("td[func='delete-file']").click(function () {
         var id = $(this).attr("fileid");
-        deleteFile(id);
+        var groupid = $(this).attr("filegroupid");
+        deleteFile(id, groupid);
     });
 }
 
-// Evènement de click pour supprimer un groupe d'utilisateurs
+// Ev�nement de click pour supprimer un groupe d'utilisateurs
 function clickDeleteUsergroup() {
     $(".text-button[func='delete-usergroup']").click(function () {
         var id = $(this).attr("groupid");
@@ -804,7 +817,7 @@ function clickDeleteUsergroup() {
     });
 }
 
-// Evènement de click pour supprimer un groupe de fichiers
+// Ev�nement de click pour supprimer un groupe de fichiers
 function clickDeleteFilegroup() {
     $(".text-button[func='delete-filegroup']").click(function () {
         var id = $(this).attr("groupid");
@@ -816,7 +829,7 @@ function clickDeleteFilegroup() {
 // -------
 // EDITION
 // -------
-// Evènement de click pour editer un utilisateur
+// Ev�nement de click pour editer un utilisateur
 function clickEditUser() {
     $(".icon-button[func='edit-user']").click(function () {
         var id = $(this).attr("userid");
@@ -824,7 +837,7 @@ function clickEditUser() {
     });
 }
 
-// Evènement de click pour editer un fichier
+// Ev�nement de click pour editer un fichier
 function clickEditFile() {
     $("td[func='edit-file']").click(function () {
         var id = $(this).attr("fileid");
@@ -832,7 +845,7 @@ function clickEditFile() {
     });
 }
 
-// Evènement de click pour editer un groupe d'utilisateurs
+// Ev�nement de click pour editer un groupe d'utilisateurs
 function clickEditUsergroup() {
     $(".text-button[func='edit-usergroup']").click(function () {
         var id = $(this).attr("groupid");
@@ -840,7 +853,7 @@ function clickEditUsergroup() {
     });
 }
 
-// Evènement de click pour editer un groupe fichiers
+// Ev�nement de click pour editer un groupe fichiers
 function clickEditFilegroup() {
     $(".text-button[func='edit-filegroup']").click(function () {
         var id = $(this).attr("groupid");
@@ -848,7 +861,7 @@ function clickEditFilegroup() {
     });
 }
 
-// Evènement de click pour actualiser un panel
+// Ev�nement de click pour actualiser un panel
 function clickRefresh() {
     var button = ".icon-button[func='refreshpanel']";
     $(button).off("click");
@@ -871,7 +884,7 @@ function clickRefresh() {
     });
 }
 
-// Evènement de click pour ajouter un élément
+// Ev�nement de click pour ajouter un �l�ment
 function clickAdd() {
     var button = ".icon-button[func='add']";
 
@@ -889,6 +902,7 @@ function clickAdd() {
         }
         else if (id === "files-panel") {
             toggleAddFile();
+            // console.log($("input[type='file']").val());
         }
         else if (id === "filesgroups-panel") {
             toggleAddFilegroup();
@@ -897,42 +911,70 @@ function clickAdd() {
 }
 
 function clickAddAccessToUsergroup(card) {
-    // Décide si on doit ajouter ou révoquer l'accès
+    // Decide si on doit ajouter ou revoquer l'acces
     var status = card.attr("status");
-    console.log("status: " + status);
-    if (status === "in") {
-        // On révoque l'accès
 
+    console.log("status: " + status);
+    // var usersgroupsid = _user.groupid;
+    var usersgroupsid = $("#addusergroupform input[name='id']").val();
+    var usersgroupstitle = $("#addusergroupform input[name='title']").val();
+    console.log(usersgroupstitle);
+
+    var filesgroupsid = card.attr("filesgroupsid");
+    var filesgroupstitle = card.attr("filesgroupstitle");
+
+    if (status === "in") {
+        // On r�voque l'acc�s
+        console.log("revoque l'acces");
+        // console.log("usersgroupsid : " + usersgroupsid);
+        // console.log("filesgroupsid : " + filesgroupsid);
+        // console.log("filesgroupstitle : " + filesgroupstitle);
+
+        deleteGroupAccess(usersgroupsid, filesgroupsid, filesgroupstitle);
+        deleteGrantFromView(filesgroupstitle);
     }
     else if (status === "out") {
-        // On ajoute l'accès
-        var usersgroupsid = _user.groupid;
-        var filesgroupsid = card.attr("filesgroupsid");
-        var filesgroupstitle = card.attr("filesgroupstitle");
-        // var view = "v_" + filesgroupstitle;
-
-        console.log("usersgroupsid : " + usersgroupsid);
-        console.log("filesgroupsid : " + filesgroupsid);
-        console.log("filesgroupsid : " + filesgroupstitle);
+        // On ajoute l'acc�s
+        console.log("ajoute l'acces");
+        // console.log("usersgroupsid : " + usersgroupsid);
+        // console.log("filesgroupsid : " + filesgroupsid);
+        // console.log("filesgroupstitle : " + filesgroupstitle);
 
         addGroupAccess(usersgroupsid, filesgroupsid, 0, filesgroupstitle);
-        addGrantOnView(filesgroupstitle);
+        addGrantOnView(filesgroupstitle, usersgroupstitle);
     }
 }
+
+// Evenement pour s�lectionner un fichier � partir de la boite de dialogue
+function performClick(elemId) {
+    console.log("browse file");
+    var elem = document.getElementById(elemId);
+    if(elem && document.createEvent) { // sanity check
+        var evt = document.createEvent("MouseEvents");
+        evt.initEvent("click", true, false);
+        node.dispatchEvent(evt);
+    }
+}
+
+// $(":file").change(function(){
+//     alert($(":file").val());
+//     console.log("toto");
+//
+// });
 
 // ----------------
 // FIN : EVENEMENTS
 // ----------------
 
-function addGrantOnView(view) {
-    var user = _user.useraccess;
-    var view = "v_" + filesgroupstitle;
+function addGrantOnView(view, usersgroupstitle) {
+    // var user = usersgroupstitle;
+    var view = "v_" + view;
 
-    console.log("user : " + user);
+    console.log("user : " + usersgroupstitle);
     console.log("view : " + view);
 
     var http = new XMLHttpRequest();
-    var url = "/cloud/web/app_dev.php/addgrantonview/" + user + "/" + view;
+    var url = "/cloud/web/app_dev.php/addgrantonview/" + usersgroupstitle + "/" + view;
     console.log(url);
 
 
@@ -947,11 +989,33 @@ function addGrantOnView(view) {
     http.send();
 }
 
+function deleteGrantFromView(view) {
+    var user = _user.useraccess;
+    var view = "v_" + view;
+
+    console.log("user : " + user);
+    console.log("view : " + view);
+
+    var http = new XMLHttpRequest();
+    var url = "/cloud/web/app_dev.php/deletegrantfromview/" + user + "/" + view;
+
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            var data = http.response;
+
+            console.log("success deleted grant on view");
+        }
+    }
+    http.open("POST", url);
+    http.send();
+}
+
 // ---------------
 // DEBUT : GETTER
 // ---------------
 // Obtient la liste des groupes de fichiers accessibles
-// Permettra ensuite de faire une requête sur les vues (de fichiers) corrspondantes
+// Permettra ensuite de faire une requ�te sur les vues (de fichiers) corrspondantes
 function getAccess() {
     var url = "/cloud/web/app_dev.php/getaccess/" + _user.groupid;
     sendAjaxRequest(url);
