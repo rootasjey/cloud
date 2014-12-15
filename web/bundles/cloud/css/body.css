@@ -367,16 +367,13 @@ hr {
     -moz-box-shadow: 4px 10px 17px -6px rgba(0,0,0,0.75);
     box-shadow: 4px 10px 17px -6px rgba(0,0,0,0.75);
 }
-
 #files-panel .files-list tbody {
     background  : #eee;
 }
-
 #files-panel .files-list thead tr {
     color           : white;
     background-color: #353030;
 }
-
 #files-panel .files-list tr {
     cursor      : pointer;
     position    : relative;
@@ -389,7 +386,6 @@ hr {
     background: rgba(66, 65, 65, 0.67);
     transition: .5s;
 }
-
 #files-panel .files-list .text-button {
     text-decoration: underline;
 }
@@ -400,4 +396,44 @@ th, td {
 }
 #files-panel .files-list .td-path, .th-path,.td-tags, .th-tags {
     display: none;
+}
+
+.group-access {
+    position        : relative;
+    margin-top      : 40px;
+    margin-bottom   : 40px;
+    text-align      : center;
+
+    display         : none;
+}
+.group-access-card {
+    position    : relative;
+    height      : 30px;
+    width       : 300px;
+
+    color       : white;
+    text-align  : center;
+    font-size   : 2em;
+
+    margin      : auto;
+    padding     : 20px;
+
+    cursor      : pointer;
+    opacity     : 0.5;
+    transition  : 0.5s;
+}
+.group-access-card:hover {
+    opacity     : 1;
+    height      : 50px;
+    transition  : 0.5s;
+}
+.group-access-card[status='in'] {
+    background  : #d35400;
+}
+.group-access-card[status='out'] {
+    background  : #2c3e50;
+}
+.group-access .big-title {
+    font-size   : 3em;
+    color       : white;
 }

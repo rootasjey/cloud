@@ -3,9 +3,16 @@
 // -----------------
 
 var _user = {
-    "name" : "",
-    "email": "",
-    "isconnected": false
+    "id"                : null,
+    "name"              : "",
+    "email"             : "",
+    "avatar"            : "",
+    "groupid"           : "",
+    "password"          : "",
+    "subscriptiondate"  : "",
+    "useraccess"        : "",   // identifiant pour la connexion à la bd
+    "passwordaccess"    : "",   // identifiant pour la connexion à la bd
+    "isconnected"       : false
 };
 
 // Lance cette fonction quand la page est totalement chargée
@@ -330,9 +337,13 @@ function stopLoadingAnimation() {
     $(".loader-inner").css({ display: "none" });
 }
 
-function startLoadingAnimationCustomPlace(selector) {
+function startLoadingAnimationCustomPlace(selector, message) {
     // Enlève toute animation précédente, s'il y en a
     stopLoadingAnimationCustomPlace(selector);
+
+    // Définit un message personnalisé
+    var _message = "chargement...";
+    if (typeof message !== "undefined") _message = message;
 
     var loader = $("<span>", {
         class: 'loader'
@@ -344,7 +355,7 @@ function startLoadingAnimationCustomPlace(selector) {
 
     var loaderText = $("<div>",{
         class: "loader-text",
-        html: "<span> chargement... </span>"
+        html: "<span>" + _message +" </span>"
     });
 
     $(selector).append(loader).append(loaderText);

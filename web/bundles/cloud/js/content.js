@@ -117,17 +117,24 @@ function sendAjaxRequest(url) {
 
             var data = JSON.parse(http.response);
 
-            if (url == "/cloud/web/app_dev.php/viewusers") {
+            if (url.indexOf("/cloud/web/app_dev.php/viewusers/") > -1) {
                 viewUsersResult(data);
             }
-            else if (url == "/cloud/web/app_dev.php/viewusersgroups") {
+            else if (url.indexOf("/cloud/web/app_dev.php/viewusersgroups") > -1) {
                 viewUsersgroupsResult(data);
             }
-            else if (url == "/cloud/web/app_dev.php/viewfiles") {
-                viewFilesResult(data);
+            else if (url.indexOf("/cloud/web/app_dev.php/viewfiles/") > -1) {
+                // viewFilesResult(data);
+                getSelectedViewResult(data);
             }
-            else if (url == "/cloud/web/app_dev.php/viewfilesgroups") {
+            else if (url.indexOf("/cloud/web/app_dev.php/viewfilesgroups") > -1) {
                 viewFilesgroupsResult(data);
+            }
+            else if (url.indexOf("/cloud/web/app_dev.php/getaccess") > -1) {
+                getAccessResult(data);
+            }
+            else if (url.indexOf("/cloud/web/app_dev.php/viewsinglefilegroup") > -1) {
+                getGroupTitleResult(data);
             }
         }
     }
@@ -194,11 +201,15 @@ function viewFiles() {
     if (content.length > 0)
         return;
 
-    var url = "/cloud/web/app_dev.php/viewfiles";
-    sendAjaxRequest(url);
+    var url = "/cloud/web/app_dev.php/viewfiles/" + _user.useraccess;
+    // sendAjaxRequest(url);
+    // console.log(url);
 
     // startLoadingAnimation(); // starts loading animation
     startLoadingAnimationCustomPlace("#files-panel .categorie-panel-content");
+
+    // à déplacer
+    getAccess();
 }
 
 // Affiche la liste des groupes de fichiers
@@ -231,7 +242,7 @@ function viewUsers() {
     if (content.length > 0)
         return;
 
-    var url = "/cloud/web/app_dev.php/viewusers";
+    var url = "/cloud/web/app_dev.php/viewusers/";
     sendAjaxRequest(url);
 
     startLoadingAnimationCustomPlace("#users-panel .categorie-panel-content");
@@ -308,7 +319,7 @@ function editUser(id) {
 // Edite un fichier
 function editFile(id) {
     // Affiche le formulaire d'édition pré-rempli
-    getFile(id);
+    getFile(id, "edit");
 }
 
 // Edite un groupe d'utilisateurs
@@ -320,7 +331,7 @@ function editUserGroup(id) {
 // Edite un groupe de fichiers
 function editFileGroup(id) {
     // Affiche le formulaire d'édition pré-rempli
-    getFileGroup(id);
+    getFileGroup(id, "edit");
 }
 
 // FIN FONCTION SUPPRIMANT DES DONNEES
@@ -335,8 +346,9 @@ function viewUsersResult(data) {
 
     if (data.length < 1) {
         // Affiche un message si on n'a récupéré aucune donnée
-        var textMessage = "There's no result for this request.";
+        var textMessage = "Il n'y a aucun utilisateur pour le moment";
         showMessage(textMessage, "error");
+        stopLoadingAnimationCustomPlace("#users-panel .categorie-panel-content");
         return;
     }
 
@@ -427,8 +439,9 @@ function viewUsersgroupsResult(data) {
 
     if (data.length < 1) {
         // Affiche un message si on n'a récupéré aucune donnée
-        var textMessage = "There's no result for this request.";
+        var textMessage = "Il n'y a pas de groupe d'utilisateurs pour le moment";
         showMessage(textMessage, "error");
+        stopLoadingAnimationCustomPlace("#usersgroups-panel .categorie-panel-content");
         return;
     }
 
@@ -439,7 +452,8 @@ function viewUsersgroupsResult(data) {
     for (var i = 0; i < data.length; i++) {
         // Crée la carte de groupe
         var card = $("<div>", {
-            class: "group-card"
+            class   : "group-card",
+            groupid : data[i].id
         }).appendTo(content);
 
         // Crée le header
@@ -500,49 +514,49 @@ function viewUsersgroupsResult(data) {
 // Fonction post-traitement ajax pour la vue des fichiers
 function viewFilesResult(data) {
     _pendingAjaxRequest = null; // requête ajax terminée
-
-    if (data.length < 1) {
-        // Affiche un message si on n'a récupéré aucune donnée
-        var textMessage = "There's no result for this request.";
-        showMessage(textMessage, "error");
-        return;
-    }
-
-    // Récupère l'objet où on va insérer le contenu
-    var fileslist = $("#files-panel .categorie-panel-content .files-list");
-    var content = $("#files-panel .categorie-panel-content .files-list .table-body");
-
-    // Traitement des données
-    for (var i = 0; i < data.length; i++) {
-        var tr = $("<tr>");
-
-        var name    = $("<td>", { class:"td-name" }).html(data[i].name);
-        var group   = $("<td>", { class:"td-group" }).html(data[i].groupid);
-        var path    = $("<td>", { class:"td-path" }).html(data[i].path);
-        var type    = $("<td>", { class:"td-type" }).html(data[i].type);
-        var pubdate = $("<td>", { class:"td-pubdate" }).html(data[i].pubDate);
-        var tags    = $("<td>", { class:"td-tags" }).html(data[i].tags);
-        var owner   = $("<td>", { class:"td-owner" }).html(data[i].owner);
-
-        var _edit   = $("<td>", { class: "text-button", func: "edit-file", fileid: data[i].id }).html("edit");
-        var _delete  = $("<td>", { class: "text-button", func: "delete-file", fileid: data[i].id }).html("delete");
-
-        tr.append(name).append(group).append(path).append(type).append(pubdate).append(tags).append(owner);
-        tr.append(_edit).append(_delete);
-        content.append(tr);
-    }
-
-    // Arrête l'animation de chargement
-    stopLoadingAnimationCustomPlace("#files-panel .categorie-panel-content");
-
-    // Animations
-    fileslist.css({ display: "block", opacity: "0", top: "20px"})
-             .animate({ opacity: "1", top :"0" });
-
-
-    // Evénements
-    clickEditFile();
-    clickDeleteFile();
+    console.log("tata");
+    // if (data.length < 1) {
+    //     // Affiche un message si on n'a récupéré aucune donnée
+    //     var textMessage = "There's no result for this request.";
+    //     showMessage(textMessage, "error");
+    //     return;
+    // }
+    //
+    // // Récupère l'objet où on va insérer le contenu
+    // var fileslist = $("#files-panel .categorie-panel-content .files-list");
+    // var content = $("#files-panel .categorie-panel-content .files-list .table-body");
+    //
+    // // Traitement des données
+    // for (var i = 0; i < data.length; i++) {
+    //     var tr = $("<tr>");
+    //
+    //     var name    = $("<td>", { class:"td-name" }).html(data[i].name);
+    //     var group   = $("<td>", { class:"td-group" }).html(data[i].groupid);
+    //     var path    = $("<td>", { class:"td-path" }).html(data[i].path);
+    //     var type    = $("<td>", { class:"td-type" }).html(data[i].type);
+    //     var pubdate = $("<td>", { class:"td-pubdate" }).html(data[i].pubDate);
+    //     var tags    = $("<td>", { class:"td-tags" }).html(data[i].tags);
+    //     var owner   = $("<td>", { class:"td-owner" }).html(data[i].owner);
+    //
+    //     var _edit   = $("<td>", { class: "text-button", func: "edit-file", fileid: data[i].id }).html("edit");
+    //     var _delete  = $("<td>", { class: "text-button", func: "delete-file", fileid: data[i].id }).html("delete");
+    //
+    //     tr.append(name).append(group).append(path).append(type).append(pubdate).append(tags).append(owner);
+    //     tr.append(_edit).append(_delete);
+    //     content.append(tr);
+    // }
+    //
+    // // Arrête l'animation de chargement
+    // stopLoadingAnimationCustomPlace("#files-panel .categorie-panel-content");
+    //
+    // // Animations
+    // fileslist.css({ display: "block", opacity: "0", top: "20px"})
+    //          .animate({ opacity: "1", top :"0" });
+    //
+    //
+    // // Evénements
+    // clickEditFile();
+    // clickDeleteFile();
 }
 
 // Fonction post-traitement ajax pour la vue des groupes de fichiers
@@ -553,6 +567,7 @@ function viewFilesgroupsResult(data) {
         // Affiche un message si on n'a récupéré aucune donnée
         var textMessage = "Il n'y a pas de groupe de fichiers disponibles pour le moment.";
         showMessage(textMessage, "error");
+        stopLoadingAnimationCustomPlace("#filesgroups-panel .categorie-panel-content");
         return;
     }
 
@@ -662,7 +677,12 @@ function viewDeleteUsergroupResult(data) {
     if (data.error !== "true") {
         var text = "Le groupe d'utilisateurs a été supprimé avec succès."
         showMessage(text, "error");
-        refreshUsersGroups();
+
+        var card = $(".group-card[groupid='" + data.id + "']");
+        card.animate({
+            opacity: 0,
+            top: "20px"
+        });
     }
     else {
         var text = "Désolé, nous n'avons pas pu supprimer le groupe d'utilisateurs."
@@ -828,6 +848,7 @@ function clickEditFilegroup() {
     });
 }
 
+// Evènement de click pour actualiser un panel
 function clickRefresh() {
     var button = ".icon-button[func='refreshpanel']";
     $(button).off("click");
@@ -850,6 +871,7 @@ function clickRefresh() {
     });
 }
 
+// Evènement de click pour ajouter un élément
 function clickAdd() {
     var button = ".icon-button[func='add']";
 
@@ -873,5 +895,106 @@ function clickAdd() {
         }
     });
 }
-// FIN EVENEMENTS
-// --------------
+
+function clickAddAccessToUsergroup(card) {
+    // Décide si on doit ajouter ou révoquer l'accès
+    var status = card.attr("status");
+    console.log("status: " + status);
+    if (status === "in") {
+        // On révoque l'accès
+
+    }
+    else if (status === "out") {
+        // On ajoute l'accès
+        var usersgroupsid = _user.groupid;
+        var filesgroupsid = card.attr("filesgroupsid");
+        var filesgroupstitle = card.attr("filesgroupstitle");
+        // var view = "v_" + filesgroupstitle;
+
+        console.log("usersgroupsid : " + usersgroupsid);
+        console.log("filesgroupsid : " + filesgroupsid);
+        console.log("filesgroupsid : " + filesgroupstitle);
+
+        addGroupAccess(usersgroupsid, filesgroupsid, 0, filesgroupstitle);
+        addGrantOnView(filesgroupstitle);
+    }
+}
+
+// ----------------
+// FIN : EVENEMENTS
+// ----------------
+
+function addGrantOnView(view) {
+    var user = _user.useraccess;
+    var view = "v_" + filesgroupstitle;
+
+    console.log("user : " + user);
+    console.log("view : " + view);
+
+    var http = new XMLHttpRequest();
+    var url = "/cloud/web/app_dev.php/addgrantonview/" + user + "/" + view;
+    console.log(url);
+
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            var data = http.response;
+
+            console.log("success added grant on view");
+        }
+    }
+    http.open("POST", url);
+    http.send();
+}
+
+// ---------------
+// DEBUT : GETTER
+// ---------------
+// Obtient la liste des groupes de fichiers accessibles
+// Permettra ensuite de faire une requête sur les vues (de fichiers) corrspondantes
+function getAccess() {
+    var url = "/cloud/web/app_dev.php/getaccess/" + _user.groupid;
+    sendAjaxRequest(url);
+}
+
+function getAccessResult(data) {
+    // console.log(data);
+
+    for (var i = 0; i < data.length; i++) {
+        var groupid = data[i].filesgroupsid;
+        // console.log("groupid: " + groupid);
+        getGroupTitle(groupid);
+    }
+}
+
+function getGroupTitle(usersgroupsid) {
+    var url = "/cloud/web/app_dev.php/viewsinglefilegroup/" + usersgroupsid;
+    // console.log(url);
+    sendAjaxRequest(url);
+}
+
+function getGroupTitleResult(data) {
+    console.log(data);
+
+    for (var i = 0; i < data.length; i++) {
+        var title = data[i].title;
+        // console.log("title: " + title);
+        getSelectedView(title);
+    }
+}
+
+function getSelectedView(title) {
+    var viewName = "v_" + title;
+
+    var url = "/cloud/web/app_dev.php/viewfiles/" + _user.useraccess + "/" + viewName;
+    console.log(url);
+    sendAjaxRequest(url);
+}
+
+function getSelectedViewResult(data) {
+    console.log(data);
+}
+
+// ---------------
+// FIN : GETTER
+// ---------------

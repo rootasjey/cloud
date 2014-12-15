@@ -407,8 +407,6 @@ function toggleAddUsergroup(groupSelected) {
         $("#usersgroups-panel .icon-button[func='add']").attr("src", "/cloud/web/bundles/cloud/icon/return-icon.png");
 
 
-        // Remplit le 'select' pour la sélection des accès
-        getUsergroupAcess();
 
         // Modifie l'url d'envoie du formulaire selon le cas d'utilisation
         if (typeof groupSelected !== "undefined") {
@@ -418,6 +416,14 @@ function toggleAddUsergroup(groupSelected) {
 
             // Modifie le texte du bouton valid
             $(formSelector + " input[type='submit']").val("UPDATE GROUP");
+
+
+            // console.log("input: " + groupSelected);
+            // getUserGroupAccessBinded(groupSelected);
+
+            // Remplit le 'select' pour la sélection des accès
+            getAllUsergroupAccess(groupSelected);
+
         }
         else {
             // On est dans l'AJOUT
@@ -452,26 +458,56 @@ function toggleAddUsergroup(groupSelected) {
 // -----------------------------------------
 // Fonction post-traitement ajax pour la connexion
 function loginResult(response) {
-  if (response.length > 0) {
-    // La requête s'est bien déroulée ->l'utilisateur est connectée
+    if (response.length > 0) {
+        // La requête s'est bien déroulée ->l'utilisateur est connectée
 
-    // Remplit l'objet (javascript) _user
-    _user.name          = response[0]["name"];
-    _user.email         = response[0]["email"];
-    _user.isconnected   = true;
-    checkAuth();
+        // Remplit l'objet (javascript) _user
+        _user.id                = response[0]["id"];
+        _user.name              = response[0]["name"];
+        _user.email             = response[0]["email"];
+        _user.avatar            = response[0]["avatar"];
+        _user.groupid           = response[0]["groupid"];
+        _user.password          = response[0]["password"];
+        _user.subscriptiondate  = response[0]["subscriptiondate"];
+        _user.isconnected       = true;
 
-    // Affiche un message
-    var textMessage = "<strong>" + _user.name + "</strong>, vous êtes maintenant connecté(e)";
-    showMessage(textMessage, "information");
+
+        checkAuth(); // modifie l'ui si on est bien connecté
+
+        // Récupère les droits d'accès
+        getGrantAccess(_user.groupid);
+
+        // Affiche un message
+        var textMessage = "<strong>" + _user.name + "</strong>, vous êtes maintenant connecté(e)";
+        showMessage(textMessage, "information");
 
 
-    hideConnectionPanel();
-  }
-  else {
-    var textMessage = "Désolé, le login ou le mot de passe est erroné";
-    showMessage(textMessage, "error");
-  }
+        hideConnectionPanel();
+    }
+    else {
+        var textMessage = "Désolé, le login ou le mot de passe est erroné";
+        showMessage(textMessage, "error");
+    }
+}
+
+// Récupère les droits d'accès pour l'utilisateur connecté
+function getGrantAccess(usergroupid) {
+    var url = "/cloud/web/app_dev.php/getusergrant/" + usergroupid;
+    var http = new XMLHttpRequest();
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            var data = JSON.parse(http.response);
+
+            // Récupère les données
+            _user.useraccess = data[0].user;
+            _user.passwordaccess = data[0].user;
+
+            // console.log(_user);
+        }
+    }
+    http.open("POST", url);
+    http.send();
 }
 
 // Fonction post-traitement ajax pour l'inscription
@@ -523,6 +559,11 @@ function addfileResult(response) {
 
         // Recharger la liste des fichiers
         refreshFiles();
+
+
+        // Creation/Mise à jour de la vue correspondant au groupe du fichier
+        // Récupérer le nom du groupe de fichiers
+        getFileGroup(response.groupid, "addview");
     }
     else {
         var textMessage = "Désole, le fichier <strong>" + response.name + "</strong> n'a pas pu etre ajouté";
@@ -532,7 +573,7 @@ function addfileResult(response) {
 
 // Fonction post-traitement ajax pour l'ajout d'un groupe d'utilisateurs
 function addusergroupResult(response) {
-    if (response !== "fail") {
+    if (response.error !== "true") {
         var textMessage = "Le groupe d'utilisateurs <strong>"
                             + response.title + "</strong> a bien été ajouté";
         showMessage(textMessage, "information");
@@ -545,14 +586,31 @@ function addusergroupResult(response) {
 
         var usersgroupsid = response.usersgroupsid;
         var filesgroupsid = response.filesgroupsid;
+        var title         = response.title;
 
-        addGroupAccess(usersgroupsid, filesgroupsid, 0, response.title);
+        addGroupAccess(usersgroupsid, filesgroupsid, 0, title);
+
+        Grant(title);
     }
     else {
         var textMessage = "Désole, le groupe d'utilisateurs <strong>"
                             + response.title + "</strong> n'a pas pu etre ajouté";
         showMessage(textMessage, "error");
     }
+}
+
+function Grant(user) {
+    var url = "/cloud/web/app_dev.php/addgrant/" + user;
+    var http = new XMLHttpRequest();
+
+    http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+            var text = "Un utilisateur définissant les droits du group a été crée";
+            showMessage(text, "information", "keep");
+        }
+    }
+    http.open("POST", url);
+    http.send();
 }
 
 function addfilegroupResult(response) {
@@ -567,8 +625,11 @@ function addfilegroupResult(response) {
         // Recharger la liste des fichiers
         refreshFilesgroups();
 
+        // ON NE PEUT PAS AJOUTER UNE VUE IMMEDIATEMENT VU QUE LA TABLE FILES
+        // NE POSSEDE PAS ENCORE DE FICHIERS APPARTENANT A CE GROUPE
+        // > METTRE A JOUR LA TABLE A CHAQUE INSERT DE FICHIER
         // Création d'une vue pour le groupe de fichiers
-        addviewfilegroup(response.id, response.title);
+        // addviewfilegroup(response.id, response.title);
     }
     else {
         var textMessage = "Désole, le groupe de fichiers <strong>"
@@ -581,9 +642,14 @@ function addfilegroupResult(response) {
 function addviewfilegroup(id, title) {
     var http = new XMLHttpRequest();
     var url = "/cloud/web/app_dev.php/addview/" + id + "/" + title;
+    console.log(url);
 
     http.onreadystatechange = function () {
+        console.log(http.readyState);
+        console.log(http.status);
         if (http.readyState === 4 && http.status === 200) {
+            console.log(http.response);
+            console.log("view added");
             var data = JSON.parse(http.response);
 
             if (data.error !== true) {
@@ -625,7 +691,6 @@ function addGroupAccess(usersgroupsid, filesgroupsid, write, usergroupName) {
     }
     http.open("POST", url);
     http.send();
-    console.log(url);
 }
 
 // EDITION
@@ -796,21 +861,21 @@ function populateSelectUsersgroups(data, groupSelected) {
     }
 }
 
-function getUsergroupAcess() {
+function getAllUsergroupAccess(groupSelected) {
     var http = new XMLHttpRequest();
 
     http.onreadystatechange = function () {
         if (http.readyState === 4 && http.status === 200) {
             var data = JSON.parse(http.response);
 
-            populatSelectUsergroupAcess(data);
+            populatSelectUsergroupAcess(data, groupSelected);
         }
     }
     http.open("POST", "/cloud/web/app_dev.php/viewfilesgroups");
     http.send();
 }
 
-function populatSelectUsergroupAcess(data) {
+function populatSelectUsergroupAcess(data, groupSelected) {
     if (data.length < 1) {
         // Affiche un message si on n'a récupéré aucune donnée
         var textMessage = "Un problème est survenu lors de la récupération des groupes de fichiers.";
@@ -821,6 +886,9 @@ function populatSelectUsergroupAcess(data) {
     var select = $("#addusergroupform select[name='access']");
     select.html(""); // vide la liste déroulante
 
+    var containerGroupAccessUnbinded = $("#usersgroups-panel .group-access .group-access-unbinded");
+    $("#usersgroups-panel .group-access").css({ display: 'block' });
+
     for (var i = 0; i < data.length; i++) {
         // Crée un item option
         var option = $("<option>", {
@@ -829,7 +897,51 @@ function populatSelectUsergroupAcess(data) {
         });
 
         select.append(option);
+
+
+        // -------------------
+        // Add access card
+        var access = $("<div>", {
+            status          : "out",
+            filesgroupsid   : data[i].id,
+            filesgroupstitle: data[i].title,
+            html            : data[i].title,
+            class           : "group-access-card",
+        });
+        containerGroupAccessUnbinded.append(access);
+
+        clickAddAccessToUsergroup(access);
     }
+
+    // Récupère les groupes de fichiers liés
+    getUserGroupAccessBinded(groupSelected);
+}
+
+
+function getUserGroupAccessBinded(usergroupid) {
+    var http = new XMLHttpRequest();
+    var url = "/cloud/web/app_dev.php/getaccess/" + usergroupid;
+
+    http.onreadystatechange = function () {
+        // console.log(http.readyState);
+        // console.log(http.status);
+        if (http.readyState === 4 && http.status === 200) {
+            var data = JSON.parse(http.response);
+
+            // var container = $("#usersgroups-panel .group-access");
+            // container.css({ display: 'block' });
+
+            // console.log(data);
+            // console.log("usergroup id: " + data[0].usersgroupsid);
+
+
+            for (var i = 0; i < data.length; i++) {
+                getFileGroup(data[i].filesgroupsid, "adduseraccess");
+            }
+        }
+    }
+    http.open("POST", url);
+    http.send();
 }
 
 
@@ -939,7 +1051,7 @@ function getUserGroup(id) {
         if (http.readyState === 4 && http.status === 200) {
             var data = JSON.parse(http.response);
 
-            toggleAddUsergroup("0"); // à modifier
+            toggleAddUsergroup(data[0].id); // à modifier
             fillAddusergroupInputs(data);
         }
     }
@@ -947,7 +1059,7 @@ function getUserGroup(id) {
     http.send();
 }
 
-function getFileGroup(id) {
+function getFileGroup(id, type) {
     var url = "/cloud/web/app_dev.php/viewsinglefilegroup/" + id;
     var http = new XMLHttpRequest();
 
@@ -955,8 +1067,37 @@ function getFileGroup(id) {
         if (http.readyState === 4 && http.status === 200) {
             var data = JSON.parse(http.response);
 
-            toggleAddFilegroup("edit");
-            fillAddfilegroupInputs(data);
+            if (type === "edit") {
+                toggleAddFilegroup("edit");
+                fillAddfilegroupInputs(data);
+            }
+            else if (type === "addview") {
+                addviewfilegroup(id, data[0].title);
+            }
+            else if (type === "adduseraccess") {
+                var container = $("#usersgroups-panel .group-access .group-access-binded");
+                container.css({ display: 'block' });
+
+                // Add access card
+                var access = $("<div>", {
+                    status          : "in",
+                    filesgroupsid   : id,
+                    filesgroupstitle: data[0].title,
+                    html            : data[0].title,
+                    class           : "group-access-card",
+                });
+                container.append(access);
+
+                // Remove binded filesgroups from the other list
+                var cardToRemove = $("#usersgroups-panel .group-access-unbinded .group-access-card[filesgroupsid='"
+                                    + id + "']");
+                cardToRemove.remove();
+
+                // EVENTS
+                access.click(function () {
+                    clickAddAccessToUsergroup($(this));
+                });
+            }
         }
     }
     http.open("POST", url);

@@ -65,6 +65,8 @@ class AdvertController extends Controller
 		$login 		= $_POST["login"];
 		$password 	= $_POST["password"];
 
+		$response 	= new JsonResponse();
+
 		try {
 			// Connexion à la bdd puis récupère l'utilisateur grâce au login
 			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
@@ -74,22 +76,53 @@ class AdvertController extends Controller
 			array_push($user, $request->fetch());
 			$request->closeCursor(); // Termine le traitement de la requête
 
-			$json = new JsonResponse();
+
 
 			// Vérifie que les mots de passe coïncident
 			if ($user[0]["password"] == $password) {
-				$json->setData($user);
-			}
-
-			return $json;
+				$response->setData($user);
+			} 	return $response;
 		}
 
 		catch (Exception $e) {
 			die('Erreur : ' . $e->getMessage());
+			$response->setData(array(
+				'error' 	=> "true",
+				'message' 	=> $e->getMessage()
+			)); return $response;
 		}
 	}
 
+	public function getusergrantAction($groupid) {
+		try {
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query('SELECT user
+									   FROM mysql.user u
+									   WHERE u.user = (SELECT title
+														FROM usersgroups
+														WHERE id = ' . $groupid .')');
 
+			// $request2 	= $bdd->query("GRANT ALL PRIVILEGES ON cloud.v_hiver_2014
+			// 							TO 'NouvelleGen'@'localhost'");
+
+
+			// Récupération des valeurs
+			$userAccess = Array();
+
+			while ($v = $request->fetch()) {
+				array_push($userAccess, $v);
+			}
+
+			$json = new JsonResponse();
+			$json->setData($userAccess);
+			$request->closeCursor(); // Termine le traitement de la requête
+
+			return $json;
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+		}
+	}
 
 	// ------------------------------------
 	// METHODES DE VISUALISATION DE DONNEES
@@ -141,10 +174,10 @@ class AdvertController extends Controller
 	}
 
 	// Récupères la liste des fichiers dans la base de données
-	public function viewfilesAction() {
+	public function viewfilesAction($grant, $view) {
 		try {
-			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
-			$request 	= $bdd->query('SELECT * FROM files');
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', $grant, $grant);
+			$request 	= $bdd->query('SELECT * FROM ' . $view); // faire en fonction de la table
 
 			$files 		= Array();
 
@@ -275,44 +308,6 @@ class AdvertController extends Controller
 	}
 
 
-	//creation des utilisateurs
-	public function creatuserAction() {
-
-		try
-		{
-			// On se connecte � MySQL
-			//$bdd = new PDO('mysql:host=localhost;', 'root', '');
-		$bdd = new \PDO('mysql:host=localhost;', 'mot', 'user');
-		}
-		catch(Exception $e)
-		{
-			// En cas d'erreur, on affiche un message et on arr�te tout
-				die('Erreur : '.$e->getMessage());
-		}
-		// GRANT SELECT ON cloud.users TO 'tt4'@localhost;
-
-		// $requestgrant=$bdd->prepare("GRANT INSERT ON cloud.users TO 'mot'@localhost;");
-		// $requestgrant->execute();
-
-		$test1='mot';
-		$test2='localhost';
-		$test3='user';
-		$request=$bdd->prepare("insert into cloud.users(`id`,`groupid`,`name`,`password`,`email`,`subscriptiondate`)
-		value (?,?,?,?,?,?);");
-		$request->execute(array(26,1,$test3,'2','1','1'));
-
-		/*en premier*/
-		$request=$bdd->prepare("CREATE user ?@? IDENTIFIED BY ?;");
-		$request->execute(array($test1,$test2,$test3));
-		echo "reussi";
-		//$responce=$bdd->query('select * from cloud.vue1 ');
-		/* while($test=$responce->fetch()){
-		echo $test['name'];
-		}*/
-
-
-	}
-
 
 	// ---------------------------
 	// METHODES D'AJOUT DE DONNEES
@@ -390,10 +385,12 @@ class AdvertController extends Controller
 
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
+
 			if($request) {
 				$response = new JsonResponse();
 				$response->setData(array(
-					'name' => $name
+					'name' 		=> $name,
+					'groupid'	=> $groupid
 				));
 
 				return $response;
@@ -412,6 +409,7 @@ class AdvertController extends Controller
 	public function addusergroupAction() {
 		$title 		= $_POST["title"];
 		$access 	= $_POST["access"];
+		$response 	= new JsonResponse();
 
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");
@@ -424,22 +422,33 @@ class AdvertController extends Controller
 
 
 			if($request) {
-				$response = new JsonResponse();
 				$response->setData(array(
-					'title' => $title,
+					'title' 		=> $title,
 					'usersgroupsid' => $id,
-					'filesgroupsid' => $access
+					'filesgroupsid' => $access,
+					'error'			=> 'false'
 				));
-
 				return $response;
 			}
-
-			return new Response("fail");
+			else {
+				$response->setData(array(
+					'title' 		=> $title,
+					'filesgroupsid' => $access,
+					'error'			=> 'true'
+				));
+				return $response;
+			}
 		}
 
 		catch (Exception $e) {
 			die('Erreur : ' . $e->getMessage());
-			return new Response("fail");
+			$response->setData(array(
+				'title' 		=> $title,
+				'filesgroupsid' => $access,
+				'error'			=> 'true',
+				'content'		=> $e->getMessage()
+			));
+			return $response;
 		}
 	}
 
@@ -581,38 +590,40 @@ class AdvertController extends Controller
 
 	// Suppression d'un groupe d'utilisateurs de la base de données
 	public function deleteusergroupAction($id) {
+		$response = new JsonResponse();
+
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");
 			$db   = mysql_select_db("cloud");
-			$sql  = "DELETE FROM usersgroups WHERE id='" . $id . "'";
 
+			// Appelle d'une procédure stockée
+			$sql  = "CALL delete_usergroup(" . $id . ");";
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
-			$response = new JsonResponse();
 
 			if($request) {
 				// Si tout s'est bien passé
 				$response->setData(array(
-					'id' => $id,
+					'id' 	=> $id,
 					'error' => "false"
-				));
-
-				return $response;
+				)); return $response;
 			}
 			else {
 				// Sinon
 				$response->setData(array(
-					'id' => $id,
+					'id' 	=> $id,
 					'error' => "true"
-				));
-
-				return $response;
+				)); return $response;
 			}
 		}
 
 		catch (Exception $e) {
 			die('Erreur : ' . $e->getMessage());
-			return new Response("FAIL");
+			$response->setData(array(
+				'id' 		=> $id,
+				'error' 	=> "true",
+				'message' 	=> $e->getMessage()
+			)); return $response;
 		}
 	}
 
@@ -817,19 +828,20 @@ class AdvertController extends Controller
 	// On est obligé de créer la vue à part car
 	// on ne peut exécuter une requête pour créer une vue contenant des var
 	public function addviewAction($id, $title) {
-		$_title = "V_" . $title;
+		$_title = "v_" . $title;
 
 		try {
 			$bdd  = mysql_connect("localhost", "root", "");
 			$db   = mysql_select_db("cloud");
 
+
 			$sql = "CREATE OR REPLACE
-					DEFINER = CURRENT_USER
-					SQL SECURITY INVOKER
-					VIEW ". $_title ."
-					AS SELECT *
-					FROM filesgroups
-					WHERE id = ". $id .";";
+					ALGORITHM = UNDEFINED
+					SQL SECURITY DEFINER
+					VIEW " . htmlentities($_title) . "
+					AS SELECT * FROM `files`
+					WHERE groupid=". $id;
+
 			// Exécution de la requête
 			$request = mysql_query($sql, $bdd) or die(mysql_error());
 
@@ -902,6 +914,104 @@ class AdvertController extends Controller
 				'message' 	=> $e->getMessage()
 			));
 			return $response;
+		}
+	}
+
+	public function addgrantAction($user) {
+		$response = new JsonResponse();
+
+		try {
+			$bdd  = mysql_connect("localhost", "root", "");
+			$db   = mysql_select_db("cloud");
+			$sql  = "GRANT USAGE ON cloud.* TO '" . $user . "'@'localhost' IDENTIFIED BY '" . $user . "';";
+
+			$request = mysql_query($sql, $bdd) or die(mysql_error());
+
+
+			if($request) {
+				$response->setData(array(
+					'error'			=> 'false'
+				));
+				return $response;
+			}
+			else {
+				$response->setData(array(
+					'error'			=> 'true'
+				));
+				return $response;
+			}
+		}
+
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			$response->setData(array(
+			'error'			=> 'true',
+			'content'		=> $e->getMessage()
+			));
+			return $response;
+		}
+	}
+
+	public function addgrantonviewAction($user, $view) {
+		try {
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query("GRANT ALL PRIVILEGES ON cloud." . $view ."
+			 							TO '" . $user ."'@'localhost'");
+
+			// $request2 	= $bdd->query("GRANT ALL PRIVILEGES ON cloud.v_hiver_2014
+			// 							TO 'NouvelleGen'@'localhost'");
+
+
+			// Récupération des valeurs
+			if (request) {
+				$response = new JsonResponse();
+				$response->setData(array(
+					'error'			=> 'false'
+				));
+				return $response;
+			}
+			else {
+				if (request) {
+					$response = new JsonResponse();
+					$response->setData(array(
+						'error'			=> 'true'
+					));
+					return $response;
+				}
+			}
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
+			if (request) {
+				$response = new JsonResponse();
+				$response->setData(array(
+					'error'		=> 'true',
+					'message'	=> $e->getMessage()
+				));
+				return $response;
+			}
+		}
+	}
+
+	public function getaccessAction($usersgroupsid) {
+		try {
+			$bdd 		= new \PDO('mysql:host=localhost;dbname=cloud', 'root', '');
+			$request 	= $bdd->query('SELECT * FROM access WHERE usersgroupsid='. $usersgroupsid);
+
+			$access 	= Array();
+
+			while ($v = $request->fetch()) {
+				array_push($access, $v);
+			}
+
+			$json = new JsonResponse();
+			$json->setData($access);
+			$request->closeCursor(); // Termine le traitement de la requête
+
+			return $json;
+		}
+		catch (Exception $e) {
+			die('Erreur : ' . $e->getMessage());
 		}
 	}
 

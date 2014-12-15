@@ -33,7 +33,7 @@ view_usersgroups:
 
 # Voir la liste des fichiers
 view_files:
-    path: /viewfiles/
+    path: /viewfiles/{grant}/{view}
     defaults: { _controller: PCloudPlatformBundle:Advert:viewfiles }
 
 # Voir la liste des groupes de fichiers
@@ -176,3 +176,19 @@ addview_filegroup:
 deleteview_filegroup:
     path: /deleteview/{title}
     defaults: { _controller: PCloudPlatformBundle:Advert:deleteview }
+
+addgrant_filegroup:
+    path: /addgrant/{user}
+    defaults: { _controller: PCloudPlatformBundle:Advert:addgrant }
+
+addgrantonview:
+    path: /addgrantonview/{user}/{view}
+    defaults: { _controller: PCloudPlatformBundle:Advert:addgrantonview }
+
+getusergrant:
+    path: /getusergrant/{groupid}
+    defaults: { _controller: PCloudPlatformBundle:Advert:getusergrant }
+
+getaccess:
+    path: /getaccess/{usersgroupsid}
+    defaults: { _controller: PCloudPlatformBundle:Advert:getaccess }

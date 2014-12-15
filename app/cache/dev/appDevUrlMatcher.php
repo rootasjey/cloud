@@ -173,12 +173,8 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
             if (0 === strpos($pathinfo, '/viewfiles')) {
                 // view_files
-                if (rtrim($pathinfo, '/') === '/viewfiles') {
-                    if (substr($pathinfo, -1) !== '/') {
-                        return $this->redirect($pathinfo.'/', 'view_files');
-                    }
-
-                    return array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewfilesAction',  '_route' => 'view_files',);
+                if (preg_match('#^/viewfiles/(?P<grant>[^/]++)/(?P<view>[^/]++)$#s', $pathinfo, $matches)) {
+                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'view_files')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::viewfilesAction',));
                 }
 
                 // view_filesgroups
@@ -336,6 +332,32 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
         // deleteview_filegroup
         if (0 === strpos($pathinfo, '/deleteview') && preg_match('#^/deleteview/(?P<title>[^/]++)$#s', $pathinfo, $matches)) {
             return $this->mergeDefaults(array_replace($matches, array('_route' => 'deleteview_filegroup')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::deleteviewAction',));
+        }
+
+        if (0 === strpos($pathinfo, '/addgrant')) {
+            // addgrant_filegroup
+            if (preg_match('#^/addgrant/(?P<user>[^/]++)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'addgrant_filegroup')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addgrantAction',));
+            }
+
+            // addgrantonview
+            if (0 === strpos($pathinfo, '/addgrantonview') && preg_match('#^/addgrantonview/(?P<user>[^/]++)/(?P<view>[^/]++)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'addgrantonview')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::addgrantonviewAction',));
+            }
+
+        }
+
+        if (0 === strpos($pathinfo, '/get')) {
+            // getusergrant
+            if (0 === strpos($pathinfo, '/getusergrant') && preg_match('#^/getusergrant/(?P<groupid>[^/]++)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'getusergrant')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::getusergrantAction',));
+            }
+
+            // getaccess
+            if (0 === strpos($pathinfo, '/getaccess') && preg_match('#^/getaccess/(?P<usersgroupsid>[^/]++)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'getaccess')), array (  '_controller' => 'PCloud\\PlatformBundle\\Controller\\AdvertController::getaccessAction',));
+            }
+
         }
 
         // _welcome
